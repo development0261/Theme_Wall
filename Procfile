@@ -1,0 +1,1 @@
+web: gunicorn themenswall.wsgi --log-file -

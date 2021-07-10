@@ -1,0 +1,154 @@
+{% extends "basefeed.html" %} 
+{% load static %} 
+{% load crispy_forms_tags %}
+{% block content %}
+<section>
+  <div class="gap gray-bg">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="row" id="page-contents">
+            <!-- sidebar left -->
+            <div class="col-lg-3">
+              <aside class="sidebar static">
+                <div class="widget stick-widget">
+                  <h4 class="widget-title">Shortcuts</h4>
+                  <ul class="naves">
+                    <li>
+                      <i class="ti-home"></i>
+                      <a href="{% url 'home' %}" title="">Home</a>
+                    </li>
+                    <li>
+                      <i class="ti-user"></i>
+                      <a href="{% url 'edit_profile' %}" title="">My profile</a>
+                    </li>
+                    
+                    <li>
+                      <i class="ti-files"></i>
+                      <a href="{% url 'user-posts' request.user.username %}" title="">My post</a>
+                    </li>
+                    <li>
+                      <i class="ti-plus"></i>
+                      <a href="{% url 'post-create' %}" title="">Add post</a>
+                    </li>
+                   
+                    <li>
+                      <i class="ti-bell"></i>
+                      <a href="{% url 'show-notifications' %}" title="">Notifications
+                        {% if count_notifications %}
+          <span class="badge">({{ count_notifications }})</span>
+        {% endif %} </a>
+                    </li>
+                    <li>
+                      <i class="ti-power-off"></i>
+                      <a href="{% url 'logout' %}" title="">Logout</a>
+                    </li>
+                  </ul>
+                </div><!-- Shortcuts -->
+       
+              </aside>
+            </div><!-- sidebar -->
+            <!-- center middle  -->
+            <div class="col-lg-6">
+              <div class="central-meta">
+                <div class="editing-info">
+                  <h5 class="f-title"><i class="ti-info-alt"></i> Add New Post</h5>
+                  <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">	
+                      {{form.tags}}
+                      <label class="control-label" for="input">write hashtag,(begin with#)</label><i class="mtrl-select"></i>
+                    </div>
+                    <div class="form-group">	
+                      {{form.description}}
+                      <label class="control-label" for="textarea">Post Description</label><i class="mtrl-select"></i>
+                    </div>
+                    
+                    <div class="form-group">	
+                    <div style="position:relative;">
+                      <a class='btn btn-primary' href='javascript:;'>
+                          Choose Image File
+                          <input type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;' name="pic" size="40"   onchange='$("#upload-file-info").html($(this).val());' >
+                      </a>
+                      &nbsp;
+                      <span class='label label-info' id="upload-file-info"></span>
+              </div>
+              </div>
+              <div class="form-group">	
+              <div style="position:relative;">
+                <a class='btn btn-primary' href='javascript:;'>
+                    Choose Video File
+                    <input type="file" style='position:absolute;z-index:2;top:0;left:0;filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";opacity:0;background-color:transparent;color:transparent;' name="video" size="40"  onchange='$("#upload-video-info").html($(this).val());' >
+                </a>
+                &nbsp;
+                <span class='label label-info' id="upload-video-info"></span>
+                {% if form.video.errors %}
+                <span class="badge">{{ form.video.errors }}</span>
+                
+              {% endif %}
+                
+                
+        </div>
+        </div>
+                   <div class="submit-btns">
+                      <button type="submit" class="mtr-btn"><span>Post</span></button>
+                    </div>
+                    </form>
+                </div>
+              </div><!-- add post new box -->
+               
+            </div><!-- centerl meta -->
+            <div class="col-lg-3">
+              <aside class="sidebar static">
+                <div class="widget friend-list stick-widget">
+                  <div class="banner medium-opacity bluesh">
+                    <div class="bg-image" style="background-image: url(images/resources/baner-widgetbg.jpg)"></div>
+                    <div class="baner-top">
+                      <span><img alt="" src="images/book-icon.png"></span>
+                      <i class="fa fa-ellipsis-h"></i>
+                    </div>
+                    <div class="banermeta">
+                      <p>
+                        Your own ads here .
+                      </p>
+                      <span>like them all</span>
+                      <a data-ripple="" title="" href="#">start now!</a>
+                    </div>
+                  </div>											
+                </div>
+              
+              </aside>
+            </div><!-- sidebar --> 
+          </div>	
+           
+        </div>
+      </div>
+    </div>
+  </div>	
+</section>
+
+
+{% endblock content %} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
