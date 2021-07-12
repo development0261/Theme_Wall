@@ -2285,11 +2285,12 @@ footer .logo {
     font-size: 13px;
     font-weight: 300;
     letter-spacing: 0.2px;
+    color: #545454;
 }
 
-.bottombar i {
-    float: right;
-}
+/*.bottombar i {*/
+/*    float: right;*/
+/*}*/
 
 .followers {
     max-height: 260px;
@@ -10047,4 +10048,34 @@ aside.sidebar.full-style {
     text-transform: uppercase;
 }
 
+/*policy*/
 
+.company_web{
+    text-align: center;
+    font-weight: 800;
+    text-decoration: underline;
+}
+
+.user_data ul li {
+    list-style: none;
+}
+
+.user_data h1 {
+    font-size: 24px;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/*terms*/
+
+.sub_title{
+    margin-bottom: 30px;
+}
+
+/*footer*/
+
+.bottom_footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
