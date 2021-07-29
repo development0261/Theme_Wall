@@ -255,7 +255,12 @@ def sendActivation(request):
         try:
             act_msg = SellerRequest(email=email, message=message, user=CustomeUser.objects.get(email=email))
             act_msg.save()
+            user = CustomeUser.objects.get(email=email)
+            user.role = 'seller'
+            user.save()
+
             messages.success(request, "Your email successfully sent")
+            return redirect("sellerDash")
         except:
             messages.error(request,"Something Went Wrong")
 
