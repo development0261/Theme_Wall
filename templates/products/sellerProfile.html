@@ -1,0 +1,82 @@
+{% extends "products/ecommBase.html" %}
+{% load static %}
+{% block style %}
+<style>
+    .profile__img img {
+        border-radius: 50%;
+        width: 100%;
+        max-width: 150px;
+    }
+    
+    .profile__img {
+        margin-bottom: 15px;
+    }
+
+    .seller__form {
+        width: 100%;
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        margin-top: 30px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-2">
+    
+    <div class="text-center">
+        <h1 class=" mt-4 mb-4">Seller Profile</h1>
+    </div>
+    {% load static %}
+    <div class="container seller__form mb-4">
+        <form>
+            <div class="row">
+                <div class="col-12">
+                    <div class="profile__img">
+                        <img src="{% static 'images/avatar.png' %}" alt="">
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label for="first">Username</label>
+                        <input type="text" value="{{ user.username }}" class="form-control" placeholder="" id="first">
+                    </div>
+                </div>
+                <div class="col-md-12">
+
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" value="{{ user.email }}" class="form-control" id="email" placeholder="email">
+                    </div>
+                </div>
+                <div class="col-md-12 mb-2">
+                    <div class="form-group">
+                        <label for="company">Name</label>
+                        <input type="text" class="form-control" placeholder="" value="{{ user.username }}" id="company">
+                    </div>
+                </div>
+                <div class="col-md-12 mb-2">
+                    <div class="form-group">
+                        <label for="company">Password</label>
+                        <input type="password" class="form-control" placeholder="" id="company">
+                    </div>
+                </div>
+                <div class="col-md-12 mb-2">
+                    <div class="form-group">
+                        <label for="company"> Confirm Password</label>
+                        <input type="password" class="form-control" placeholder="" id="company">
+                    </div>
+                </div>
+            </div>
+
+
+     
+
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

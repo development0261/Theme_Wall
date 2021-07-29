@@ -71,7 +71,7 @@ form .inputName {
   justify-content: center;
   align-items: center;
 }
-form input {
+form input, form textarea {
   width: 80%;
   max-width: 350px;
   min-width: 250px;

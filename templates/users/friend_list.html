@@ -1,0 +1,207 @@
+{% extends "../basefeed.html" %}
+{% load static %} 
+{% block content %}
+<section>
+  <div class="gap gray-bg">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="row" id="page-contents">
+            <!-- sidebar left -->
+            <div class="col-lg-3">
+              <aside class="sidebar static">
+                <div class="widget">
+                  <h4 class="widget-title">Shortcuts</h4>
+                  <ul class="naves">
+                    <li>
+                      <i class="ti-home"></i>
+                      <a href="{% url 'home' %}" title="">Home</a>
+                    </li>
+                    <li>
+                      <i class="ti-user"></i>
+                      <a href="{% url 'my_profile' %}" title="">My profile</a>
+                    </li>
+                    
+                    <li>
+                      <i class="ti-files"></i>
+                      <a href="{% url 'user-posts' request.user.username %}" title="">My post</a>
+                    </li>
+                    <li>
+                      <i class="ti-files"></i>
+                      <a href="{% url 'post-create' %}" title="">Add post</a>
+                    </li>
+                    <li>
+                      <i class="ti-user"></i>
+                      <a href="timeline-friends.html" title="">friends</a>
+                    </li>
+                    <li>
+                      <i class="ti-image"></i>
+                      <a href="timeline-photos.html" title="">images</a>
+                    </li>
+                    <li>
+                      <i class="ti-video-camera"></i>
+                      <a href="timeline-videos.html" title="">videos</a>
+                    </li>
+                    <li>
+                      <i class="ti-bell"></i>
+                      <a href="notifications.html" title="">Notifications</a>
+                    </li>
+                    <li>
+                      <i class="ti-power-off"></i>
+                      <a href="{% url 'logout' %}" title="">Logout</a>
+                    </li>
+                  </ul>
+                </div><!-- Shortcuts -->
+                <div class="widget">
+                  <h4 class="widget-title">Recent Activity</h4>
+                  <ul class="activitiez">
+                    <li>
+                      <div class="activity-meta">
+                        <i>10 hours Ago</i>
+                        <span><a href="#" title="">Commented on Video posted </a></span>
+                        <h6>by <a href="time-line.html">black demon.</a></h6>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="activity-meta">
+                        <i>30 Days Ago</i>
+                        <span><a href="#" title="">Posted your status. “Hello guys, how are you?”</a></span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="activity-meta">
+                        <i>2 Years Ago</i>
+                        <span><a href="#" title="">Share a video on her timeline.</a></span>
+                        <h6>"<a href="#">you are so funny mr.been.</a>"</h6>
+                      </div>
+                    </li>
+                  </ul>
+                </div><!-- recent activites -->
+                <div class="widget stick-widget">
+                  <h4 class="widget-title">Who's follownig</h4>
+                  <ul class="followers">
+                    <li>
+                      <figure><img src="images/resources/friend-avatar2.jpg" alt=""></figure>
+                      <div class="friend-meta">
+                        <h4><a href="time-line.html" title="">Kelly Bill</a></h4>
+                        <a href="#" title="" class="underline">Add Friend</a>
+                      </div>
+                    </li>
+                    <li>
+                      <figure><img src="images/resources/friend-avatar4.jpg" alt=""></figure>
+                      <div class="friend-meta">
+                        <h4><a href="time-line.html" title="">Issabel</a></h4>
+                        <a href="#" title="" class="underline">Add Friend</a>
+                      </div>
+                    </li>
+                    <li>
+                      <figure><img src="images/resources/friend-avatar6.jpg" alt=""></figure>
+                      <div class="friend-meta">
+                        <h4><a href="time-line.html" title="">Andrew</a></h4>
+                        <a href="#" title="" class="underline">Add Friend</a>
+                      </div>
+                    </li>
+                    <li>
+                      <figure><img src="images/resources/friend-avatar8.jpg" alt=""></figure>
+                      <div class="friend-meta">
+                        <h4><a href="time-line.html" title="">Sophia</a></h4>
+                        <a href="#" title="" class="underline">Add Friend</a>
+                      </div>
+                    </li>
+                    <li>
+                      <figure><img src="images/resources/friend-avatar3.jpg" alt=""></figure>
+                      <div class="friend-meta">
+                        <h4><a href="time-line.html" title="">Allen</a></h4>
+                        <a href="#" title="" class="underline">Add Friend</a>
+                      </div>
+                    </li>
+                  </ul>
+                </div><!-- who's following -->
+              </aside>
+            </div><!-- sidebar -->
+            <!-- center middle  -->
+            <div class="col-lg-6">
+              <div class="central-meta">
+                <div class="frnds">
+                  <ul class="nav nav-tabs">
+                     <li class="nav-item"><a class="active" href="#frends" data-toggle="tab">My Friends</a> <span>{{ request.user.profile.friends.count }}</span></li>
+                  </ul>
+
+                  <!-- Tab panes -->
+                  <div class="tab-content">
+                    <div class="tab-pane active fade show " id="frends" >
+                  {% if friends %}
+                  <div class="card card-signin my-5">
+                    <div class="card-body">
+                      {% for user_p in friends %}
+                      <a href="{{ user_p.get_absolute_url }}"
+                        ><img
+                          src="{{ user_p.image.url }}"
+                          class="rounded mr-2"
+                          width="40"
+                          height="40"
+                          alt=""
+                      /></a>
+                      <a class="text-dark" href="{{ user_p.get_absolute_url }}"
+                        ><b>{{ user_p }}</b></a
+                      >
+                      <small
+                        ><a
+                          class="btn btn-danger float-right"
+                          href="{% url 'delete_friend' user_p.id %}"
+                          >UnFriend</a
+                        ></small
+                      >
+                      <br /><br />
+                      {% endfor %}
+                    </div>
+                  </div>
+                  {% else %}
+                  <h5>
+                    <i
+                      >You have no friends now! Make some new
+                      <a href="{% url 'users_list' %}">friends here!</a></i
+                    >
+                  </h5>
+                  {% endif %}
+
+
+
+
+                   
+                    </div>
+                                     </div>
+                </div>
+              </div>	
+            </div><!-- centerl meta -->
+          
+          </div>	
+        </div>
+      </div>
+    </div>
+  </div>	
+</section>
+
+
+{% endblock content %} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -4,12 +4,13 @@ from django.urls import reverse
 from django.utils import timezone
 from django.db.models.signals import post_save, post_delete
 from .validators import file_size
+from users.models import CustomeUser
 class Post(models.Model):
 	description = models.CharField(max_length=255, blank=True)
 	pic = models.ImageField(upload_to='path/to/img',blank=True)
 	video = models.FileField(upload_to='path/to/video',validators=[file_size],blank=True)
 	date_posted = models.DateTimeField(default=timezone.now)
-	user_name = models.ForeignKey(User, on_delete=models.CASCADE)
+	user_name = models.ForeignKey(CustomeUser, on_delete=models.CASCADE)
 	tags = models.CharField(max_length=100, blank=True)
 
 	def __str__(self):
@@ -27,8 +28,8 @@ class Post(models.Model):
 class Notification(models.Model):
 	NOTIFICATION_TYPES = ((1,'Like'),(2,'Comment'))
 	post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="noti_post", blank=True, null=True)
-	sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="noti_from_user")
-	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="noti_to_user")
+	sender = models.ForeignKey(CustomeUser, on_delete=models.CASCADE, related_name="noti_from_user")
+	user = models.ForeignKey(CustomeUser, on_delete=models.CASCADE, related_name="noti_to_user")
 	notification_type = models.IntegerField(choices=NOTIFICATION_TYPES)
 	text_preview = models.CharField(max_length=90, blank=True)
 	date = models.DateTimeField(auto_now_add=True)
@@ -37,7 +38,7 @@ class Notification(models.Model):
 
 class Comments(models.Model):
 	post = models.ForeignKey(Post, related_name='details', on_delete=models.CASCADE)
-	username = models.ForeignKey(User, related_name='details', on_delete=models.CASCADE)
+	username = models.ForeignKey(CustomeUser, related_name='details', on_delete=models.CASCADE)
 	comment = models.CharField(max_length=255)
 	comment_date = models.DateTimeField(default=timezone.now)
 	def user_comment_post(sender, instance, *args, **kwargs):
@@ -57,7 +58,7 @@ class Comments(models.Model):
 		notify.delete()
 
 class Like(models.Model):
-	user = models.ForeignKey(User, related_name='likes', on_delete=models.CASCADE)
+	user = models.ForeignKey(CustomeUser, related_name='likes', on_delete=models.CASCADE)
 	post = models.ForeignKey(Post, related_name='likes', on_delete=models.CASCADE)
 
 

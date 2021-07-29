@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content=""/>
+    <meta name="keywords" content=""/>
+    <title>The men's wall</title>
+    <link rel="icon" href="{% static 'images/fav.png' %}" type="image/png" sizes="16x16">
+
+    <link rel="stylesheet" href="{% static 'css/main.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/color.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+
+        .model_form form input {
+            width: inherit;
+            max-width: inherit;
+            min-width: inherit;
+            box-shadow: none;
+            border-radius: 0;
+            background-color: #ffffff;
+            border: 1px solid #bebebe;
+        }
+
+        .model_form form h5 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .model_form form textarea {
+            padding: 10px;
+            border: 1px solid #bababa;
+            margin: 10px 0;
+            border-radius: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div class="theme-layout">
+
+    <!-- header -->
+    <div class="topbar stick">
+        <div class="logo">
+            <a title="" href=""><img src="{% static 'images/logo.png' %}" alt=""></a>
+        </div>
+
+        <div class="top-area">
+            <!-- search form -->
+            <div class="top-search">
+
+                <form action="{% url 'search_posts' %}" method="GET" class="">
+                    <input name="p" type="text" placeholder="Search Post by tags"/>
+                    <button data-ripple type="submit"><i class="ti-search"></i></button>
+                </form>
+            </div>
+
+            {% if user.role == "buyer" %}
+                <div class="user-img px-2">
+                    <button class="btn btn-primary" id="switch_to_seller"> Switch to Seller</button>
+                </div>
+            {% endif %}
+            <div class="user-img">
+                <span>Welcome,</span>
+                <span>{{ profile.profile.user.username }}</span>
+                <img src="{{ profile.profile.image.url }}" alt="" style="vertical-align: middle;
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;">
+                <span class="status f-online"></span>
+            </div>
+
+        </div>
+    </div><!-- topbar -->
+
+    {% block content %}
+    {% endblock content %}
+    <div class="bottombar">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bottom_footer">
+                        <span class="copyright"><a target="_blank" href="#">The men's wall</a></span>
+                        <span class="terms">
+                            <a class="copyright" target="_blank" href="{% url 'privacy_policy' %}"
+                               style="margin-right: 15px">Policy</a>
+                            <a class="copyright" target="_blank" href="{% url 'terms_condition' %}"
+                               style="margin-right: 15px">Terms</a>
+                            <a class="copyright" target="_blank" href="#">Copyright <span>©</span></a>
+{#                            <span class="copyright"><a target="_blank" href="#">Copyright 2021 <span class="copy_icon">©</span></a></span>#}
+
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Model -->
+<div class="modal fade " tabindex="-1" id="switch_to_seller_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="model_form">
+                    <form method="post" action="{% url 'sendActivation' %}">{% csrf_token %}
+                        <h5 style="text-align: start">Email</h5>
+                        <input type="email" name="email" value="{{ user.email }}">
+                        <h5 style="text-align: start">Detail</h5>
+                        <textarea name="message"></textarea>
+                        <button type="submit" name="activationBtn" class="btn btn-success">Send Message</button>
+
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/main.min.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'js/map-init.js' %}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8c55_YHLvDHGACkQscgbGLtLRdxBDCfI"></script>
+<script>
+    $("#switch_to_seller").click(function () {
+        $("#switch_to_seller_modal").modal('toggle')
+    })
+</script>
+{% block jsfiles %}{% endblock jsfiles %}
+</body>
+</html>

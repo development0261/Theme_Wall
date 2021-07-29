@@ -3,10 +3,10 @@ from .models import Profile
 from feed.models import Post
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model,login,authenticate
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from .models import Profile
+from .models import Profile,CustomeUser,SellerRequest
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 import random
 
@@ -140,14 +140,36 @@ def profile_view(request, slug):
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
+        print(form)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
             messages.success(request, f'Your account has been created! You can now login!')
             return redirect('login')
+
     else:
         form = UserRegisterForm()
     return render(request, 'users/register.html', {'form': form})
+
+
+def login_process(request):
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username,password=password)
+        if user:
+            login(request,user)
+            if user.role == "seller":
+                print(user.role)
+                return redirect("sellerDash")
+            elif user.role == "buyer":
+
+                return redirect('home')
+        else:
+            messages.error(request,"Please make Registration First")
+            return redirect("register")
+
+    return render(request,'users/login.html')
 
 
 @login_required
@@ -224,3 +246,17 @@ def privacy_policy(request):
 
 def terms_condition(request):
     return render(request, 'users/terms_condition.html')
+
+
+def sendActivation(request):
+    if request.method == "POST":
+        email = request.POST['email']
+        message = request.POST['message']
+        try:
+            act_msg = SellerRequest(email=email, message=message, user=CustomeUser.objects.get(email=email))
+            act_msg.save()
+            messages.success(request, "Your email successfully sent")
+        except:
+            messages.error(request,"Something Went Wrong")
+
+        return redirect('home')

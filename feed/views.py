@@ -22,6 +22,7 @@ class PostListView(LoginRequiredMixin,ListView):
 	ordering = ['-date_posted']
 	paginate_by = 10
 
+
 	
 	def get_context_data(self, **kwargs):
 		context = super(PostListView, self).get_context_data(**kwargs)
@@ -72,7 +73,7 @@ def post_detail(request, pk):
 			return redirect('post-detail', pk=pk)
 	else:
 		form = NewCommentForm()
-	return render(request, 'feed/post_detail.html', {'u':u,'post':post, 'is_liked':is_liked, 'form':form})
+	return render(request, '../templates/feed/post_detail.html', {'u':u, 'post':post, 'is_liked':is_liked, 'form':form})
 
 @login_required
 def create_post(request):
@@ -87,7 +88,7 @@ def create_post(request):
 			return redirect('home')
 	else:
 		form = NewPostForm()
-	return render(request, 'feed/create_post.html', {'form':form})
+	return render(request, '../templates/feed/create_post.html', {'form':form})
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 	model = Post
@@ -122,7 +123,7 @@ def search_posts(request):
 		'posts': object_list,
 		'liked_post': liked
 	}
-	return render(request, "feed/search_posts.html", context)
+	return render(request, "../templates/feed/search_posts.html", context)
 
 @login_required
 def like(request):
@@ -151,7 +152,7 @@ def ShowNOtifications(request):
 	notifications = Notification.objects.filter(user=user).order_by('-date')
 	Notification.objects.filter(user=user, is_seen=False).update(is_seen=True)
 
-	template = loader.get_template('feed/notifications.html')
+	template = loader.get_template('../templates/feed/notifications.html')
 
 	context = {
 		'notifications': notifications,
