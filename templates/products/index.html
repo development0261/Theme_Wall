@@ -1,0 +1,313 @@
+{% extends "products/ecommBase.html" %}
+{% load static %}
+{% block style %}
+ <style>
+.search__input {
+    border-color: #f0f2f5;
+    color: #5b6c8f;
+    height: 46px;
+    font-size: 18px;
+}
+
+.input-group-append button {
+    height: 100% !important;
+}
+
+.chosen-container {
+    display: none;
+}
+
+.search__input input.form-control {
+    height: 100% !important;
+}
+
+.search__input input.form-control {
+    border-radius: 30px;
+    background-color: #f0f2f5;
+}
+
+.search__input input.form-control:focus{
+    box-shadow: none;
+    border: 2px solid #000;
+}
+
+.input-group-append button {
+    background-color: #000;
+    border-radius: 0px 30px 30px  0px !important;
+}
+
+.sort__by {
+    margin-left: 10px;
+}
+
+.sort__by select{
+    border-radius: 30px;
+    border: 1px solid #000;
+    height: 100%;
+    margin-left: 10px;
+    display: block !important;
+}
+
+@media (min-width: 768px){
+    .categories__wrp h4{
+        font-size: 18px;
+    line-height: 26px;
+    color: #000;
+    font-weight: bold;
+    margin-bottom: 0;
+    }
+}
+ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.widget__category .menu--mobile li{
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 26px;
+    position: relative;
+    padding: 10px 0;
+    text-align: center;
+
+}
+
+.btn-dark{
+    color: #fff;
+    background-color: #3E83C5 !important;
+    border-color: #3E83C5 !important;
+ }
+.btn-outline-dark {
+    color: #89C34A;
+     border-color: #89C34A !important;
+}
+.btn-outline-dark:hover {
+     color: #fff;
+    background-color: #89C34A !important;
+    border-color: #89C34A !important;
+}
+.widget__category .menu--mobile li:hover{
+    background-color: #3E83C5;
+    border-radius: 50px;
+}
+.widget__category .menu--mobile li:hover a{
+   color: #eeeeee;
+
+}
+.active_cat{
+     background-color: #3E83C5;
+    border-radius: 50px;
+
+
+}
+
+.widget__category .menu--mobile li a{
+    position: relative;
+    display: block;
+    line-height: 20px;
+    font-weight: 600;
+    font-size: 17px;
+    color: #3E83C5;
+    text-transform: capitalize;
+    text-decoration: none;
+
+}
+.active_cat a{
+     color: #eeeeee !important;
+}
+.categories__wrp {
+    background-color: #f1f1f1;
+    padding: 10px;
+}
+
+.page-link {
+    background-color: #3E83C5;
+    color: #fff;
+    border: 0;
+    margin: 0 4px;
+}
+.page-link:hover {
+    border: 1px solid #3E83C5;
+    color: #000 !important;
+    border: 0;
+}
+
+
+.ratings i {
+    font-size: 16px;
+    color: red
+}
+
+.strike-text {
+    color: red;
+    text-decoration: line-through
+}
+
+.product-image {
+    width: 100%
+}
+
+.dot {
+    height: 15px;
+    width: 15px;
+
+    margin-left: 2%;
+    margin-top: 2%;
+    border : 1px solid black;
+    border-radius: 50%;
+    display: inline-block;
+  }
+.spec-1 {
+    color: #938787;
+    font-size: 15px
+}
+
+h5 {
+    font-weight: 400
+}
+
+.para {
+    font-size: 16px
+}
+    </style>
+
+{% endblock %}
+
+{% block content %}
+{% load removeSpace %}
+    <div class="container mt-5">
+       <div class="row">
+        <div class="col-md-3">
+            <div class="categories__wrp" style="border-radius: 5px">
+                <h4 class="text-center" ><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;Categories</h4>
+            <hr/>
+                <div class="widget__category">
+
+                    <ul class="menu--mobile mt-2">
+                    <li><a href="/products/buyproducts/">All</a></li>
+                    <hr/>
+
+
+                        {% for cat in all_categories %}
+
+                            <li id="cat_{{ cat.id }}"
+
+                            class="{% if request.GET.cat_id|removeSpaceFromValue == cat.id %}
+                                    active_cat
+                                    {% endif %}
+                                "
+                            ><a href="/products/buyproducts/?cat_id={{ cat.id }}">{{ cat.name }}</a></li>
+                            <hr/>
+                        {% endfor  %}
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9 ">
+            <div class="input-group search__input">
+                <input type="search" class="form-control" placeholder="Search's item" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button type="search" class="btn btn-dark">Search</button>
+                </div>
+                <div class="sort__by">
+                    <select class="custom-select">
+  <option selected>Sort By</option>
+  <option value="1">Latest</option>
+  <option value="2">Highest Price</option>
+  <option value="3">Lowest Price</option>
+</select>
+                </div>
+            </div>
+            <div class="container mt-5 mb-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-10">
+            {% for item in all_items %}
+            <div class="row p-2 bg-white border rounded mt-2">
+                <div class="col-md-3 mt-1"><img class="img-fluid img-responsive rounded product-image" src="{{ item.image.url }}"></div>
+                <div class="col-md-6 mt-1">
+                    <h5>{{ item.name }}</h5>
+                    <div class="d-flex flex-row">
+                        <div class="ratings mr-2">
+                        {% with ''|center:item.rating as range %}
+									 {% for _ in range %}
+									 <i class="fa fa-star"></i>
+								     {% endfor %}
+									 {% endwith %}
+
+                            </div>
+                    </div>
+                    <div class="mt-1 mb-1 spec-1"><span style="color: black;font-weight: bold">Colors : </span>
+                        {% if item.get_color|length > 0 %}
+                      {% for color in item.get_color %}
+                      <span class="dot" style="background-color: {{ color }}"></span>
+                      {% endfor %}
+                      {% else %}
+                      No Color Added
+                      {% endif %}
+                        </div>
+                    <div class="mt-1 mb-1 spec-1"><span style="color: black;font-weight: bold">Size : </span>
+                        {% if item.get_size|length > 0 %}
+                      {% for size in item.get_size %}
+                      <span style="color: #0e0e0e">{{ size }}</span>
+                      {% endfor %}
+                      {% else %}
+                      No Color Added
+                      {% endif %}
+                        </div>
+
+                    <p class="text-justify text-truncate para mb-0">{{ item.description | truncatewords:20 }}</p>
+                </div>
+                <div class="align-items-center align-content-center col-md-3 border-left mt-1">
+                    <div class="d-flex flex-row align-items-center">
+                        <h4 class="mr-1"> &#8377; {{ item.price }}</h4>
+                    </div>
+
+                    <div class="d-flex flex-column mt-4">
+                        <button class="btn btn-dark btn-sm" type="button"><i class="fa fa-shopping-basket"></i>&nbsp;Add to Cart</button>
+                      <!--  <button class="btn btn-outline-dark btn-sm mt-2" type="button"><i class="fa fa-eye"></i>&nbsp;View Details</button> -->
+                        <button class="btn btn-outline-dark btn-sm mt-2" type="button"><i class="fa fa-heart"></i>&nbsp;Add to wishlist</button></div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+            <div class="pagination__inner mb-2">
+                <nav aria-label="Page navigation example">
+                     {% if all_items.has_other_pages %}
+                    <ul class="pagination">
+                    {% if all_items.has_previous %}
+                      <li class="page-item"><a class="page-link" href="?page={{all_items.previous_page_number}}">Previous</a></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    {% endif %}
+                     {% for i in all_items.paginator.page_range %}
+                           {% if all_items.number == i%}
+                                   <li class="page-item"><a class="page-link" href="#">{{i}}</a></li>
+                                {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+
+                                {% endif %}
+
+                    {% endfor %}
+
+                       {% if all_items.has_next %}
+                       <li class="page-item"><a class="page-link" href="?page={{all_items.next_page_number}}">Next</a></li>
+                    {% else %}
+                     <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    {% endif %}
+
+                    </ul>
+                    {% endif %}
+                  </nav>
+            </div>
+        </div>
+       </div>
+    </div>
+
+{% endblock %}
+
+
+{% block jsfiles %}{% endblock jsfiles %}

@@ -11,6 +11,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('feed.urls')),
     path('products/', include('products.urls')),
+    path('orders/', include('orders.urls')),
     path('users/<slug>/', user_views.profile_view, name='profile_view'),
     path('edit-profile/', user_views.edit_profile, name='edit_profile'),
     path('my-profile/', user_views.my_profile, name='my_profile'),

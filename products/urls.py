@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import allProducts,sellerDash,addCategory,addProduct,deleteProduct,buyproducts,profile,getProduct
+from .views import *
 urlpatterns = [
     path("",allProducts,name="allProducts"),
     path("sellerDash/",sellerDash,name="sellerDash"),
@@ -9,4 +9,6 @@ urlpatterns = [
     path("buyproducts/",buyproducts,name="buyproducts"),
     path("profile/",profile,name="profile"),
     path("getProduct/<int:id>/",getProduct,name="getProduct"),
+    path("updateProduct/<int:id>/",updateProduct,name="updateProduct"),
+    path("buyproducts/",buyproducts,name="buyproducts"),
 ]

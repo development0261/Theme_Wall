@@ -19,7 +19,7 @@ class item(models.Model):
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=50,decimal_places=2)
     offer_price = models.DecimalField(max_digits=50,decimal_places=2,default=0)
-    image = models.FileField(upload_to='items')
+    image = models.FileField(upload_to='items',default="",null=True,blank=True)
     quantity = models.IntegerField()
     item_category = models.ForeignKey(category,on_delete=models.CASCADE)
     description = models.TextField()

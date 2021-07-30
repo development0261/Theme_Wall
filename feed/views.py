@@ -15,6 +15,7 @@ from users.models import Profile
 from django.template import loader
 
 
+
 class PostListView(LoginRequiredMixin,ListView):
 	model = Post
 	template_name = 'feed/home.html'
@@ -22,11 +23,17 @@ class PostListView(LoginRequiredMixin,ListView):
 	ordering = ['-date_posted']
 	paginate_by = 10
 
+	def get(self, request, *args, **kwargs):
+		if request.user.role == "seller":
+			return redirect("sellerDash")
+		else:
+			return render(request,'feed/home.html')
 
-	
 	def get_context_data(self, **kwargs):
 		context = super(PostListView, self).get_context_data(**kwargs)
 		if self.request.user.is_authenticated:
+
+
 			p = Profile.objects.filter(user = self.request.user).first()
 			u = p.user
 			liked = [i for i in Post.objects.all() if Like.objects.filter(user = self.request.user, post=i)]

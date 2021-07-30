@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'feed.apps.FeedConfig',
     'crispy_forms',
     'stdimage',
-    'products'
+    'products',
+    'orders'
 ]
 
 MIDDLEWARE = [

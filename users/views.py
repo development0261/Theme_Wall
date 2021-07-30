@@ -249,13 +249,16 @@ def terms_condition(request):
 
 
 def sendActivation(request):
-    if request.method == "POST":
-        email = request.POST['email']
+    if request.method == "POST" and request.user.is_authenticated:
+        proof = request.FILES['proof']
         message = request.POST['message']
+        fullname= request.POST['fullname']
         try:
-            act_msg = SellerRequest(email=email, message=message, user=CustomeUser.objects.get(email=email))
+            request.user.fullname = fullname
+            request.user.save()
+            act_msg = SellerRequest(email=request.user.email, message=message, user=request.user,proof=proof)
             act_msg.save()
-            user = CustomeUser.objects.get(email=email)
+            user = CustomeUser.objects.get(email=request.user.email)
             user.role = 'seller'
             user.save()
 

@@ -39,6 +39,55 @@
             margin: 10px 0;
             border-radius: 0;
         }
+ .input-file {
+	 width: 0.1px;
+	 height: 0.1px;
+	 opacity: 0;
+	 overflow: hidden;
+	 position: absolute;
+	 z-index: -1;
+}
+ .input-file + .js-labelFile {
+	 overflow: hidden;
+	 text-overflow: ellipsis;
+	 white-space: nowrap;
+	 padding: 0 10px;
+	 cursor: pointer;
+}
+ .input-file + .js-labelFile .icon:before {
+	 content: "\f093";
+}
+ .input-file + .js-labelFile.has-file .icon:before {
+	 content: "\f00c";
+	 color: #5aac7b;
+}
+
+
+
+
+.browser__img label {
+    width: 100%;
+    height: 100%;
+    min-height: 130px;
+    border: 1px solid #000;
+    border-style: dashed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.browser__img {
+    margin-top: 15px;
+}
+
+.browser__img .form-group {
+    display: flex;
+    align-items: center;
+}
+
+.browser__img label .js-fileName {
+    padding-left: 10px;
+}
 
     </style>
 </head>
@@ -114,12 +163,22 @@
             </div>
             <div class="modal-body">
                 <div class="model_form">
-                    <form method="post" action="{% url 'sendActivation' %}">{% csrf_token %}
+                    <form method="post" action="{% url 'sendActivation' %}" enctype="multipart/form-data">{% csrf_token %}
                         <h5 style="text-align: start">Email</h5>
-                        <input type="email" name="email" value="{{ user.email }}">
+                        <input type="email" name="email" value="{{ user.email }}" disabled>
+                        <h5 style="text-align: start">Full Name</h5>
+                        <input type="text" name="fullname">
                         <h5 style="text-align: start">Detail</h5>
                         <textarea name="message"></textarea>
+                         <div class="form-group">
+                             <h5 style="text-align: start">Upload Passport Image as ID Proof</h5>
+                                <input type="file"  name="proof">
+
+                              </div>
                         <button type="submit" name="activationBtn" class="btn btn-success">Send Message</button>
+
+
+
 
                     </form>
                 </div>
@@ -138,6 +197,24 @@
     $("#switch_to_seller").click(function () {
         $("#switch_to_seller_modal").modal('toggle')
     })
+    (function() {
+
+    'use strict';
+
+    $('.input-file').each(function() {
+      var $input = $(this),
+          $label = $input.next('.js-labelFile'),
+          labelVal = $label.html();
+
+     $input.on('change', function(element) {
+        var fileName = '';
+        if (element.target.value) fileName = element.target.value.split('\\').pop();
+        fileName ? $label.addClass('has-file').find('.js-fileName').html(fileName) : $label.removeClass('has-file').html(labelVal);
+     });
+    });
+
+  })();
+
 </script>
 {% block jsfiles %}{% endblock jsfiles %}
 </body>

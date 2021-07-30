@@ -57,7 +57,7 @@
 <nav class="navbar navbar-expand-md bg-light navbar-light">
   <!-- Brand -->
   <a class="navbar-brand" href="{% url 'sellerDash' %}" style="width:35%">
-          <img src="{% static 'images/logo.png' %}" alt="" width="40%">
+          <img src="{% static 'images/logo_png.png' %}" alt="" width="40%">
        </a>
 
   <!-- Toggler/collapsibe Button -->
@@ -68,6 +68,7 @@
   <!-- Navbar links -->
   <div class="collapse navbar-collapse" id="collapsibleNavbar">
     <ul class="navbar-nav">
+      {% if user.role == "seller" %}
       <li class="nav-item">
         <a class="nav-link active" href="{% url 'sellerDash' %}" ><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;My Products</a>
       </li>
@@ -81,6 +82,18 @@
         <a class="nav-link" href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a>
       </li>
 
+        {% else  %}
+         <li class="nav-item">
+        <a class="nav-link active" href="{% url 'sellerDash' %}" ><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;Products</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'sellerDash' %}" ><i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;Cart </a>
+      </li>
+
+            <li class="nav-item ml-auto">
+        <a class="nav-link" href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a>
+      </li>
+        {% endif  %}
     </ul>
 
 

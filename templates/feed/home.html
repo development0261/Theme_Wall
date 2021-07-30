@@ -1,4 +1,4 @@
-{% extends "../basefeed.html" %}
+{% extends "basefeed.html" %}
 {% load static %} 
 
 {% block content %}
@@ -44,12 +44,12 @@
                       <i class="ti-plus"></i>
                       <a href="{% url 'post-create' %}" title="">Add post</a>
                     </li>
-
+                    {%  if user.is_authenticated and user.role == "buyer" %}
                    <li>
                       <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                       <a href="{% url 'buyproducts' %}" title="">Buy Products</a>
                     </li>
-
+                    {% endif %}
                     <li>
                       <i class="ti-bell"></i>
                       <a href="{% url 'show-notifications' %}" title="">Notifications

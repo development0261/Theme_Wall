@@ -17,11 +17,16 @@
   .chosen-container {
     display: none;
   }
-
+td.sorting_1 {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
   .dot {
     height: 15px;
     width: 15px;
-     
+         margin-bottom: 4px;
+    margin-right: -2px;
     border : 1px solid black;
     border-radius: 50%;
     display: inline-block;
@@ -87,7 +92,7 @@
           No Size Added
           {% endif %}
         </td>
-        <td>
+        <td class="sorting_1">
           {% if item.get_color|length > 0 %}
           {% for color in item.get_color %}
           <span class="dot" style="background-color: {{ color }}"></span>
@@ -99,7 +104,7 @@
         <td>{{ item.created_at }}</td>
 
         <td>
-          <i class="btn btn-success fa fa-eye" style="padding: 2px 10px"> </i>
+
           <a class="btn btn-warning editProduct" id="editproduct_{{ item.pk }}" style="padding: 2px 10px"><i class="fa fa-edit" > </i></a>
           <a href="{% url 'deleteProduct' item.pk %}" class="btn btn-danger " style="padding: 2px 10px"> <i
               class="fa fa-trash"> </i></a>
@@ -183,7 +188,7 @@
                     <label for="exampleInputEmail1"> Product Sizes Available</label>
                     <div class="d-flex align-items-center">
                       <div class="size-list w-100">
-                        <div class="d-flex ">
+                        <div class="d-flex">
                           <select name="size[]" class="form-control mb-2">
                             <option value="s">s</option>
                             <option value="m">m</option>
@@ -325,11 +330,13 @@
           success: function(data) {
              if(data.msg = 'success'){
                 item = JSON.parse(data.item)
-                var size_length = data.size.length
-                 console.log(item[0].fields)
+
+$("#edit-form").empty()
+                categories = JSON.parse(data.categories)
+                 console.log(categories)
                  $("#edit-form").append(
                      `
-                      <form  method="post" enctype="multipart/form-data" class="product__form">
+                      <form  method="post" action="/products/updateProduct/${id}/" enctype="multipart/form-data" class="product__form">
               {% csrf_token %}
               <div class="row">
                 <div class="col-6">
@@ -370,11 +377,19 @@
                     <label for="catid">Product Category</label>
 
                     <select class="form-control" id="catid" name="category" style="display: inherit;" >
-                      {% for category in all_categories %}
-                      <option value="{{ category.id }}"
+                      ${
+                            categories.map((item1,index)=>{
+                                return(
+                                    `
+                                        <option value="${item1.pk}" ${ item1.pk == item[0].fields.item_category? 'selected' : '' }
 
-                      >{{ category.name }}</option>
-                      {% endfor %}
+                                            >${item1.fields.name}</option>
+                                    `
+                                )
+                            }).join('')
+                     }
+
+
                     </select>
 
                   </div>
@@ -384,11 +399,53 @@
                     <label for="exampleInputEmail1"> Product Sizes Available</label>
                     <div class="d-flex align-items-center">
                       <div class="size-list w-100">
-                       ${(function fun() {
-                            for(let i=0;i<size_length;i++){
+                      ${
+                            data.sizes.length == 0 ? `
+                             <div class="d-flex size-input">
+                                      <select name="size[]" class="form-control mb-2">
+                                        <option value="s" ${ item == 's' ? 'selected' : '' }>s</option>
+                                        <option value="m" ${ item == 'm' ? 'selected' : '' }>m</option>
+                                        <option value="l" ${ item == 'l' ? 'selected' : '' }>l</option>
+                                      </select>
+                            <div class="add__button">
+                                        <button type="button" class="btn btn-success btn-sm btn-add-size"><span class="fa fa-plus"></span>
+                                          </button>
+                                      </div>
+                                      </div>
+                            `:``
+                     }
+                       ${
+                         data.sizes.map((item,index)=>{
+                             return(
 
-                            }
-                        })()}
+                                   `
+                                      <div class="d-flex size-input">
+                                      <select name="size[]" class="form-control mb-2">
+                                        <option value="s" ${ item == 's' ? 'selected' : '' }>s</option>
+                                        <option value="m" ${ item == 'm' ? 'selected' : '' }>m</option>
+                                        <option value="l" ${ item == 'l' ? 'selected' : '' }>l</option>
+                                      </select>
+                                        ${ index == 0 ?
+                                                `
+                                                <div class="add__button">
+                                        <button type="button" class="btn btn-success btn-sm btn-add-size"><span class="fa fa-plus"></span>
+                                          </button>
+                                      </div>
+                                                `
+
+                                   :`
+                                        <div class="add__button close__button">
+                  <button type="button" class="btn btn-danger btn-remove-size" ><span class="fa fa-remove"></span></span>
+                    </button>
+                </div>
+                                   `}
+
+                                    </div>
+                                   `
+
+                             )
+                         }).join('')
+                     }
 
                       </div>
 
@@ -401,30 +458,71 @@
                     <label for="exampleInputEmail1"> Product Colors Available</label>
                     <div class="d-flex align-items-center">
                       <div class="color-list w-100">
-                        <div class="d-flex ">
-                          <input type="text" name="color[]" class="form-control" />
-                          <div class="add__button">
+                      ${
+                            data.colors.length == 0 ? `
+                            <div class="d-flex color-input">
+                          <input type="text" name="color[]" value="${item}" class="form-control" />
+                         <div class="add__button">
+
                             <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>
                               </button>
                           </div>
+    </div>
+                            `:``
+              }
+                      ${
+                        data.colors.map((item,index)=>{
+                            return(
+                                `
+                                <div class="d-flex color-input">
+                          <input type="text" name="color[]" value="${item}" class="form-control" />
+                          ${ index == 0 ?
+                                                `
+                                                 <div class="add__button">
+
+                            <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>
+                              </button>
+                          </div>
+                                                `
+
+                                   :`
+                                      <div class="add__button close__button">
+          <button type="button" class="btn btn-danger btn-remove-color"><span class="fa fa-remove"></span>
+            </button>
+        </div>
+                                   `}
+
                         </div>
+                                `
+                            )
+                        }).join('')
+                     }
+
                       </div>
 
 
                     </div>
                   </div>
                 </div>
-                <div class="col-12 browser__img" >
+
+                <div class="col-4 browser__img" >
                   <div class="form-group">
-                    <input type="file" id="file" class="input-file" name="image">
-                    <label for="file" class="btn btn-tertiary js-labelFile">
-                      <i class="icon fa fa-check"></i>
-                      <span class="js-fileName">Choose a file</span>
-                    </label>
+
+                     <img id="blah" src="/media/${item[0].fields.image}" width="100"/>
+
                   </div>
 
                 </div>
+                <div class="col-8 browser__img" >
+                 <div >
+
+                    <input id="file-upload" name="image" type="file" onchange="readURL(this);" />
+
+                </div>
+
+                </div>
                 <div class="col-12 d-flex justify-content-center">
+
                   <button type="submit" class="btn btn-primary " style="width: 40%;">Save Product</button>
                 </div>
               </div>
@@ -476,16 +574,18 @@
       $(this).closest('.size-input').find('.type-input').val($(this).data('type-value'));
     });
 
-    $(document.body).on('click', '.btn-remove-size', function () {
+    $(document).on('click', '.btn-remove-size', function () {
       $(this).closest('.size-input').remove();
     });
-    $(document.body).on('click', '.btn-remove-color', function () {
+    $(document).on('click', '.btn-remove-color', function () {
+        console.log('remove color')
       $(this).closest('.color-input').remove();
     });
 
 
-    $('.btn-add-size').click(function () {
 
+    $(document).on('click','.btn-add-size',function (){
+        console.log("add size")
       var index = $('.size-input').length + 1;
 
       $('.size-list').append(
@@ -507,7 +607,7 @@
       );
 
     });
-    $('.btn-add-color').click(function () {
+    $(document).on('click','.btn-add-color',function (){
 
       var index = $('.color-input').length + 1;
 
@@ -542,7 +642,20 @@
     });
   
   })();
+ function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
 
+                reader.onload = function (e) {
+                    $('#blah')
+                        .attr('src', e.target.result)
+                        .width(150)
+                        .height(150);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
 </script>
 {% endblock jsfiles %}
