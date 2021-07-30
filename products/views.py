@@ -148,7 +148,7 @@ def updateProduct(request,id):
                         prod.item_category= category.objects.get(id=it_category)
                         prod.quantity =quantity
                         prod.description = description
-                        print(request.FILES['image'])
+
                         if request.FILES['image'] != '':
                             prod.image = request.FILES.get('image')
 
