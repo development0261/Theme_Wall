@@ -5,7 +5,7 @@ from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
 from django.conf import settings
 
-from users.views import sendActivation, login_process
+from users.views import sendActivation, login_process, activateAccount
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +32,7 @@ urlpatterns = [
     path('privacy_policy/',user_views.privacy_policy,name="privacy_policy"),
     path('terms_condition/',user_views.terms_condition,name="terms_condition"),
     path('sendActivation/', sendActivation, name='sendActivation'),
+    path('activateAccount/<str:email>/', activateAccount, name='activateAccount'),
 ]
 
 if settings.DEBUG:

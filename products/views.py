@@ -2,6 +2,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import make_password
 from django.core import serializers
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import category,item,item_size,item_color
@@ -149,11 +150,14 @@ def updateProduct(request,id):
                         prod.quantity =quantity
                         prod.description = description
 
-                        if request.FILES['image'] != '':
-                            prod.image = request.FILES.get('image')
+                        try:
+                            if 'image' in request.FILES:
+                                prod.image = request.FILES.get('image')
 
-                        else:
-                            prod.image = prod.image
+                            else:
+                                prod.image = prod.image
+                        except:
+                            pass
                         prod.save()
 
                     if sizes[0] != '':
@@ -183,16 +187,34 @@ def updateProduct(request,id):
 
 
 def buyproducts(request):
-    all_items = item.objects.order_by("-created_at").all()
-
-
+    all_items = item.objects.filter(is_available= True)
     if 'cat_id' in request.GET:
         id = request.GET['cat_id']
         all_items = all_items.filter(item_category=category.objects.get(id=id))
+
+    if 'filter' in request.GET:
+        filter = request.GET['filter']
+        if filter == 'latest':
+            all_items=  all_items.order_by('-created_at')
+        elif filter == 'highest':
+            all_items= all_items.order_by('-price')
+        elif filter == 'lowest':
+            all_items= all_items.order_by('price')
+
+    if request.method == "POST":
+        searched = request.POST['searchBox']
+        all_items = all_items.filter(Q(name__icontains=searched) | Q(description__icontains=searched))
 
     paginator = Paginator(all_items, 15)
     page = request.GET.get('page')
     paged_items = paginator.get_page(page)
 
     all_categories = category.objects.all()
+
+
     return render(request,'products/index.html',{'all_items':paged_items,'all_categories':all_categories})
+
+def singleProduct(request,id):
+    single_item = get_object_or_404(item,id=id)
+    print(single_item)
+    return render(request,'products/singleProduct.html',{"product":single_item})

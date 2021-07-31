@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 from .models import Profile,CustomeUser,SellerRequest
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 import random
-
+from django.core.mail import send_mail
 User = get_user_model()
 
 
@@ -261,10 +261,19 @@ def sendActivation(request):
             user = CustomeUser.objects.get(email=request.user.email)
             user.role = 'seller'
             user.save()
-
-            messages.success(request, "Your email successfully sent")
+            send_mail("Seller Account Activation Request","Please visit attached link to activate your account as seller account . https://themes-wall.herokuapp.com/activateAccount/{} ".format(request.user.email),settings.EMAIL_HOST_USER,[request.user.email])
+            messages.success(request, "Please visit your email address to activate your account")
             return redirect("sellerDash")
         except:
             messages.error(request,"Something Went Wrong")
 
         return redirect('home')
+
+def activateAccount(request,email):
+    user = CustomeUser.objects.get(email=email)
+    user.role = 'seller'
+    user.save()
+
+    messages.success(request,"You are approved as seller")
+    return redirect('sellerDash')
+

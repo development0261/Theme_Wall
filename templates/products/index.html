@@ -67,7 +67,7 @@ ul{
     font-size: 18px;
     line-height: 26px;
     position: relative;
-    padding: 10px 0;
+    padding: 5px 0;
     text-align: center;
 
 }
@@ -196,7 +196,15 @@ h5 {
                                     active_cat
                                     {% endif %}
                                 "
-                            ><a href="/products/buyproducts/?cat_id={{ cat.id }}">{{ cat.name }}</a></li>
+                            >
+
+                                {% if request.GET.filter %}
+                                    <a href="{{ request.path }}?cat_id={{ cat.id }}&filter={{  request.GET.filter }}">{{ cat.name }}</a>
+                                {% else %}
+                                    <a href="{{ request.path }}?cat_id={{ cat.id }}">{{ cat.name }}</a>
+                                {% endif %}
+
+                            </li>
                             <hr/>
                         {% endfor  %}
 
@@ -206,26 +214,46 @@ h5 {
             </div>
         </div>
         <div class="col-md-9 ">
-            <div class="input-group search__input">
-                <input type="search" class="form-control" placeholder="Search's item" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            <form action="{% url 'buyproducts' %}" method="post">{% csrf_token %}
+                <div class="input-group search__input">
+                <input type="search" class="form-control" name="searchBox" value="" id="searchBox" placeholder="Search's item" aria-label="Recipient's username" aria-describedby="basic-addon2">
                   <div class="input-group-append">
                     <button type="search" class="btn btn-dark">Search</button>
                 </div>
                 <div class="sort__by">
-                    <select class="custom-select">
-  <option selected>Sort By</option>
-  <option value="1">Latest</option>
-  <option value="2">Highest Price</option>
-  <option value="3">Lowest Price</option>
-</select>
+                    <select class="custom-select" onchange="location = this.value;">
+                      <option selected>Sort By</option>
+
+                                {% if request.GET.cat_id %}
+                                   <option value="{{ request.path }}?filter=latest&cat_id={{ request.GET.cat_id  }}">Latest</option>
+                                {% else %}
+                              <option value="{{ request.path }}?filter=latest">Latest</option>
+                         {% endif %}
+
+
+                                {% if request.GET.cat_id %}
+                                   <option value="{{ request.path }}?filter=highest&cat_id={{ request.GET.cat_id  }}">Highest</option>
+                                {% else %}
+                             <option value="{{ request.path }}?filter=highest">Highest</option>
+                                {% endif %}
+
+                               {% if request.GET.cat_id %}
+                                   <option value="{{ request.path }}?filter=lowest&cat_id={{ request.GET.cat_id  }}">Lowest</option>
+                                {% else %}
+                              <option value="{{ request.path }}?filter=lowest">Lowest</option>
+                                {% endif %}
+
+
+                    </select>
                 </div>
             </div>
+            </form>
             <div class="container mt-5 mb-5">
     <div class="d-flex justify-content-center row">
         <div class="col-md-10">
             {% for item in all_items %}
             <div class="row p-2 bg-white border rounded mt-2">
-                <div class="col-md-3 mt-1"><img class="img-fluid img-responsive rounded product-image" src="{{ item.image.url }}"></div>
+                <div class="col-md-3 mt-1"><a href="{% url 'singleProduct' item.id %}"><img class="img-fluid img-responsive rounded product-image"  src="{{ item.image.url }}"></a></div>
                 <div class="col-md-6 mt-1">
                     <h5>{{ item.name }}</h5>
                     <div class="d-flex flex-row">
@@ -250,14 +278,15 @@ h5 {
                     <div class="mt-1 mb-1 spec-1"><span style="color: black;font-weight: bold">Size : </span>
                         {% if item.get_size|length > 0 %}
                       {% for size in item.get_size %}
-                      <span style="color: #0e0e0e">{{ size }}</span>
+                      <span style="color: #0e0e0e;padding: 0px 2px">{{ size|title }}</span>
                       {% endfor %}
                       {% else %}
                       No Color Added
                       {% endif %}
                         </div>
-
+<span style="color: black;font-weight: bold">Seller : </span><span style="color: #0e0e0e;padding: 0px 2px">{{ item.seller.fullname }}</span>
                     <p class="text-justify text-truncate para mb-0">{{ item.description | truncatewords:20 }}</p>
+
                 </div>
                 <div class="align-items-center align-content-center col-md-3 border-left mt-1">
                     <div class="d-flex flex-row align-items-center">
@@ -310,4 +339,13 @@ h5 {
 {% endblock %}
 
 
-{% block jsfiles %}{% endblock jsfiles %}
+{% block jsfiles %}
+    <script>
+    $('#searchBox').keypress(function(event){
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if(keycode == '13'){
+        alert('You pressed a "enter" key in textbox');
+    }
+});
+    </script>
+{% endblock jsfiles %}
