@@ -253,21 +253,20 @@ def sendActivation(request):
         proof = request.FILES['proof']
         message = request.POST['message']
         fullname= request.POST['fullname']
-        try:
-            request.user.fullname = fullname
-            request.user.save()
-            act_msg = SellerRequest(email=request.user.email, message=message, user=request.user,proof=proof)
-            act_msg.save()
-            user = CustomeUser.objects.get(email=request.user.email)
-            user.role = 'seller'
-            user.save()
-            send_mail("Seller Account Activation Request","Please visit attached link to activate your account as seller account . https://themes-wall.herokuapp.com/activateAccount/{} ".format(request.user.email),settings.EMAIL_HOST_USER,[request.user.email])
-            messages.success(request, "Please visit your email address to activate your account")
-            return redirect("sellerDash")
-        except:
-            messages.error(request,"Something Went Wrong")
 
-        return redirect('home')
+        request.user.fullname = fullname
+        request.user.save()
+        act_msg = SellerRequest(email=request.user.email, message=message, user=request.user,proof=proof)
+        act_msg.save()
+        user = CustomeUser.objects.get(email=request.user.email)
+        user.role = 'seller'
+        user.save()
+        send_mail("Seller Account Activation Request","Please visit attached link to activate your account as seller account . https://themes-wall.herokuapp.com/activateAccount/{} ".format(request.user.email),settings.EMAIL_HOST_USER,[request.user.email])
+        messages.success(request, "Please visit your email address to activate your account")
+        return redirect("sellerDash")
+
+
+        
 
 def activateAccount(request,email):
     user = CustomeUser.objects.get(email=email)
