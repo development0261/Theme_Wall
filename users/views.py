@@ -259,7 +259,7 @@ def sendActivation(request):
         act_msg = SellerRequest(email=request.user.email, message=message, user=request.user,proof=proof)
         act_msg.save()
         user = CustomeUser.objects.get(email=request.user.email)
-        
+
         user.save()
         send_mail("Seller Account Activation Request","Please visit attached link to activate your account as seller account . https://themes-wall.herokuapp.com/activateAccount/{} ".format(request.user.email),settings.EMAIL_HOST_USER,[request.user.email])
         messages.success(request, "Please visit your email address to activate your account")
