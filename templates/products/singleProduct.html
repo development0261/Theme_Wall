@@ -52,8 +52,7 @@ hr {
 }
 
 .badge {
-    padding: 5px !important;
-    padding-bottom: 6px !important
+
 }
 
 .badge i {
@@ -236,7 +235,7 @@ hr {
             <div class="card">
                 <div class="demo">
                     <ul id="lightSlider">
-                        <li> <img src="{{ product.image.url }}"  /> </li>
+                        <li> <img src="{{ product.image.url }}"  id="ProductImage_{{ product.pk }}" /> </li>
 
                     </ul>
                 </div>
@@ -256,17 +255,18 @@ hr {
 
                             </div>
                 </div>
-                <div class="about"> <span class="font-weight-bold">{{  product.name }} </span>
-                    <h4 class="font-weight-bold">&#8377; {{ product.price }}</h4>
+             <p id="ProductCount_{{ product.pk }}" style="display: none">{{ product.quantity }} </p>
+                <div class="about"> <span class="font-weight-bold" id="ProductName_{{ product.pk }}">{{  product.name }} </span>
+                    <h4 class="font-weight-bold" id="ProductPrice_{{ product.pk }}">&#8377; {{ product.price }}</h4>
                 </div>
-                <div class="buttons"> <button class="btn btn-dark btn-long ">Add to Cart</button> <button class="btn btn-outline-dark "> <i class="fa fa-heart"></i> </button> </div>
+                <div class="buttons"> <span id="divadd_{{product.pk}}" class="divproduct"><button class="btn btn-dark btn-long addProduct" id="addProduct_{{ product.pk }}">Add to Cart</button></span> <button class="btn btn-outline-dark "> <i class="fa fa-heart"></i> </button> </div>
                 <hr>
                 <div class="product-description">
                     <div><span class="font-weight-bold">Color:</span><span> blue</span></div>
-                    <div class="my-color ">
+                    <div class="my-color">
                         {% for color in product.get_color %}
 
-                                <span class="dot"  style="background-color: {{ color }}"></span>
+                                <span class="dot" id="color_{{ product.pk }}" style="background-color: {{ color }}"></span>
 
 
 
@@ -275,7 +275,7 @@ hr {
                     <div><span class="font-weight-bold">Size:</span>
                     <div class="my-size mt-2">
                        {% for size in product.get_size %}
-                                <span class="size_square" style="padding: 2px 10px;border: 1px solid black">{{ size | title }}</span>
+                                <span class="size_square" id="size_{{ product.pk }}" style="padding: 2px 10px;border: 1px solid black">{{ size | title }}</span>
                         {% endfor %}
                     </div>
                     </div>
@@ -323,4 +323,118 @@ hr {
 
 });
 </script>
+        <script>
+        var MyitName = {};
+        if (localStorage.getItem('Mycart') == null) {
+            var Mycart = {};
+			console.log("Created")
+        } else {
+
+            Mycart = JSON.parse(localStorage.getItem('Mycart'));
+			console.log("Updated")
+            updateCart(Mycart);
+        }
+
+        $(document).on('click','.addProduct',function (){
+            var prodId = $(this).attr('id').slice(11,)
+            var color = "";
+            var size = "";
+
+            $('.my-color').children('.dot').each(function(i) {
+                if($(this).hasClass('active')){
+                    color = $(this).css('background-color')
+                }
+            });
+             $('.my-size').children('.size_square').each(function(i) {
+                if($(this).hasClass('selected')){
+                    size = $(this).html()
+                }
+            });
+            console.log(size,color)
+            if(Mycart[prodId]!= undefined){
+                console.log(Mycart[prodId][6])
+                if (Mycart[prodId][6]==color && Mycart[prodId][7] == size){
+                         Mycart[prodId][1] = Mycart[prodId][1] + 1;
+
+                }else{
+                     qty = 1;
+                    productName = $('#ProductName_'+prodId).html();
+                    productPrice = $('#ProductPrice_'+prodId).html().slice(1,);
+
+                    productCount = $('#ProductCount_'+prodId).html();
+                    img_url = $("#ProductImage_"+prodId).attr('src');
+                    img_url = img_url.replace('url(','').replace(')','').replace(/\"/gi, "");
+                    console.log(img_url)
+                    Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,color,size];
+
+
+                }
+            }
+
+            else{
+
+                    qty = 1;
+                    productName = $('#ProductName_'+prodId).html();
+                    productPrice = $('#ProductPrice_'+prodId).html().slice(1,);
+
+                    productCount = $('#ProductCount_'+prodId).html();
+                    img_url = $("#ProductImage_"+prodId).attr('src');
+                    img_url = img_url.replace('url(','').replace(')','').replace(/\"/gi, "");
+                    console.log(img_url)
+                    Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,color,size];
+
+
+
+            }
+            updateCart(Mycart)
+            location.href="https://themes-wall.herokuapp.com/orders/cart/"
+        })
+        function updateCart(Mycart) {
+            //console.log("Update Cart")
+            //console.log(JSON.stringify(Mycart))
+            var item ={{ product.id }}
+            console.log(item)
+
+
+
+        localStorage.setItem('Mycart', JSON.stringify(Mycart))
+            var Counter = 0;
+			for (count in Mycart) {
+				Counter += parseInt(Mycart[count][1]);
+			}
+		document.getElementById('CartCounter').innerHTML = Counter;
+
+ }
+
+
+
+        function updatepopover(Mycart) {
+
+            var popstr = "";
+            popstr= popstr + "<h5>Cart for your items in my shopping cart</h5><div class='mx-2 my-2' style='font-weight:bold;'>";
+            var i = 1;
+            for (var it in Mycart) {
+                console.log(it);
+                //console.log(document.getElementById("Name"+it));
+                if (Mycart[it][0] == 0) {} else {
+                    popstr = popstr + "<b>" + i + "</b>. ";
+                    popstr = popstr + document.getElementById("ProductName_" + it).innerHTML + ".... Qty : " + Mycart[it][1] + "<br>";
+                    i = i + 1;
+                }
+            }
+
+
+            popstr = popstr + "</div>";
+            document.getElementById("popcart").setAttribute('data-content', popstr);
+
+            var $j = jQuery.noConflict();
+
+            $j(document).ready(function() {
+                $j('[data-toggle="popover"]').popover();
+            });
+            $('#popcart').show();
+
+
+        }
+    </script>
 {% endblock jsfiles %}

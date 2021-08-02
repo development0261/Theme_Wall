@@ -1,0 +1,301 @@
+{% extends "products/ecommBase.html" %}
+{% load static %}
+{% block style %}
+<style>
+
+.title {
+    margin-bottom: 5vh
+}
+.dot {
+    height: 15px;
+    width: 15px;
+    border : 1px solid black;
+    border-radius: 50%;
+    display: inline-block;
+  }
+.card {
+    margin: auto;
+    max-width: 950px;
+    width: 90%;
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 1rem;
+    border: transparent
+}
+
+@media(max-width:767px) {
+    .card {
+        margin: 3vh auto
+    }
+}
+
+.prods .cart {
+    background-color: #fff;
+    padding: 4vh 5vh;
+    border-bottom-left-radius: 1rem;
+    border-top-left-radius: 1rem
+}
+
+@media(max-width:767px) {
+    .cart {
+        padding: 4vh;
+        border-bottom-left-radius: unset;
+        border-top-right-radius: 1rem
+    }
+}
+
+.summary {
+    background-color: #ddd;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    padding: 4vh;
+    color: rgb(65, 65, 65)
+}
+
+@media(max-width:767px) {
+    .summary {
+        border-top-right-radius: unset;
+        border-bottom-left-radius: 1rem
+    }
+}
+
+.summary .col-2 {
+    padding: 0
+}
+
+.summary .col-10 {
+    padding: 0
+}
+
+.row {
+    margin: 0
+}
+
+.title b {
+    font-size: 1.5rem
+}
+
+.main {
+    margin: 0;
+    padding: 2vh 0;
+    width: 100%
+}
+
+.col-2,
+.col {
+    padding: 0 1vh
+}
+
+.prods a {
+    padding: 0 1vh
+}
+
+.close {
+    margin-left: auto;
+    font-size: 0.7rem
+}
+
+.prods img {
+    width: 3.5rem
+}
+
+.back-to-shop {
+    margin-top: 4.5rem
+}
+
+h5 {
+    margin-top: 4vh
+}
+
+hr {
+    margin-top: 1.25rem
+}
+
+form {
+    padding: 2vh 0
+}
+
+select {
+    border: 1px solid rgba(0, 0, 0, 0.137);
+    padding: 1.5vh 1vh;
+    margin-bottom: 4vh;
+    outline: none;
+    width: 100%;
+    background-color: rgb(247, 247, 247)
+}
+
+input {
+    border: 1px solid rgba(0, 0, 0, 0.137);
+    padding: 1vh;
+    margin-bottom: 4vh;
+    outline: none;
+    width: 100%;
+    background-color: rgb(247, 247, 247)
+}
+
+input:focus::-webkit-input-placeholder {
+    color: transparent
+}
+
+.btn {
+    background-color: #000;
+    border-color: #000;
+    color: white;
+    width: 100%;
+    font-size: 0.7rem;
+    margin-top: 4vh;
+    padding: 1vh;
+    border-radius: 0
+}
+
+.btn:focus {
+    box-shadow: none;
+    outline: none;
+    box-shadow: none;
+    color: white;
+    -webkit-box-shadow: none;
+    -webkit-user-select: none;
+    transition: none
+}
+
+.btn:hover {
+    color: white
+}
+
+a {
+    color: black
+}
+
+a:hover {
+    color: black;
+    text-decoration: none
+}
+.btn-dark{
+    color: #fff;
+    background-color: #3E83C5 !important;
+    border-color: #3E83C5 !important;
+ }
+#code {
+    background-image: linear-gradient(to left, rgba(255, 255, 255, 0.253), rgba(255, 255, 255, 0.185)), url("https://img.icons8.com/small/16/000000/long-arrow-right.png");
+    background-repeat: no-repeat;
+    background-position-x: 95%;
+    background-position-y: center
+}
+</style>
+{% endblock %}
+
+{% block content  %}
+<div class="p-3">
+
+<div class="card">
+    <div class="row">
+        <div class="col-md-8 cart">
+            <div class="title">
+                <div class="row">
+                    <div class="col p-3">
+                        <h4 style="color: #3E83C5"><b>Shopping Cart</b></h4>
+                    </div>
+                    <div class="col align-self-center text-right text-muted"><span id="totalCartItem"></span> items</div>
+                </div>
+            </div>
+
+            <div id="prods">
+
+            </div>
+
+        </div>
+        <div class="col-md-4 summary">
+            <div>
+                <h5><b>Summary</b></h5>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col" style="padding-left:0;">ITEMS 3</div>
+                <div class="col text-right">&euro; 132.00</div>
+            </div>
+            <form>
+                <p>SHIPPING</p> <select>
+                    <option class="text-muted">Standard-Delivery- &euro;5.00</option>
+                </select>
+                <p>GIVE CODE</p> <input id="code" placeholder="Enter your code">
+            </form>
+            <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                <div class="col">TOTAL PRICE</div>
+                <div class="col text-right">&euro; 137.00</div>
+            </div> <button class="btn btn-dark">CHECKOUT</button>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+
+{% block jsfiles %}
+<script>
+Mycart = JSON.parse(localStorage.getItem('Mycart'));
+  function addItemstoCheckout(){
+      var subtotal = 0,shippig_charge=10,tax=10,FinalTotal=0;
+      $("#prods").empty();
+
+      if ($.isEmptyObject(Mycart)) {
+          mystr = `<div class="alert alert-danger" role="alert">
+          Your Cart is Empty
+        </div>`
+          $('#prods').append(mystr);
+        {#  $("#subtotal").html("INR " + 0);#}
+        {#$("#shipping_charge").html("INR " + 0);#}
+        {##}
+        {#$("#tax").html("INR " + 0);#}
+        {#$("#final_total").html("INR "+0);#}
+        {#CostCart["Final_Total"] = 0;#}
+        {#localStorage.setItem('CostCart', JSON.stringify(CostCart));#}
+      }
+      else{
+        for (var item in Mycart) {
+
+        $("#prods").append(
+          `<div class="d-sm-flex justify-content-between align-items-center border-bottom" id="product_${Mycart[item][0]}">
+                <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="shop-single-v1.html"><img src="${Mycart[item][5]}" width="160" alt="Product"></a>
+                  <div class="p-2  ml-4 text-center">
+                    <h5 class="product-title fs-base mb-2"><a href="shop-single-v1.html">${Mycart[item][2]}</a></h5>
+                    <div class="fs-sm"><span class="text-muted me-2">Size :</span> ${Mycart[item][7]}</div>
+                    <div class="fs-sm"><span class="text-muted me-2">Color:</span> <span class="dot" style="background-color: ${Mycart[item][6]}"> </span></div>
+
+                  </div>
+                </div>
+ <div class="pt-2 pt-sm-0 ps-sm-3 mx-auto mx-sm-0 text-center text-sm-start" style="max-width: 9rem;">
+                  <div class="fs-lg text-accent pt-2"><span class="text-muted me-2">Price:</span> ${Mycart[item][3]}</div>
+
+                    <div class="fs-lg text-accent pt-2"><span class="text-muted me-2">Total:</span> ${Mycart[item][1] * Mycart[item][3]}</div>
+                </div>
+                <div class="pt-2 pt-sm-0 ps-sm-3 mx-auto mx-sm-0 text-center text-sm-start" style="max-width: 9rem;">
+                  <label class="form-label" for="quantity3">Quantity</label>
+                  <input class="form-control" type="number" id="qunt" min="1" max="${Mycart[item][4]}"  value="${Mycart[item][1]}">
+                  <button class="btn btn-outline-danger"><i class="fa fa-trash-o"></i></button>
+                </div>
+              </div>
+          `
+        );
+
+
+    }
+
+        {#$("#subtotal").html("INR " + subtotal);#}
+        {#$("#shipping_charge").html("INR " + shippig_charge);#}
+        {##}
+        {#$("#tax").html("INR " + tax);#}
+        {#total = parseInt(subtotal)+parseInt(shippig_charge)+parseInt(tax)#}
+        {#$("#final_total").html("INR "+ total);#}
+        {#CostCart["Final_Total"] = total;#}
+        {#localStorage.setItem('CostCart', JSON.stringify(CostCart));#}
+      }
+
+     }
+     addItemstoCheckout()
+  var Counter = 0;
+			for (count in Mycart) {
+				Counter += parseInt(Mycart[count][1]);
+			}
+		document.getElementById('CartCounter').innerHTML = Counter;
+		document.getElementById('totalCartItem').innerHTML = Counter;
+
+</script>
+{% endblock %}

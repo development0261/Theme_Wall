@@ -169,6 +169,18 @@ h5 {
 .para {
     font-size: 16px
 }
+.minus{
+    border-top-left-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+}
+.plus{
+    border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+    border-top-right-radius:10px !important;
+    border-bottom-right-radius: 10px !important;
+}
     </style>
 
 {% endblock %}
@@ -253,9 +265,9 @@ h5 {
         <div class="col-md-10">
             {% for item in all_items %}
             <div class="row p-2 bg-white border rounded mt-2">
-                <div class="col-md-3 mt-1"><a href="{% url 'singleProduct' item.id %}"><img class="img-fluid img-responsive rounded product-image"  src="{{ item.image.url }}"></a></div>
+                <div class="col-md-3 mt-1"><a href="{% url 'singleProduct' item.id %}"><img class="img-fluid img-responsive rounded product-image" id="ProductImage_{{ item.pk }}"  src="{{ item.image.url }}"></a></div>
                 <div class="col-md-6 mt-1">
-                    <h5>{{ item.name }}</h5>
+                    <h5 id="ProductName_{{ item.pk }}">{{ item.name }}</h5>
                     <div class="d-flex flex-row">
                         <div class="ratings mr-2">
                         {% with ''|center:item.rating as range %}
@@ -266,6 +278,7 @@ h5 {
 
                             </div>
                     </div>
+                <p id="ProductCount_{{ item.pk }}" style="display: none">{{ item.quantity }} </p>
                     <div class="mt-1 mb-1 spec-1"><span style="color: black;font-weight: bold">Colors : </span>
                         {% if item.get_color|length > 0 %}
                       {% for color in item.get_color %}
@@ -290,14 +303,15 @@ h5 {
                 </div>
                 <div class="align-items-center align-content-center col-md-3 border-left mt-1">
                     <div class="d-flex flex-row align-items-center">
-                        <h4 class="mr-1"> &#8377; {{ item.price }}</h4>
+                        <h4 class="mr-1" id="ProductPrice_{{ item.pk }}">&#8377;{{ item.price }}</h4>
                     </div>
 
                     <div class="d-flex flex-column mt-4">
-                        <button class="btn btn-dark btn-sm" type="button"><i class="fa fa-shopping-basket"></i>&nbsp;Add to Cart</button>
+                        <a class="btn btn-dark btn-sm" type="button" href="{% url 'singleProduct' item.pk %}" ><i class="fa fa-shopping-basket"></i>&nbsp;Add to Cart</a>
                       <!--  <button class="btn btn-outline-dark btn-sm mt-2" type="button"><i class="fa fa-eye"></i>&nbsp;View Details</button> -->
-                        <button class="btn btn-outline-dark btn-sm mt-2" type="button"><i class="fa fa-heart"></i>&nbsp;Add to wishlist</button></div>
-                </div>
+                        <button class="btn btn-outline-dark btn-sm mt-2" type="button"><i class="fa fa-heart"></i>&nbsp;Add to wishlist</button>
+                    </div>
+                    </div>
             </div>
             {% endfor %}
         </div>
@@ -347,5 +361,53 @@ h5 {
         alert('You pressed a "enter" key in textbox');
     }
 });
+    </script>
+
+    <script>
+        var MyitName = {};
+        if (localStorage.getItem('Mycart') == null) {
+            var Mycart = {};
+			console.log("Created")
+        } else {
+
+            Mycart = JSON.parse(localStorage.getItem('Mycart'));
+			console.log("Updated")
+            updateCart(Mycart);
+        }
+
+        $(document).on('click','.addProduct',function (){
+            var prodId = $(this).attr('id').slice(11,)
+
+            if(Mycart[prodId]!= undefined){
+                qty = Mycart[prodId][1] + 1;
+            }
+            else{
+                    qty = 1;
+                    productName = $('#ProductName_'+prodId).html();
+                    productPrice = $('#ProductPrice_'+prodId).html().slice(1,);
+
+                    productCount = $('#ProductCount_'+prodId).html();
+                    img_url = $("#ProductImage_"+prodId).attr('src');
+                    img_url = img_url.replace('url(','').replace(')','').replace(/\"/gi, "");
+                    console.log(img_url)
+                    Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url];
+
+
+            }
+            updateCart(Mycart)
+        })
+        function updateCart(Mycart) {
+            //console.log("Update Cart")
+            //console.log(JSON.stringify(Mycart))
+
+
+
+        localStorage.setItem('Mycart', JSON.stringify(Mycart))
+            var Counter = 0;
+			for (count in Mycart) {
+				Counter += parseInt(Mycart[count][1]);
+			}
+			document.getElementById('CartCounter').innerHTML = Counter;
+ }
     </script>
 {% endblock jsfiles %}
