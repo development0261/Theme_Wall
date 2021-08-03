@@ -293,7 +293,9 @@ hr {
 
         </div>
     </div>
+
 </div>
+
 {% endblock %}
 
 {% block jsfiles %}
@@ -335,7 +337,7 @@ hr {
             updateCart(Mycart);
         }
 
-        $(document).on('click','.addProduct',function (){
+        $(document).on('click','.addProduct',async function (){
             var prodId = $(this).attr('id').slice(11,)
             var color = "";
             var size = "";
@@ -350,25 +352,35 @@ hr {
                     size = $(this).html()
                 }
             });
-            console.log(size,color)
+
             if(Mycart[prodId]!= undefined){
-                console.log(Mycart[prodId][6])
-                if (Mycart[prodId][6]==color && Mycart[prodId][7] == size){
-                         Mycart[prodId][1] = Mycart[prodId][1] + 1;
+                console.log(Mycart[prodId][6],color)
+                console.log(typeof(Mycart[prodId][6]),typeof(color))
+                if(Mycart[prodId][6] === color && Mycart[prodId][7] === size){
+                    Mycart[prodId][1] = Mycart[prodId][1] + 1;
+                }
+               /* if (Mycart[prodId][6].indexOf(color)=== -1) {
 
-                }else{
-                     qty = 1;
-                    productName = $('#ProductName_'+prodId).html();
-                    productPrice = $('#ProductPrice_'+prodId).html().slice(1,);
-
-                    productCount = $('#ProductCount_'+prodId).html();
-                    img_url = $("#ProductImage_"+prodId).attr('src');
-                    img_url = img_url.replace('url(','').replace(')','').replace(/\"/gi, "");
-                    console.log(img_url)
-                    Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,color,size];
-
+                        Mycart[prodId][6][color]
+                }
+                else{
 
                 }
+                if(Mycart[prodId][7].indexOf(size) === -1){
+                     Mycart[prodId][7].push({
+                         'size':size,
+                         'count':Mycart[prodId][7]['count'] +1
+                     })
+
+                }else{
+
+                }*/
+
+
+
+
+
+
             }
 
             else{
@@ -380,14 +392,21 @@ hr {
                     productCount = $('#ProductCount_'+prodId).html();
                     img_url = $("#ProductImage_"+prodId).attr('src');
                     img_url = img_url.replace('url(','').replace(')','').replace(/\"/gi, "");
-                    console.log(img_url)
-                    Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,color,size];
 
-
+                     if(color === ""){
+                        alert("Please Select Color of Product")
+                    }
+                    else if(size === ""){
+                        alert("Please Select Size of Product")
+                    }
+                    else{
+                        {#Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,[{'color':color,'count':1}],[{'size':size,'count':1}]];#}
+                        Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,color,size]
+                    }
 
             }
-            updateCart(Mycart)
-            location.href="http://themes-wall.herokuapp.com/orders/cart/"
+            await updateCart(Mycart)
+          //  location.href="http://127.0.0.1:8000/orders/cart/"
         })
         function updateCart(Mycart) {
             //console.log("Update Cart")
