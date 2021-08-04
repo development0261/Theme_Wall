@@ -166,6 +166,16 @@ hr {
     border-radius: 50%;
     display: inline-block;
   }
+
+.small-dot{
+
+    height: 12px;
+    width: 12px;
+    border : 1px solid black;
+    border-radius: 50%;
+    display: inline-block;
+
+}
 .bullet-text {
     font-size: 12px
 }
@@ -224,6 +234,55 @@ hr {
     background-color: #3E83C5;
     color: #fff;
     border-color:#3E83C5 !important; ;
+}
+.cart-drawer-push {
+	overflow-x: hidden;
+	position: relative;
+	right: 0;
+}
+
+.cart-drawer {
+	background: #fff3cd;
+  	height: 100%;
+  	position: fixed;
+	text-align: center;
+	top: 0;
+	width: 300px;
+	padding: 20px;
+    z-index: 2;
+}
+
+.cart-drawer-right { right: -300px; }
+
+.cart-drawer-right.cart-drawer-open { right: 0; }
+
+.cart-drawer-pushtoleft { right: 300px; }
+
+.cart-drawer, .cart-drawer-push {
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+}
+
+.cart-btn {
+	cursor: pointer;
+	display: inline-block;
+	font-size: 30px;
+}
+
+.close-btn {
+	cursor: pointer;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+    color: #3E83C5;
+}
+
+.arrow-icon {
+    position: absolute;
+    right: 58px;
+    top: 25px;
+
 }
 </style>
 {% endblock %}
@@ -295,12 +354,22 @@ hr {
     </div>
 
 </div>
+ <div class="cart-drawer cart-drawer-right">
+            <span>Your Cart</span>
+            <div class="close-btn">
+                <i class="fa fa-close fa-2x"></i>
+            </div><!-- /.close-btn -->
+            <div id="cartProducts">
 
+
+            </div>
+        </div><!-- /.cart-drawer .cart-drawer-right -->
 {% endblock %}
 
 {% block jsfiles %}
 <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
 <script src='https://sachinchoolur.github.io/lightslider/dist/js/lightslider.js'></script>
+
 <script>
     $('#lightSlider').lightSlider({
         gallery: true,
@@ -324,8 +393,22 @@ hr {
 
 
 });
+
 </script>
         <script>
+        var hexDigits = new Array
+        ("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f");
+
+//Function to convert rgb color to hex format
+function rgb2hex(rgb) {
+ rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+ return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+}
+
+function hex(x) {
+  return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
+ }
+
         var MyitName = {};
         if (localStorage.getItem('Mycart') == null) {
             var Mycart = {};
@@ -338,7 +421,7 @@ hr {
         }
 
         $(document).on('click','.addProduct',async function (){
-            var prodId = $(this).attr('id').slice(11,)
+            var id = $(this).attr('id').slice(11,)
             var color = "";
             var size = "";
 
@@ -352,13 +435,13 @@ hr {
                     size = $(this).html()
                 }
             });
-
+             color = rgb2hex(color).slice(1,)
+            var prodId = id.toString()+"_"+color.toString()+"_"+size.toString()
             if(Mycart[prodId]!= undefined){
-                console.log(Mycart[prodId][6],color)
-                console.log(typeof(Mycart[prodId][6]),typeof(color))
-                if(Mycart[prodId][6] === color && Mycart[prodId][7] === size){
+
+
                     Mycart[prodId][1] = Mycart[prodId][1] + 1;
-                }
+
                /* if (Mycart[prodId][6].indexOf(color)=== -1) {
 
                         Mycart[prodId][6][color]
@@ -386,11 +469,11 @@ hr {
             else{
 
                     qty = 1;
-                    productName = $('#ProductName_'+prodId).html();
-                    productPrice = $('#ProductPrice_'+prodId).html().slice(1,);
+                    productName = $('#ProductName_'+id).html();
+                    productPrice = $('#ProductPrice_'+id).html().slice(1,);
 
-                    productCount = $('#ProductCount_'+prodId).html();
-                    img_url = $("#ProductImage_"+prodId).attr('src');
+                    productCount = $('#ProductCount_'+id).html();
+                    img_url = $("#ProductImage_"+id).attr('src');
                     img_url = img_url.replace('url(','').replace(')','').replace(/\"/gi, "");
 
                      if(color === ""){
@@ -401,13 +484,37 @@ hr {
                     }
                     else{
                         {#Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,[{'color':color,'count':1}],[{'size':size,'count':1}]];#}
-                        Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,color,size]
+                        Mycart[prodId] = [parseInt(id),qty, productName, parseInt(productPrice),productCount,img_url,color,size]
                     }
 
             }
             await updateCart(Mycart)
+             $("#cartProducts").empty()
+            	for (var item in Mycart) {
+             $("#cartProducts").append(
+          `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="product_${item}">
+                <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${Mycart[item][0]}"><img src="${Mycart[item][5]}" width="100" alt="Product"></a>
+                  <div class="p-2  ml-4 text-center">
+                    <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="shop-single-v1.html">${Mycart[item][2]}</a></h5>
+                    <div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Size :</span><span id="size_${item[0]}" style="font-size: 0.9rem">${Mycart[item][7]}</span></div>
+                    <div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Color:</span> <span class="small-dot" id="color_${item[0]}" style="background-color: #${Mycart[item][6]}"> </span></div>
+
+                  </div>
+                </div>
+
+
+              </div>
+          `
+        );}
+
+
+
+            $(this).toggleClass('active');
+			$('.cart-drawer-push').toggleClass('cart-drawer-pushtoleft');
+			$('.cart-drawer-right').toggleClass('cart-drawer-open');
           //  location.href="http://127.0.0.1:8000/orders/cart/"
         })
+
         function updateCart(Mycart) {
             //console.log("Update Cart")
             //console.log(JSON.stringify(Mycart))
@@ -455,5 +562,11 @@ hr {
 
 
         }
+
+
+
+
+
+
     </script>
 {% endblock jsfiles %}

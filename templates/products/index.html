@@ -87,7 +87,7 @@ ul{
     border-color: #89C34A !important;
 }
 .widget__category .menu--mobile li:hover{
-    background-color: #3E83C5;
+    background-color: #89C34A;
     border-radius: 50px;
 }
 .widget__category .menu--mobile li:hover a{
@@ -95,7 +95,7 @@ ul{
 
 }
 .active_cat{
-     background-color: #3E83C5;
+     background-color: #89C34A;
     border-radius: 50px;
 
 
@@ -107,7 +107,7 @@ ul{
     line-height: 20px;
     font-weight: 600;
     font-size: 17px;
-    color: #3E83C5;
+    color: #fff;
     text-transform: capitalize;
     text-decoration: none;
 
@@ -116,7 +116,7 @@ ul{
      color: #eeeeee !important;
 }
 .categories__wrp {
-    background-color: #f1f1f1;
+    background-color: #3E83C5;
     padding: 10px;
 }
 
@@ -181,6 +181,7 @@ h5 {
     border-top-right-radius:10px !important;
     border-bottom-right-radius: 10px !important;
 }
+
     </style>
 
 {% endblock %}
@@ -191,7 +192,7 @@ h5 {
        <div class="row">
         <div class="col-md-3">
             <div class="categories__wrp" style="border-radius: 5px">
-                <h4 class="text-center" ><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;Categories</h4>
+                <h4 class="text-center" >Categories</h4>
             <hr/>
                 <div class="widget__category">
 
@@ -224,6 +225,8 @@ h5 {
                     </ul>
                 </div>
             </div>
+
+
         </div>
         <div class="col-md-9 ">
             <form action="{% url 'buyproducts' %}" method="post">{% csrf_token %}
@@ -236,11 +239,11 @@ h5 {
                     <select class="custom-select" onchange="location = this.value;">
                       <option selected>Sort By</option>
 
-                                {% if request.GET.cat_id %}
+                            {% if request.GET.cat_id %}
                                    <option value="{{ request.path }}?filter=latest&cat_id={{ request.GET.cat_id  }}">Latest</option>
                                 {% else %}
                               <option value="{{ request.path }}?filter=latest">Latest</option>
-                         {% endif %}
+                            {% endif %}
 
 
                                 {% if request.GET.cat_id %}
