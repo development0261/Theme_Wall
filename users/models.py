@@ -13,12 +13,19 @@ class CustomeUser(AbstractUser):
 	]
 	role = models.CharField(max_length=10, choices=role_list,null=True,blank=True,default='buyer')
 	contact_no = models.BigIntegerField(null=True,blank=True)
-	address = models.TextField(null=True,blank=True)
 	fullname = models.CharField(max_length=100,default="",null=True,blank=True)
 
 
 	def __str__(self):
 		return self.username
+
+class Address(models.Model):
+	city = models.CharField(max_length=100,default="")
+	state = models.CharField(max_length=100,default="")
+	country = models.CharField(max_length=100,default="")
+	address  = models.TextField()
+	pincode = models.CharField(max_length=100,default="")
+	user = models.ForeignKey(CustomeUser,on_delete=models.CASCADE)
 
 
 class SellerRequest(models.Model):

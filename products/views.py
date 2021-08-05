@@ -5,6 +5,8 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+
+from users.models import Address
 from .models import category,item,item_size,item_color
 from django.contrib import messages
 # Create your views here.
@@ -218,3 +220,46 @@ def singleProduct(request,id):
     single_item = get_object_or_404(item,id=id)
     print(single_item)
     return render(request,'products/singleProduct.html',{"product":single_item})
+
+def buyerprofile(request):
+    if request.method == "POST" and request.user.is_authenticated:
+        name = request.POST['fullname']
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST.get('password','')
+        confirmpassword = request.POST.get('confirmpassword','')
+        city = request.POST['city']
+        state = request.POST['state']
+        zip = request.POST['zip']
+        country = request.POST['country']
+        address = request.POST['address']
+
+
+        if password != "":
+            if password == confirmpassword:
+                request.user.password = make_password(password)
+
+            else:
+                messages.error(request,'Password and Confirm Password not matched')
+                return redirect('profile')
+        request.user.fullname = name
+        request.user.username = username
+        request.user.email = email
+        request.user.save()
+        address1 = Address.objects.filter(user=request.user).last()
+        address1.city=city
+        address1.state = state
+        address1.country = country
+        address1.pincode = zip
+        address1.address = address
+        address1.save()
+
+
+        if password != "":
+            update_session_auth_hash(request, request.user)
+        messages.success(request,"Your Profile is updated successfully")
+        return redirect("buyerprofile")
+
+
+    address = Address.objects.filter(user=request.user).last()
+    return render(request,'products/buyerProfile.html',{'address':address})

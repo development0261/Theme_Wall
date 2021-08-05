@@ -51,6 +51,12 @@
                         <img src="{% static 'images/avatar.png' %}" alt="">
                     </div>
                 </div>
+                 <div class="col-12">
+                    <div class="form-group">
+                        <label for="first">Full Name</label>
+                        <input type="text" value="{{ user.fullname }}" name="fullname" class="form-control" placeholder="" id="first">
+                    </div>
+                </div>
                 <div class="col-12">
                     <div class="form-group">
                         <label for="first">Username</label>
@@ -64,12 +70,38 @@
                         <input type="email" value="{{ user.email }}"  name="email" class="form-control" id="email" placeholder="email">
                     </div>
                 </div>
-                <div class="col-md-12 mb-2">
+                  <div class="col-md-6 mb-2">
                     <div class="form-group">
-                        <label for="company">Name</label>
-                        <input type="text" class="form-control" name="fullname" placeholder="" value="{{ user.fullname }}" id="company">
+                        <label for="zip">Zip</label>
+                        <input type="text" class="form-control" name="zip" placeholder="" value="{{ address.pincode }}" id="zip">
                     </div>
                 </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" name="city" placeholder="" value="{{ address.city }}" id="city">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" class="form-control" name="state" placeholder="" value="{{ address.state }}" id="state">
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <input type="text" class="form-control" name="country" placeholder="" value="{{ address.country }}" id="country">
+                    </div>
+                </div>
+                <div class="col-md-12 mb-2">
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea class="form-control" name="address" placeholder="" >{{ address.address }}</textarea>
+                    </div>
+                </div>
+
                 <div class="col-md-12 mb-2">
                     <div class="form-group">
                         <label for="company">Password</label>

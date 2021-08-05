@@ -359,9 +359,12 @@ hr {
             <div class="close-btn">
                 <i class="fa fa-close fa-2x"></i>
             </div><!-- /.close-btn -->
-            <div id="cartProducts">
+            <div>
+                <div id="cartProducts">
 
 
+            </div>
+                <a href="{% url 'cart' %}" class="btn btn-dark mt-3">GO TO CART</a>
             </div>
         </div><!-- /.cart-drawer .cart-drawer-right -->
 {% endblock %}
@@ -424,7 +427,7 @@ function hex(x) {
             var id = $(this).attr('id').slice(11,)
             var color = "";
             var size = "";
-
+            console.log(color,size)
             $('.my-color').children('.dot').each(function(i) {
                 if($(this).hasClass('active')){
                     color = $(this).css('background-color')
@@ -435,7 +438,15 @@ function hex(x) {
                     size = $(this).html()
                 }
             });
-             color = rgb2hex(color).slice(1,)
+            if(color === ""){
+                        alert("Please Select Color of Product")
+                    }
+                    else if(size === ""){
+                        alert("Please Select Size of Product")
+                    }else{
+                         color = rgb2hex(color).slice(1,)
+            }
+
             var prodId = id.toString()+"_"+color.toString()+"_"+size.toString()
             if(Mycart[prodId]!= undefined){
 
@@ -476,7 +487,7 @@ function hex(x) {
                     img_url = $("#ProductImage_"+id).attr('src');
                     img_url = img_url.replace('url(','').replace(')','').replace(/\"/gi, "");
 
-                     if(color === ""){
+                    if(color === ""){
                         alert("Please Select Color of Product")
                     }
                     else if(size === ""){
@@ -509,9 +520,9 @@ function hex(x) {
 
 
 
-            $(this).toggleClass('active');
-			$('.cart-drawer-push').toggleClass('cart-drawer-pushtoleft');
-			$('.cart-drawer-right').toggleClass('cart-drawer-open');
+            $(this).addClass('active');
+			$('.cart-drawer-push').addClass('cart-drawer-pushtoleft');
+			$('.cart-drawer-right').addClass('cart-drawer-open');
           //  location.href="http://127.0.0.1:8000/orders/cart/"
         })
 

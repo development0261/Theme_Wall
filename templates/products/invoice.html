@@ -1,0 +1,21 @@
+{% extends "products/ecommBase.html" %}
+{% load static %}
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+
+{% block jsfiles %}
+<script>
+    localStorage.clear()
+    Mycart = JSON.parse(localStorage.getItem('Mycart'));
+  var Counter = 0;
+			for (count in Mycart) {
+				Counter += parseInt(Mycart[count][1]);
+			}
+		document.getElementById('CartCounter').innerHTML = Counter;
+</script>
+{% endblock %}
