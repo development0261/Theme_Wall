@@ -13,7 +13,7 @@ from django.views.decorators.http import require_POST
 import json
 from users.models import Profile
 from django.template import loader
-
+from users.models import CustomeUser
 
 
 class PostListView(LoginRequiredMixin,ListView):
@@ -52,14 +52,14 @@ class UserPostListView(LoginRequiredMixin, ListView):
 		context = super(UserPostListView, self).get_context_data(**kwargs)
 		p = Profile.objects.filter(user = self.request.user).first()
 		u = p.user
-		user = get_object_or_404(User, username=self.kwargs.get('username'))
+		user = get_object_or_404(CustomeUser, username=self.kwargs.get('username'))
 		liked = [i for i in Post.objects.filter(user_name=user) if Like.objects.filter(user = self.request.user, post=i)]
 		context['liked_post'] = liked
 		return context
 
 	
 	def get_queryset(self):
-		user = get_object_or_404(User, username=self.kwargs.get('username'))
+		user = get_object_or_404(CustomeUser, username=self.kwargs.get('username'))
 		return Post.objects.filter(user_name=user).order_by('-date_posted')
 
 

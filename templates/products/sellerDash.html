@@ -59,7 +59,7 @@ td.sorting_1 {
 
         <th>Name</th>
         <th>Price</th>
-        <th>Offer Price</th>
+
         <th>Quantity</th>
         <th>Category</th>
         <th>Image</th>
@@ -68,6 +68,7 @@ td.sorting_1 {
         <th>Created Date</th>
 
         <th>Actions </th>
+          <th>Offer Price</th>
         <th>Description</th>
 
       </tr>
@@ -78,7 +79,7 @@ td.sorting_1 {
 
         <td>{{ item.name }}</td>
         <td>{{  item.price }} &#8377;</td>
-        <td>{{  item.offer_price }} &#8377;</td>
+
         <td>{{ item.quantity }}</td>
         <td>{{  item.item_category }}</td>
 
@@ -110,6 +111,7 @@ td.sorting_1 {
               class="fa fa-trash"> </i></a>
 
         </td>
+        <td>{{  item.offer_price }} &#8377;</td>
         <td>
           <p>
             {{ item.description }}

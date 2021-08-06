@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.core import serializers
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .models import Order,ShippingAddress,OrderItem
 from products.models import item
@@ -56,6 +58,9 @@ def placeOrder(request):
                                           )
                 order_product.save()
 
+                product.quantity = int(product.quantity) - int(qtys[it])
+                product.save()
+
             if not Address.objects.filter(user=request.user).exists():
                 user_address = Address(city=city,state=state,country=country,pincode=zip,user=request.user,address=address1+" "+address2)
                 user_address.save()
@@ -80,11 +85,54 @@ def myOrders(request):
             totalPendigOrders = Order.objects.filter(user=request.user,isDelivered=False).count()
             totalPaidOrders = Order.objects.filter(user=request.user,isPaid=True).count()
             totalUnPaidOrders = Order.objects.filter(user=request.user,isPaid=False).count()
+
+            totalOrders =  Order.objects.filter(user=request.user)
+
             return render(request,'products/buyerOrders.html',{
                 'totalDeliveredOrders':totalDeliveredOrders,
                 'totalPendigOrders':totalPendigOrders,
                 'totalPaidOrders':totalPaidOrders,
-                'totalUnPaidOrders':totalUnPaidOrders
+                'totalUnPaidOrders':totalUnPaidOrders,
+                "totalOrders":totalOrders
+            })
+    else:
+        return redirect('index')
+
+def orderProducts(request,id):
+
+    order_products = OrderItem.objects.filter(order_id=id)
+    order_products = serializers.serialize('json', order_products, ensure_ascii=False)
+
+    return JsonResponse({'msg':'success','products':order_products})
+
+def sellerOrders(request):
+    if request.user.is_authenticated:
+        if request.user.role == 'seller':
+            seller_orders = OrderItem.objects.filter(product__seller=request.user).values_list('order__id').distinct()
+            totalDeliveredOrders =[]
+            totalPendigOrders = []
+            totalPaidOrders = []
+            totalUnPaidOrders = []
+
+            totalOrders = []
+
+            for order_id in seller_orders:
+                order = Order.objects.get(pk=order_id[0])
+                totalOrders.append(order)
+                if order.isDelivered:
+                    totalDeliveredOrders.append(order)
+                else:
+                    totalPendigOrders.append(order)
+                if order.isPaid:
+                    totalPaidOrders.append(order)
+                else:
+                    totalUnPaidOrders.append(order)
+            return render(request, 'products/sellerOrders.html', {
+                'totalDeliveredOrders': len(totalDeliveredOrders),
+                'totalPendigOrders': len(totalPendigOrders),
+                'totalPaidOrders': len(totalPaidOrders),
+                'totalUnPaidOrders': len(totalUnPaidOrders),
+                "totalOrders": totalOrders
             })
     else:
         return redirect('index')

@@ -16,6 +16,7 @@ class item(models.Model):
         ('4','4'),
         ('5','5'),
     ]
+    serial_no = models.CharField(max_length=200,default="")
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=50,decimal_places=2)
     offer_price = models.DecimalField(max_digits=50,decimal_places=2,default=0)
@@ -64,6 +65,7 @@ class item_color(models.Model):
     item = models.ForeignKey(item, on_delete=models.CASCADE)
     def __str__(self):
         return "Color : {} for item : {}".format(self.color,self.item)
+
 
 
 

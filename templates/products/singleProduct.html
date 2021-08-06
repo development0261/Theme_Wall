@@ -318,25 +318,31 @@ hr {
                 <div class="about"> <span class="font-weight-bold" id="ProductName_{{ product.pk }}">{{  product.name }} </span>
                     <h4 class="font-weight-bold" id="ProductPrice_{{ product.pk }}">&#8377; {{ product.price }}</h4>
                 </div>
-                <div class="buttons"> <span id="divadd_{{product.pk}}" class="divproduct"><button class="btn btn-dark btn-long addProduct" id="addProduct_{{ product.pk }}">Add to Cart</button></span> <button class="btn btn-outline-dark "> <i class="fa fa-heart"></i> </button> </div>
+                {% if product.quantity %}
+            <div class="buttons"> <span id="divadd_{{product.pk}}" class="divproduct"><button class="btn btn-dark btn-long addProduct" id="addProduct_{{ product.pk }}">Add to Cart</button></span> <button class="btn btn-outline-dark "> <i class="fa fa-heart"></i> </button> </div>
+            {% else %}
+                <h6 style="color:red;">Out of Stock</h6>
+            {% endif %}
                 <hr>
                 <div class="product-description">
-                    <div><span class="font-weight-bold">Color:</span><span> blue</span></div>
+
+                   {% if product.get_color %}
+                       <div><span class="font-weight-bold">Color:</span></div>
                     <div class="my-color">
                         {% for color in product.get_color %}
-
                                 <span class="dot" id="color_{{ product.pk }}" style="background-color: {{ color }}"></span>
-
-
-
                         {% endfor %}
                     </div>
-                    <div><span class="font-weight-bold">Size:</span>
+                  {% endif %}
+
+                    {% if product.get_size %}
+                         <div><span class="font-weight-bold">Size:</span>
                     <div class="my-size mt-2">
                        {% for size in product.get_size %}
                                 <span class="size_square" id="size_{{ product.pk }}" style="padding: 2px 10px;border: 1px solid black">{{ size | title }}</span>
                         {% endfor %}
                     </div>
+                    {% endif %}
                     </div>
                     <div class="mt-2"> <span class="font-weight-bold">Description</span>
                         <p>{{ product.description }}</p>
@@ -438,14 +444,15 @@ function hex(x) {
                     size = $(this).html()
                 }
             });
-            if(color === ""){
+
+            if(color === "" && $(".my-color").children().length > 0){
                         alert("Please Select Color of Product")
                     }
-                    else if(size === ""){
+                    else if(size === "" && $(".my-size").children().length > 0){
                         alert("Please Select Size of Product")
-                    }else{
+                    }else if($(".my-color").children().length > 0){
                          color = rgb2hex(color).slice(1,)
-            }
+                    }
 
             var prodId = id.toString()+"_"+color.toString()+"_"+size.toString()
             if(Mycart[prodId]!= undefined){
@@ -487,10 +494,10 @@ function hex(x) {
                     img_url = $("#ProductImage_"+id).attr('src');
                     img_url = img_url.replace('url(','').replace(')','').replace(/\"/gi, "");
 
-                    if(color === ""){
+                    if(color === "" &&  $(".my-color").children().length > 0){
                         alert("Please Select Color of Product")
                     }
-                    else if(size === ""){
+                    else if(size === "" &&  $(".my-size").children().length > 0){
                         alert("Please Select Size of Product")
                     }
                     else{
@@ -507,8 +514,9 @@ function hex(x) {
                 <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${Mycart[item][0]}"><img src="${Mycart[item][5]}" width="100" alt="Product"></a>
                   <div class="p-2  ml-4 text-center">
                     <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="shop-single-v1.html">${Mycart[item][2]}</a></h5>
-                    <div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Size :</span><span id="size_${item[0]}" style="font-size: 0.9rem">${Mycart[item][7]}</span></div>
-                    <div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Color:</span> <span class="small-dot" id="color_${item[0]}" style="background-color: #${Mycart[item][6]}"> </span></div>
+                    ${ Mycart[item][7] ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Size :</span><span id="size_${item[0]}" style="font-size: 0.9rem">${Mycart[item][7]}</span></div>`:``}
+
+                    ${Mycart[item][6] ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Color:</span> <span class="small-dot" id="color_${item[0]}" style="background-color: #${Mycart[item][6]}"> </span></div>`:''}
 
                   </div>
                 </div>

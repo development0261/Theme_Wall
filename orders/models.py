@@ -1,3 +1,4 @@
+import uuid as uuid
 from django.db import models
 
 # Create your models here.
@@ -22,6 +23,7 @@ class Order(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.AutoField(primary_key=True, editable=False)
     payment_id = models.TextField(default=" ",null=True,blank=True)
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True, editable=False)
 
     def __str__(self):
         return "{} has placed order with {} and price {} with id {} ".format(self.user,self.paymentMethod,self.totalPrice,self.pk)
@@ -65,3 +67,4 @@ class ShippingAddress(models.Model):
 
     def __str__(self):
         return str(self.address)
+

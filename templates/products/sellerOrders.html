@@ -180,11 +180,11 @@
                 {% for order in totalOrders %}
                     <tr>
                          <td id="orderId_{{ order.pk }}">{{ order.uuid }}</td>
-                        <td>{{ order.paymentMethod}}</td>
+                        <td>{{ order.paymentMethod | upper}}</td>
                         <td>{% if order.isPaid %}<span style="color: green">Paid</span>{% else %}<span style="color: red">Pending</span> {% endif %}</td>
                         <td>{% if order.isDelivered %}<span style="color: green">Delivered</span>{% else %}<span style="color: red">Pending</span> {% endif %}</td>
 
-                        <td id="total_price_{{ order.pk }}">{{ order.totalPrice }}</td>
+                        <td id="total_price_{{ order.pk }}">$ {{ order.totalPrice }}</td>
                         <td><button class="btn btn-success displayProducts" id="displayProducts_{{ order.pk }}">Display Products</button></td>
                         <td>Payemnt ID</td>
                         <td>{{ order.deliveredAt }}</td>

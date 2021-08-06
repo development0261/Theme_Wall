@@ -86,8 +86,6 @@ def addProduct(request):
     else:
         return redirect("home")
 
-def buyproducts(request):
-    return redirect(request,'products/ecommerceIndex.html')
 
 def profile(request):
     if request.method == "POST" and request.user.is_authenticated:

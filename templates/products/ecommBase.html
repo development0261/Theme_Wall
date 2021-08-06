@@ -12,7 +12,8 @@
 
 
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
     <style>
 
         form input , form select {
@@ -95,37 +96,37 @@
         <a class="nav-link active" href="{% url 'sellerDash' %}" ><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;My Products</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#"><i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;My Orders</a>
+        <a class="nav-link" href="{% url 'sellerOrders' %}"><i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;My Orders</a>
       </li>
     <li class="nav-item ml-auto">
         <a class="nav-link" href="{% url 'profile' %}"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Profile</a>
       </li>
         <li class="nav-item ml-auto">
-        <a class="nav-link" href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a>
+        <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt" aria-hidden="true"></i>&nbsp;Logout</a>
       </li>
 
         {% else  %}
 
 
          <li class="nav-item">
-        <a class="nav-link active" href="{% url 'buyproducts' %}" ><i class="fa fa-home" aria-hidden="true"></i>&nbsp;Home</a>
+        <a class="nav-link {% if '/products/buyproducts/' == request.path %}active {% endif %}" href="{% url 'buyproducts' %}" ><i class="fa fa-home" aria-hidden="true"></i>&nbsp;Home</a>
       </li>
 
  <li class="nav-item">
-        <a class="nav-link" href="{% url 'myOrders' %}"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;My Orders</a>
+        <a class="nav-link {% if '/orders/myOrders/' == request.path %}active {% endif %}" href="{% url 'myOrders' %}"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;My Orders</a>
       </li>
             <li class="nav-item">
-        <a class="nav-link" href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a>
+        <a class="nav-link " href="{% url 'logout' %}">{% if '/orders/myOrders/' == request.path %}<i class="fas fa-sign-out-alt"></i>{% else %}<i class="fas fa-sign-out-alt" aria-hidden="true"></i>{% endif %}&nbsp;Logout</a>
       </li>
            <li class="nav-item ml-auto">
-        <a class="nav-link" href="{% url 'buyerprofile' %}"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Profile</a>
+        <a class="nav-link {% if '/products/buyerprofile/' == request.path %}active {% endif %}" href="{% url 'buyerprofile' %}"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Profile</a>
       </li>
         {% endif  %}
     </ul>
    {% if user.role == "buyer" %}
     <ul class="navbar-nav ml-auto" style="margin-right: 10px">
          <li class="nav-item">
-            <a class="nav-link" href="{% url 'cart' %}" style="color: deeppink">
+            <a class="nav-link" href="" style="color: deeppink">
             <i class="fa fa-heart"  id="popcart"></i>
             <span class="badge badge-dark" id="whishListCounter" style="border-radius: 50px">0</span>
             </a>

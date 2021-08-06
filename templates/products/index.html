@@ -282,24 +282,27 @@ h5 {
                             </div>
                     </div>
                 <p id="ProductCount_{{ item.pk }}" style="display: none">{{ item.quantity }} </p>
+                  {% if item.get_color|length > 0 %}
                     <div class="mt-1 mb-1 spec-1"><span style="color: black;font-weight: bold">Colors : </span>
-                        {% if item.get_color|length > 0 %}
+
                       {% for color in item.get_color %}
                       <span class="dot" style="background-color: {{ color }}"></span>
                       {% endfor %}
-                      {% else %}
-                      No Color Added
-                      {% endif %}
-                        </div>
+                       </div>
+
+
+
+                 {% endif %}
+                 {% if item.get_size|length > 0 %}
                     <div class="mt-1 mb-1 spec-1"><span style="color: black;font-weight: bold">Size : </span>
-                        {% if item.get_size|length > 0 %}
+
                       {% for size in item.get_size %}
                       <span style="color: #0e0e0e;padding: 0px 2px">{{ size|title }}</span>
                       {% endfor %}
-                      {% else %}
-                      No Color Added
-                      {% endif %}
+
+
                         </div>
+                 {% endif %}
 <span style="color: black;font-weight: bold">Seller : </span><span style="color: #0e0e0e;padding: 0px 2px">{{ item.seller.fullname }}</span>
                     <p class="text-justify text-truncate para mb-0">{{ item.description | truncatewords:20 }}</p>
 
@@ -310,7 +313,11 @@ h5 {
                     </div>
 
                     <div class="d-flex flex-column mt-4">
+                        {% if item.quantity > 0 %}
                         <a class="btn btn-dark btn-sm" type="button" href="{% url 'singleProduct' item.pk %}" ><i class="fa fa-shopping-basket"></i>&nbsp;Add to Cart</a>
+                        {% else %}
+                            <h6 style="color: red">Out of Stock</h6>
+                        {% endif %}
                       <!--  <button class="btn btn-outline-dark btn-sm mt-2" type="button"><i class="fa fa-eye"></i>&nbsp;View Details</button> -->
                         <button class="btn btn-outline-dark btn-sm mt-2" type="button"><i class="fa fa-heart"></i>&nbsp;Add to wishlist</button>
                     </div>
