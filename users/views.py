@@ -161,7 +161,7 @@ def login_process(request):
             login(request,user)
             if user.role == "seller":
                 print(user.role)
-                return redirect("sellerDash")
+                return redirect("home")
             elif user.role == "buyer":
 
                 return redirect('home')

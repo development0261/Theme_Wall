@@ -23,11 +23,6 @@ class PostListView(LoginRequiredMixin,ListView):
 	ordering = ['-date_posted']
 	paginate_by = 10
 
-	def get(self, request, *args, **kwargs):
-		if request.user.role == "seller":
-			return redirect("sellerDash")
-		else:
-			return render(request,'feed/home.html')
 
 	def get_context_data(self, **kwargs):
 		context = super(PostListView, self).get_context_data(**kwargs)
