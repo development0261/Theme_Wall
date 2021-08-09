@@ -306,6 +306,8 @@ def sendActivation(request):
             print(results)
             if results[0] == True:
                 messages.success(request,'Your Account Accept as Seller Account')
+                request.user.role = 'seller'
+                request.user.save()
             else:
                 messages.error(request, 'Your ID Proof Image and Captrue Image Doesnot Match. Please try Again')
 
