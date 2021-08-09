@@ -39,3 +39,4 @@ urllib3==1.23
 uuid==1.30
 whitenoise==5.2.0
 face-recognition
+gunicorn==20.1.0
