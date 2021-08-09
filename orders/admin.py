@@ -3,7 +3,7 @@ from django.contrib import admin
 # Register your models here.
 from django.utils.html import format_html
 
-from orders.models import Order, ShippingAddress, OrderItem
+from orders.models import Order, ShippingAddress, OrderItem,wishlist
 
 def custom_titled_filter(title):
     class Wrapper(admin.FieldListFilter):
@@ -15,8 +15,9 @@ def custom_titled_filter(title):
 
 class OrderAdmin(admin.ModelAdmin):
 
-    list_filter = ['user','paymentMethod','isPaid','totalPrice','paidAt','payment_id',]
-    list_display = ['user','paymentMethod','isPaid','totalPrice','paidAt','payment_id','deliveredAt','isDelivered']
+    list_filter = ['user','paymentMethod','isPaid','totalPrice','paidAt','payment_id','status']
+    list_display = ['user','paymentMethod','isPaid','totalPrice','paidAt','payment_id','deliveredAt','isDelivered','status']
+    list_editable = ['status','isPaid']
 
 admin.site.register(Order,OrderAdmin)
 
@@ -43,3 +44,6 @@ class OrderItemAdmin(admin.ModelAdmin):
     list_display_links = ['product','order']
 
 admin.site.register(OrderItem,OrderItemAdmin)
+
+
+admin.site.register(wishlist)

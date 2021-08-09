@@ -9,4 +9,8 @@ urlpatterns = [
     path('myOrders/',myOrders,name="myOrders"),
     path('sellerOrders/',sellerOrders,name="sellerOrders"),
     path('orderProducts/<int:id>/',orderProducts,name="orderProducts"),
+    path('fetchStatus/<int:id>/',fetchStatus,name="fetchStatus"),
+    path('updateStatus/',updateStatus,name="updateStatus"),
+    path('addToWishList/',addToWishList,name="addToWishList"),
+    path('fetchWishlist/',fetchWishlist,name="fetchWishlist"),
 ]

@@ -389,6 +389,17 @@ $(".delete_item").click(function(){
       }
                 updateCart(Mycart)
 })
+
+
+       function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+   }
+   async function Tutor() {
+
+         await sleep(3000);
+
+   }
+
 $(document).ready(function (){
     updateCart(Mycart)
 })
@@ -406,6 +417,7 @@ $(document).ready(function (){
 
         }
 		await localStorage.setItem('ShipmentCart', JSON.stringify(ShipmentCart))
+          Tutor()
         location.href="/orders/checkout"
     })
 </script>

@@ -2,7 +2,9 @@ from django.contrib import messages
 from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from .models import Order,ShippingAddress,OrderItem
+from django.views.decorators.csrf import csrf_exempt
+
+from .models import Order,ShippingAddress,OrderItem,wishlist
 from products.models import item
 from users.models import  Address
 
@@ -26,14 +28,14 @@ def checkout(request):
 def placeOrder(request):
     if request.user.is_authenticated:
         if request.method == "POST":
-            fullname = request.POST['fullname']
+
             address1 = request.POST['address1']
             address2 = request.POST['address2']
             city = request.POST['city']
             state = request.POST['state']
             zip = request.POST['zip']
             country = request.POST['country']
-            email = request.POST['email']
+
             payment_type = request.POST['payment_type']
             final_total = request.POST['final_total']
             shipment_charge = request.POST['shipment_charge']
@@ -46,7 +48,7 @@ def placeOrder(request):
             qtys = request.POST.getlist('qty[]')
 
             order = Order(user= request.user,paymentMethod=payment_type,taxPrice=float(tax_price.strip()),shippingPrice=float(shipment_charge.strip()),totalPrice=float(final_total.strip()),
-                          isPaid=False,isDelivered=False
+                          isPaid=False,isDelivered=False,status='Placed'
                           )
             order.save()
             address = ShippingAddress(order= order,address=address1+" "+address2,city=city,state=state,country=country,zip=zip)
@@ -96,7 +98,7 @@ def myOrders(request):
                 "totalOrders":totalOrders
             })
     else:
-        return redirect('index')
+        return redirect('home')
 
 def orderProducts(request,id):
 
@@ -135,4 +137,68 @@ def sellerOrders(request):
                 "totalOrders": totalOrders
             })
     else:
-        return redirect('index')
+        return redirect('home')
+
+
+def fetchStatus(request,id):
+    if request.user.is_authenticated:
+
+        try:
+            order = Order.objects.get(id=id)
+            return JsonResponse({'msg':'success','status':order.status})
+        except:
+            return JsonResponse({'msg':'error'})
+
+    else:
+        return redirect('login')
+
+
+def updateStatus(request):
+    if request.user.is_authenticated:
+        try:
+            id = request.POST['orderId']
+            status = request.POST['status']
+            order = Order.objects.get(id=id)
+            order.status = status
+            order.save()
+            messages.success(request,'Status for Order {} is updated to {}'.format(order.uuid,status))
+            return redirect('sellerOrders')
+        except:
+            messages.error(request,'Something went wrong')
+            return redirect('sellerOrders')
+    else:
+        return redirect(
+            'login'
+        )
+
+@csrf_exempt
+def addToWishList(request):
+    if request.POST:
+            products_list = []
+            id = request.POST['productId']
+            product = item.objects.get(pk=id)
+            if wishlist.objects.filter(product=product,user=request.user).exists():
+                wishes = wishlist.objects.all()
+                for wish in wishes:
+                    products_list.append(wish.product)
+                return JsonResponse({'msg':'alreadyExist','products':serializers.serialize('json',products_list,ensure_ascii=False),'count':len(products_list)})
+            else:
+                wish = wishlist(product=product, user=request.user)
+                wish.save()
+                wishes = wishlist.objects.all()
+                for wish in wishes:
+
+                    products_list.append(wish.product)
+                return JsonResponse({'msg':'success','products':serializers.serialize('json',products_list,ensure_ascii=False),'count':len(products_list)})
+
+    else:
+        return JsonResponse({'msg':'Invalid Request'})
+
+
+def fetchWishlist(request):
+    products_list = []
+    wishs = wishlist.objects.filter(user = request.user)
+    for wish in wishs:
+        products_list.append(wish.product)
+    return JsonResponse({'msg': 'success', 'products': serializers.serialize('json', products_list, ensure_ascii=False)})
+

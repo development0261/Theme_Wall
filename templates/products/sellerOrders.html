@@ -95,7 +95,20 @@
 	-moz-transition: all 0.5s ease;
 	transition: all 0.5s ease;
 }
-
+.btn-dark{
+    color: #fff;
+    background-color: #3E83C5 !important;
+    border-color: #3E83C5 !important;
+ }
+.btn-outline-dark {
+    color: #89C34A;
+     border-color: #89C34A !important;
+}
+.btn-outline-dark:hover {
+     color: #fff;
+    background-color: #89C34A !important;
+    border-color: #89C34A !important;
+}
 .cart-btn {
 	cursor: pointer;
 	display: inline-block;
@@ -120,6 +133,19 @@
 {% endblock %}
 
 {% block content %}
+    {% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3" role="alert">
+  <strong id="g_msg">Message : {{message}} </strong>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+
+{% endfor %}
+
+{% endif %}
 <div class="container mt-3">
 
 
@@ -163,10 +189,10 @@
                         <th>Order Id</th>
                         <th>Payment</th>
                         <th>Is Paid</th>
-                        <th>Is Delivered</th>
 
 
                         <th>Total Amount</th>
+                        <th>Status</th>
                         <th>View Products</th>
                         <th>Payment id</th>
                         <th>deliveredAt</th>
@@ -182,10 +208,11 @@
                          <td id="orderId_{{ order.pk }}">{{ order.uuid }}</td>
                         <td>{{ order.paymentMethod | upper}}</td>
                         <td>{% if order.isPaid %}<span style="color: green">Paid</span>{% else %}<span style="color: red">Pending</span> {% endif %}</td>
-                        <td>{% if order.isDelivered %}<span style="color: green">Delivered</span>{% else %}<span style="color: red">Pending</span> {% endif %}</td>
+{#                        <td>{% if order.isDelivered %}<span style="color: green">Delivered</span>{% else %}<span style="color: red">Pending</span> {% endif %}</td>#}
 
                         <td id="total_price_{{ order.pk }}">$ {{ order.totalPrice }}</td>
-                        <td><button class="btn btn-success displayProducts" id="displayProducts_{{ order.pk }}">Display Products</button></td>
+                        <td><button class="btn btn-outline-dark updateStatus" id="updateStatus_{{ order.pk }}">Update Status</button></td>
+                        <td><button class="btn btn-dark displayProducts" id="displayProducts_{{ order.pk }}">Display Products</button></td>
                         <td>Payemnt ID</td>
                         <td>{{ order.deliveredAt }}</td>
                         <td>{{  order.createdAt}}</td>
@@ -220,6 +247,26 @@
     </div>
   </div>
 </div>
+
+       <div class="modal fade" tabindex="-1" role="dialog" id="updateStatusModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Status for <span id="updateOrderId"></span></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="updateStatusBody">
+
+      </div>
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block jsfiles %}
@@ -248,7 +295,7 @@
 $("#fetchedProducts").empty()
                  $(".modal-title").html(orderId)
 
-                $("#modalTotalPrice").html("$ "+$("#total_price_"+id).html())
+                $("#modalTotalPrice").html($("#total_price_"+id).html())
              for(let i=0;i< products.length;i++){
                  product = products[i].fields
 
@@ -265,9 +312,10 @@ $("#fetchedProducts").empty()
                             <h5 class="mt-0 font-weight-bold mb-2">${product.name}</h5>
                             <p class="font-italic text-muted mb-0 small">${product.color ? `<span class="mr-2">Color : <span class="dot" style="background-color: #${product.color}"></span></span> `:``} ${product.size?  `<span class="mr-2">Size: ${product.size}</span> `:''}<span>Qty: ${product.qty}</span></p>
                             <div class="d-flex align-items-center justify-content-between mt-1">
-                                <h6 class="font-weight-bold my-2">$${product.price}</h6>
+                                <h6 class="font-weight-bold my-2">$ ${product.price}</h6>
 
                             </div>
+
                         </div><img src="/media/${product.image}" alt="Generic placeholder image" width="100" class="ml-lg-5 order-1 order-lg-2">
                     </div>
                 </li>
@@ -283,5 +331,50 @@ $("#fetchedProducts").empty()
 
     })
 
+        $(".updateStatus").click(function (){
+            var id = this.id.slice(13,)
+            $("#updateOrderId").html($("#orderId_"+id).html())
+             $.get("/orders/fetchStatus/"+id, function(data, status) {
+                 if (data.msg == 'success') {
+                     $("#updateStatusBody").empty()
+                     status = data.status
+                     $("#updateStatusBody").append(
+                         `
+                           <form method="post" action="{% url 'updateStatus' %}"> {% csrf_token %}
+                                <input type="hidden" value="${id}" name="orderId" >
+                                <div class="my-2">
+                                <h6 class="text-center" style="font-weight: bold">Current Status : Order ${status}</h6>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                    <h6 class="text-center mr-2" style="font-weight: bold">Update Status : </h6>
+                                    <select class="px-2 py-1" name="status">
+
+                                        <option value="Placed" ${
+                             status == 'Placed' ? 'selected' : ''
+                         }> Placed </option>
+                                <option value="Packed" ${
+                             status == 'Packed' ? 'selected' : ''
+                         }> Packed </option>
+
+                         <option value="Shipped" ${
+                             status == 'Shipped' ? 'selected' : ''
+                         }> Shipped </option>
+
+                         <option value="Delivered" ${
+                             status == 'Delivered' ? 'selected' : ''
+                         }> Delivered </option>
+                                    </select>
+                            </div>
+                            <div class="d-flex justify-content-center mt-2">
+                            <button type="submit" class="btn btn-dark">Save changes</button>
+                            </div>
+                           </form>
+                         `
+                     )
+                     $("#updateStatusModal").modal('toggle')
+                 }
+             });
+
+        })
     </script>
 {% endblock %}

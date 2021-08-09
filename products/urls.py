@@ -12,5 +12,6 @@ urlpatterns = [
     path("getProduct/<int:id>/",getProduct,name="getProduct"),
     path("updateProduct/<int:id>/",updateProduct,name="updateProduct"),
     path("buyproducts/",buyproducts,name="buyproducts"),
+    path("checkwebcam/",checkwebcam,name="checkwebcam"),
     path("singleProduct/<int:id>/",singleProduct,name="singleProduct"),
 ]

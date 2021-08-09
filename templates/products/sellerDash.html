@@ -149,14 +149,14 @@ td.sorting_1 {
                 <div class="col-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Product Price</label>
-                    <input type="text" class="form-control" placeholder="Indian Currency" name="price"
+                    <input type="text" class="form-control" placeholder="USD" name="price"
                       aria-describedby="emailHelp">
                   </div>
                 </div>
                 <div class="col-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Offer Price</label>
-                    <input type="text" class="form-control" placeholder="Indian Currency" name="offer"
+                    <input type="text" class="form-control" placeholder="USD" name="offer"
                       aria-describedby="emailHelp">
                   </div>
                 </div>
@@ -309,6 +309,8 @@ td.sorting_1 {
   </div>
 </div>
 
+
+
 {% endblock content %}
 {% block jsfiles %}
 
@@ -350,14 +352,14 @@ $("#edit-form").empty()
                 <div class="col-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Product Price</label>
-                    <input type="text" class="form-control" value=${item[0].fields.price} id="editPrice" placeholder="Indian Currency" name="price"
+                    <input type="text" class="form-control" value=${item[0].fields.price} id="editPrice" placeholder="USD" name="price"
                       aria-describedby="emailHelp">
                   </div>
                 </div>
                 <div class="col-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Offer Price</label>
-                    <input type="text" class="form-control" id="offerPrice" value=${item[0].fields.offer_price} placeholder="Indian Currency" name="offer"
+                    <input type="text" class="form-control" id="offerPrice" value=${item[0].fields.offer_price} placeholder="USD" name="offer"
                       aria-describedby="emailHelp">
                   </div>
                 </div>

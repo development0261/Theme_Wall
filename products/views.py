@@ -261,3 +261,12 @@ def buyerprofile(request):
 
     address = Address.objects.filter(user=request.user).last()
     return render(request,'products/buyerProfile.html',{'address':address})
+
+def checkwebcam(request):
+    if request.method == 'POST':
+        imageName = request.POST['ImageName']
+        imageName = imageName.split(',')[1]
+        import base64
+        with open("imageToSave.png", "wb") as fh:
+            fh.write(base64.b64decode(imageName))
+    return render(request,'products/testWebcam.html')

@@ -241,7 +241,7 @@ hr {
 	right: 0;
 }
 
-.cart-drawer {
+.cart-drawer,.wishlist-drawer {
 	background: #fff3cd;
   	height: 100%;
   	position: fixed;
@@ -252,13 +252,13 @@ hr {
     z-index: 2;
 }
 
-.cart-drawer-right { right: -300px; }
+.cart-drawer-right,.wishlist-drawer-right { right: -300px; }
 
-.cart-drawer-right.cart-drawer-open { right: 0; }
+.cart-drawer-right.cart-drawer-open,.wishlist-drawer.cart-drawer-open { right: 0; }
 
-.cart-drawer-pushtoleft { right: 300px; }
+.cart-drawer-pushtoleft,.wishlist-drawer-pushtoleft { right: 300px; }
 
-.cart-drawer, .cart-drawer-push {
+.cart-drawer, .cart-drawer-push,.wishlist-drawer,.wishlist-drawer-push {
 	-webkit-transition: all 0.5s ease;
 	-moz-transition: all 0.5s ease;
 	transition: all 0.5s ease;
@@ -270,7 +270,7 @@ hr {
 	font-size: 30px;
 }
 
-.close-btn {
+.close-btn,.close-btn1{
 	cursor: pointer;
 	position: absolute;
 	top: 10px;
@@ -319,7 +319,7 @@ hr {
                     <h4 class="font-weight-bold" id="ProductPrice_{{ product.pk }}">&#8377; {{ product.price }}</h4>
                 </div>
                 {% if product.quantity %}
-            <div class="buttons"> <span id="divadd_{{product.pk}}" class="divproduct"><button class="btn btn-dark btn-long addProduct" id="addProduct_{{ product.pk }}">Add to Cart</button></span> <button class="btn btn-outline-dark "> <i class="fa fa-heart"></i> </button> </div>
+            <div class="buttons"> <span id="divadd_{{product.pk}}" class="divproduct"><button class="btn btn-dark btn-long addProduct" id="addProduct_{{ product.pk }}">Add to Cart</button></span> <button class="btn btn-outline-dark addToWishList" id="addToWishList_{{product.pk}}"> <i class="fa fa-heart"></i> </button> </div>
             {% else %}
                 <h6 style="color:red;">Out of Stock</h6>
             {% endif %}
@@ -363,7 +363,7 @@ hr {
  <div class="cart-drawer cart-drawer-right">
             <span>Your Cart</span>
             <div class="close-btn">
-                <i class="fa fa-close fa-2x"></i>
+                <i class="fas fa-times fa-2x"></i>
             </div><!-- /.close-btn -->
             <div>
                 <div id="cartProducts">
@@ -371,6 +371,20 @@ hr {
 
             </div>
                 <a href="{% url 'cart' %}" class="btn btn-dark mt-3">GO TO CART</a>
+            </div>
+        </div><!-- /.cart-drawer .cart-drawer-right -->
+
+  <div class="wishlist-drawer wishlist-drawer-right">
+            <span>Your Wishlist</span>
+            <div class="close-btn1">
+                <i class="fas fa-times fa-2x"></i>
+            </div><!-- /.close-btn -->
+            <div>
+                <div id="wishListProducts">
+
+
+            </div>
+
             </div>
         </div><!-- /.cart-drawer .cart-drawer-right -->
 {% endblock %}
@@ -583,7 +597,69 @@ function hex(x) {
         }
 
 
+        $(".addToWishList").click(function (){
+            id = this.id.slice(14,)
+             $.post("{% url 'addToWishList' %} ",
+              {
+                productId : id
+              },
+              function(data, status){
+                $("#wishListProducts").empty()
+                if(data.msg == "success"){
+                 products = JSON.parse(data.products)
 
+                    for(let i=0;i< products.length;i++){
+                        product = products[i].fields
+                          $("#wishListProducts").append(
+                              `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="product_${product.pk}">
+                                    <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${product.pk}"><img src="/media/${product.image}" width="100" alt="Product"></a>
+                                      <div class="p-2  ml-4 text-center">
+                                        <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">${product.name}</a></h5>
+                                        <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">${product.price}</a></h5>
+
+
+                                      </div>
+                                    </div>
+
+
+                                  </div>
+                              `
+                            )
+                    }
+
+                }
+
+                else if(data.msg == "alreadyExist"){
+                    alert("Product Already Exists in Wishlist")
+                     products = JSON.parse(data.products)
+                    for(let i=0;i< products.length;i++){
+                        product = products[i].fields
+                        console.log(product)
+                          $("#wishListProducts").append(
+                              `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="product_${product.pk}">
+                                    <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${product.pk}"><img src="/media/${product.image}" width="100" alt="Product"></a>
+                                      <div class="p-2  ml-4 text-center">
+                                        <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">${product.name}</a></h5>
+                                        <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">$ ${product.price}</a></h5>
+
+
+                                      </div>
+                                    </div>
+
+
+                                  </div>
+                              `
+                            )
+                    }
+
+                }
+                    $('.wishlist-drawer-push').addClass('cart-drawer-pushtoleft');
+			        $('.wishlist-drawer-right').addClass('cart-drawer-open');
+			        $("#whishListCounter").html(data.count)
+                  localStorage.setItem('wishCounter', JSON.stringify(data.count))
+              });
+
+        })
 
 
 

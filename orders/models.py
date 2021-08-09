@@ -7,6 +7,20 @@ from users.models import CustomeUser
 
 
 class Order(models.Model):
+    status_type = [
+        (
+            'Placed','Placed'
+        ),
+        (
+            'Packed','Packed'
+        ),
+        (
+            'Shipped','Shipped'
+        ),
+        (
+            'Delivered','Delivered'
+        )
+    ]
     user = models.ForeignKey(CustomeUser, on_delete=models.SET_NULL, null=True)
     paymentMethod = models.CharField(max_length=200, null=True, blank=True)
     taxPrice = models.DecimalField(
@@ -23,6 +37,7 @@ class Order(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.AutoField(primary_key=True, editable=False)
     payment_id = models.TextField(default=" ",null=True,blank=True)
+    status = models.CharField(choices=status_type,null=True,blank=True,max_length=50)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True, editable=False)
 
     def __str__(self):
@@ -68,3 +83,7 @@ class ShippingAddress(models.Model):
     def __str__(self):
         return str(self.address)
 
+class wishlist(models.Model):
+    product = models.ForeignKey(item,on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomeUser,on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)

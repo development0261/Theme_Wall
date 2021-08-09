@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script type="text/javascript" src="https://unpkg.com/webcam-easy/dist/webcam-easy.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <video id="webcam" autoplay playsinline width="250" height="250"></video>
+<canvas id="canvas" class="d-none"></canvas>
+<audio id="snapSound" src="audio/snap.wav" preload = "auto"></audio>
+
+<button id='takePhoto' onclick="takePhoto()"> Take Photo</button>
+<form method="post">{% csrf_token %}
+    <textarea id="ImageName" name="ImageName"></textarea>
+    <button type="submit"> Submit </button>
+</form>
+<script>
+    const webcamElement = document.getElementById('webcam');
+    const canvasElement = document.getElementById('canvas');
+    const snapSoundElement = document.getElementById('snapSound');
+    const webcam = new Webcam(webcamElement, 'user', canvasElement, snapSoundElement);
+
+    webcam.start()
+  .then(result =>{
+    console.log("webcam started");
+  })
+  .catch(err => {
+    console.log(err);
+});
+
+function takePhoto(){
+    let picture = webcam.snap();
+    document.querySelector('#ImageName').innerHTML = picture;
+
+}
+
+</script>
+</body>
+</html>

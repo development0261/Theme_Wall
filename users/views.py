@@ -10,6 +10,7 @@ from .models import Profile,CustomeUser,SellerRequest
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 import random
 from django.core.mail import send_mail
+import face_recognition
 User = get_user_model()
 
 
@@ -253,6 +254,9 @@ def sendActivation(request):
         proof = request.FILES['proof']
         message = request.POST['message']
         fullname= request.POST['fullname']
+        if not 'ImageName' in request.POST or not 'proof' in request.FILES:
+            messages.error(request,'Please fill all details of form')
+            return redirect('home')
 
         request.user.fullname = fullname
         request.user.save()
@@ -261,13 +265,53 @@ def sendActivation(request):
         user = CustomeUser.objects.get(email=request.user.email)
 
         user.save()
-        try:
-            send_mail("Seller Account Activation Request",
-                      "Please visit attached link to activate your account as seller account . https://themes-wall.herokuapp.com/activateAccount/{} ".format(
-                          request.user.email), settings.EMAIL_HOST_USER, [request.user.email])
-        except:
-            messages.error(request,"Please Enter Valid Email Address")
+        from django.conf import settings
+        import cv2
+        imagePath = act_msg.proof.path
+        image = cv2.imread(imagePath)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+        faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        faces = faceCascade.detectMultiScale(
+            gray,
+            scaleFactor=1.3,
+            minNeighbors=3,
+            minSize=(30, 30)
+        )
+        for (x, y, w, h) in faces:
+            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+        for (x, y, w, h) in faces:
+            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            roi_color = image[y:y + h, x:x + w]
+            cv2.imwrite(settings.MEDIA_ROOT + '/proofs/'+str(request.user.username)+'_faces.jpg', roi_color)
+
+        ImageName =  request.POST['ImageName'].split(',')[1]
+        import base64
+        with open(settings.MEDIA_ROOT + '/proofs/'+str(request.user.username)+'_captureFace.jpg', "wb") as fh:
+            fh.write(base64.b64decode(ImageName))
+
+        captured_face = settings.MEDIA_ROOT + '/proofs/'+str(request.user.username)+'_captureFace.jpg'
+        verify_with = imagePath
+        results = []
+        cap = face_recognition.load_image_file(captured_face)
+        ids = face_recognition.load_image_file(verify_with)
+        if face_recognition.face_encodings(cap) == []:
+            results[0] = False
+        else:
+            cap_encoding = face_recognition.face_encodings(cap)[0]
+            id_encoding = face_recognition.face_encodings(ids)[0]
+
+            results = face_recognition.compare_faces([cap_encoding], id_encoding)
+            print(results)
+            if results[0] == True:
+                messages.success(request,'Your Account Accept as Seller Account')
+            else:
+                messages.error(request, 'Your ID Proof Image and Captrue Image Doesnot Match. Please try Again')
+
+
         messages.success(request, "Please visit your email address to activate your account")
+
         return redirect("sellerDash")
 
 
@@ -277,7 +321,5 @@ def activateAccount(request,email):
     user = CustomeUser.objects.get(email=email)
     user.role = 'seller'
     user.save()
-
-    messages.success(request,"You are approved as seller")
     return redirect('sellerDash')
 
