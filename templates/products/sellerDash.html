@@ -43,6 +43,30 @@ td.sorting_1 {
     border-radius: 50%;
     display: inline-block;
   }
+  [type='color'] {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 0;
+  width: 75px;
+  height: 25px;
+  border: none;
+}
+
+[type='color']::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+[type='color']::-webkit-color-swatch {
+  border: none;
+}
+
+.color-picker {
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background-color: #f8f9f9;
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -152,6 +176,7 @@ td.sorting_1 {
             <form action="{% url 'addProduct' %}" method="post" enctype="multipart/form-data" class="product__form">
               {% csrf_token %}
               <div class="row">
+
                 <div class="col-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Product Name</label>
@@ -184,6 +209,26 @@ td.sorting_1 {
                     <textarea rows="5" cols="15" class="form-control" name="description"></textarea>
                   </div>
                 </div>
+
+                     <div class="col-6 ">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Product Serial No</label>
+                    <input type="text" class="form-control" name="serial_no" aria-describedby="emailHelp">
+                  </div>
+                </div>
+                     <div class="col-6 ">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Product Rating</label>
+                    <select name="rating" class="form-control">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div class="col-12">
                   <div class="form-group">
 
@@ -225,8 +270,9 @@ td.sorting_1 {
                     <div class="d-flex align-items-center">
                       <div class="color-list w-100">
                         <div class="d-flex ">
-                          <input type="text" name="color[]" class="form-control" id="my_color_picker" />
-                            <input type="color" id="html5colorpicker" onchange="clickColor(0, -1, -1, 5)" value="#ff0000" style="width:85%;">
+
+<span class="color-picker"><input type="color" name="color[]" class="form-control colorPicker"  id="my_color_picker" />
+</span>
                           <div class="add__button">
                             <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>
                               </button>
@@ -390,6 +436,36 @@ $("#edit-form").empty()
                   <div class="form-group">
                     <label for="exampleInputEmail1">Product Description</label>
                     <textarea rows="5" cols="15" class="form-control" id="productDesc"  name="description">${item[0].fields.description}</textarea>
+                  </div>
+                </div>
+
+
+                     <div class="col-6 ">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Product Serial No</label>
+                    <input type="text" class="form-control" name="serial_no" value=${item[0].fields.serial_no} aria-describedby="emailHelp">
+                  </div>
+                </div>
+                     <div class="col-6 ">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Product Rating</label>
+                    <select name="rating" class="form-control">
+                        <option value="1" ${
+                        item[0].fields.rating == 1 ? 'selected':''
+                     }>1</option>
+                        <option value="2" ${
+                        item[0].fields.rating == 2 ? 'selected':''
+                     }>2</option>
+                        <option value="3" ${
+                        item[0].fields.rating == 3 ? 'selected':''
+                     }>3</option>
+                        <option value="4" ${
+                        item[0].fields.rating == 4 ? 'selected':''
+                     }>4</option>
+                        <option value="5" ${
+                        item[0].fields.rating == 5 ? 'selected':''
+                     }>5</option>
+                    </select>
                   </div>
                 </div>
                 <div class="col-12">
@@ -635,7 +711,8 @@ $("#edit-form").empty()
       
       $(".color-list").append(`
       <div class="d-flex color-input">
-        <input type="text" name="color[]" class="form-control" />
+
+<span class="color-picker"><input type="color" name="color[]" class="form-control colorPicker" /></span>
         <div class="add__button close__button">
           <button type="button" class="btn btn-danger btn-remove-color"><span class="fas fa-minus"></span>
             </button>
@@ -696,5 +773,11 @@ $("#edit-form").empty()
             });
             //            $('#<%=txtReserveType.ClientID %>')
         });
+ $(document).on('change','.colorPicker',function(){
+    newVal = this.value;
+    console.log(newVal)
+    this.value = newVal
+    console.log(this.value)
+})
 </script>
 {% endblock jsfiles %}

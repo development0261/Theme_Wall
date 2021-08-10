@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import make_password
 from django.core import serializers
@@ -50,22 +52,24 @@ def addProduct(request):
     if request.user.is_authenticated:
         if request.method == "POST":
 
-            try:
+
                 name = request.POST['name']
                 price = request.POST['price']
                 offer = request.POST['offer']
                 it_category = request.POST['category']
                 quantity = request.POST['quantity']
                 image = request.FILES['image']
+                serial_no = request.POST['serial_no']
+                rating = request.POST['rating']
                 description = request.POST['description']
                 sizes = request.POST.getlist('size[]')
                 colors = request.POST.getlist('color[]')
 
                 print(name, price, offer, category, quantity, image, sizes, colors)
 
-                prod = item(name=name, price=price, offer_price=offer,
+                prod = item(serial_no=serial_no,name=name, price=price, offer_price=offer,
                             item_category=category.objects.get(id=it_category),
-                            quantity=quantity, image=image, description=description, seller=request.user)
+                            quantity=quantity, image=image, description=description, seller=request.user,rating=rating)
                 prod.save()
 
                 if sizes[0] != '':
@@ -79,10 +83,10 @@ def addProduct(request):
                         it_color = item_color(color=color, item=prod)
                         it_color.save()
                 messages.success(request, "Your Product is added successfully")
-            except:
-                messages.error(request, "Something Went Wrong")
 
-            return redirect("sellerDash")
+                # messages.error(request, "Something Went Wrong")
+
+        return redirect("sellerDash")
     else:
         return redirect("home")
 
@@ -190,7 +194,7 @@ def buyproducts(request):
     all_items = item.objects.filter(is_available= True)
     if 'cat_id' in request.GET:
         id = request.GET['cat_id']
-        all_items = all_items.filter(item_category=category.objects.get(id=id))
+        all_items = all_items.filter(item_category=category.objects.get(id=int(id)))
 
     if 'filter' in request.GET:
         filter = request.GET['filter']
@@ -205,14 +209,14 @@ def buyproducts(request):
         searched = request.POST['searchBox']
         all_items = all_items.filter(Q(name__icontains=searched) | Q(description__icontains=searched))
 
-    paginator = Paginator(all_items, 15)
-    page = request.GET.get('page')
-    paged_items = paginator.get_page(page)
+    # paginator = Paginator(all_items, 15)
+    # page = request.GET.get('page')
+    # paged_items = paginator.get_page(page)
 
     all_categories = category.objects.all()
 
 
-    return render(request,'products/index.html',{'all_items':paged_items,'all_categories':all_categories})
+    return render(request,'products/index.html',{'all_items':all_items,'all_categories':all_categories})
 
 def singleProduct(request,id):
     single_item = get_object_or_404(item,id=id)
