@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.core import serializers
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -35,6 +36,7 @@ def placeOrder(request):
             state = request.POST['state']
             zip = request.POST['zip']
             country = request.POST['country']
+            contact = request.POST['contact']
 
             payment_type = request.POST['payment_type']
             final_total = request.POST['final_total']
@@ -47,8 +49,10 @@ def placeOrder(request):
             prod_ids = request.POST.getlist('prod[]')
             qtys = request.POST.getlist('qty[]')
 
+            request.user.contact_no = contact
+            request.user.save()
             order = Order(user= request.user,paymentMethod=payment_type,taxPrice=float(tax_price.strip()),shippingPrice=float(shipment_charge.strip()),totalPrice=float(final_total.strip()),
-                          isPaid=False,isDelivered=False,status='Placed'
+                          isPaid=False,status='Placed'
                           )
             order.save()
             address = ShippingAddress(order= order,address=address1+" "+address2,city=city,state=state,country=country,zip=zip)
@@ -68,7 +72,7 @@ def placeOrder(request):
                 user_address.save()
 
 
-            return redirect('invoice')
+            return redirect('/orders/invoice/'+str(order.pk))
 
         else:
             messages.error(request,'Not Valid Request')
@@ -76,15 +80,20 @@ def placeOrder(request):
     else:
         return redirect('home')
 
-def invoice(request):
-    return render(request,'products/invoice.html')
+def invoice(request,id):
+   try:
+       order = Order.objects.get(pk=int(id))
+       address = ShippingAddress.objects.get(order=order)
+       return render(request, 'products/invoice.html', {'order': order, 'address': address})
+   except:
+       return redirect('myOrders')
 
 
 def myOrders(request):
     if request.user.is_authenticated:
         if request.user.role == 'buyer':
-            totalDeliveredOrders = Order.objects.filter(user=request.user,isDelivered=True).count()
-            totalPendigOrders = Order.objects.filter(user=request.user,isDelivered=False).count()
+            totalDeliveredOrders = Order.objects.filter(user=request.user,status='Delivered').count()
+            totalPendigOrders = Order.objects.filter(Q(user=request.user) and ~Q(status='Delivered')).count()
             totalPaidOrders = Order.objects.filter(user=request.user,isPaid=True).count()
             totalUnPaidOrders = Order.objects.filter(user=request.user,isPaid=False).count()
 
@@ -121,7 +130,7 @@ def sellerOrders(request):
             for order_id in seller_orders:
                 order = Order.objects.get(pk=order_id[0])
                 totalOrders.append(order)
-                if order.isDelivered:
+                if order.status == 'Delivered':
                     totalDeliveredOrders.append(order)
                 else:
                     totalPendigOrders.append(order)
@@ -162,6 +171,7 @@ def updateStatus(request):
             order.status = status
             if status == 'Delivered':
                 order.isPaid = True
+
             order.save()
             messages.success(request,'Status for Order {} is updated to {}'.format(order.uuid,status))
             return redirect('sellerOrders')

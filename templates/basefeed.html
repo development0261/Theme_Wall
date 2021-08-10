@@ -157,20 +157,42 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
+                <h5 class="modal-title">Seller Profile Verification</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="height: 450px;overflow-y: scroll">
                 <div class="model_form">
                     <form method="post" action="{% url 'sendActivation' %}" enctype="multipart/form-data">{% csrf_token %}
                         <h5 style="text-align: start">Email</h5>
                         <input type="email" name="email" value="{{ user.email }}" disabled>
                         <h5 style="text-align: start">Full Name</h5>
                         <input type="text" name="fullname">
-                        <h5 style="text-align: start">Detail</h5>
-                        <textarea name="message"></textarea>
+                        <h5 style="text-align: start">Contact Number</h5>
+                        <input type="tel" id="contact" name="contact">
+                        <h5 style="text-align: start" class="mt-1">Address</h5>
+                        <textarea name="address" > </textarea>
+                         <div class="row container">
+                           <div class="col-6 px-2" style="max-width: 100%">
+                               <h5 style="text-align: start">Zip</h5>
+                                <input type="text" id="zip" name="zip" >
+                           </div>
+                            <div class="col-6 px-2" style="max-width: 100%">
+                               <h5 style="text-align: start">City</h5>
+                                <input type="text" id="city" name="city" >
+                           </div>
+                         </div>
+                        <div class="row container">
+                           <div class="col-6 px-2" style="max-width: 100%">
+                               <h5 style="text-align: start">State</h5>
+                                <input type="text" id="state" name="state" >
+                           </div>
+                            <div class="col-6 px-2" style="max-width: 100%">
+                               <h5 style="text-align: start">Country</h5>
+                                <input type="text" id="country" name="country" >
+                           </div>
+                         </div>
                          <div class="form-group">
                              <h5 style="text-align: start">Upload Passport Image as ID Proof</h5>
                                 <input type="file" id="proof" name="proof" onchange="readURL(this);">
@@ -212,6 +234,15 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8c55_YHLvDHGACkQscgbGLtLRdxBDCfI"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"
+        integrity="sha512-DNeDhsl+FWnx5B1EQzsayHMyP6Xl/Mg+vcnFPXGNjUZrW28hQaa1+A4qL9M+AiOMmkAhKAWYHh1a+t6qxthzUw=="
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css"
+        integrity="sha512-yye/u0ehQsrVrfSd6biT17t39Rg9kNc+vENcCXZuMz2a+LWFGvXUnYuWUW6pbfYj1jcBb/C39UZw2ciQvwDDvg=="
+        crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+        integrity="sha512-BNZ1x39RMH+UYylOW419beaGO0wqdSkO7pi1rYDYco9OL3uvXaC/GTqA5O4CVK2j4K9ZkoDNSSHVkEQKkgwdiw=="
+        crossorigin="anonymous"></script>
 <script>
 
 
@@ -254,7 +285,20 @@ $(document).on('click','#takePhoto',function (){
                 $("#proofImage").css('display','block')
             }
         }
-  {##}
+
+           var input = document.querySelector("#contact");
+    window.intlTelInput(input, {
+        separateDialCode: true,
+        customPlaceholder: function (
+            selectedCountryPlaceholder,
+            selectedCountryData
+        ) {
+
+            return "e.g. " + selectedCountryPlaceholder;
+        },
+    });
+
+          {##}
   {#  (function() {#}
   {##}
   {#  'use strict';#}
@@ -275,6 +319,8 @@ $(document).on('click','#takePhoto',function (){
 
 
 </script>
-{% block jsfiles %}{% endblock jsfiles %}
+{% block jsfiles %}
+
+{% endblock jsfiles %}
 </body>
 </html>

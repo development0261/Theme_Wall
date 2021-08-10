@@ -4,6 +4,10 @@
 
 
 <style>
+.iti {
+    position: relative;
+    display: block !important;
+}
     .card .bg-image {
     border-top-left-radius: .5rem;
     border-top-right-radius: .5rem;
@@ -136,14 +140,20 @@
                     </div>
 
                     <div class="form-outline mb-4">
+                        <label class="" for="contact">Contact Number</label>
+                      <input type="tel" name="contact" id="contact" class="form-control form-control-lg" required />
+
+                    </div>
+
+                    <div class="form-outline mb-4">
                         <label class="" for="form3Example8">Address Line 1</label>
-                      <input type="text" name="address1" id="form3Example8" class="form-control form-control-lg" />
+                      <input type="text" name="address1" id="form3Example8" class="form-control form-control-lg" required/>
 
                     </div>
 
                       <div class="form-outline mb-4">
                           <label class="" for="form3Example8">Address Line 2</label>
-                      <input type="text" name="address2" id="form3Example8" class="form-control form-control-lg" />
+                      <input type="text" name="address2" id="form3Example8" class="form-control form-control-lg" required/>
 
                     </div>
 
@@ -152,14 +162,14 @@
                       <div class="col-md-6 mb-4">
                         <div class="form-outline">
                              <label class="" for="City">City</label>
-                       <input type="text" id="City" name="city" class="form-control form-control-lg" />
+                       <input type="text" id="City" name="city" class="form-control form-control-lg" required/>
 
                       </div>
                       </div>
                       <div class="col-md-6 mb-4">
                         <div class="form-outline">
                             <label for="State">State</label>
-                        <input type="text" id="State" name="state" class="form-control form-control-lg" />
+                        <input type="text" id="State" name="state" class="form-control form-control-lg" required/>
 
                         </div>
                       </div>
@@ -169,14 +179,14 @@
                           <div class="col-md-6 mb-4 ">
                               <div class="form-outline">
                                    <label class="" for="Zip">Zip</label>
-                      <input type="text" id="Zip" name="zip" class="form-control form-control-lg" />
+                      <input type="text" id="Zip" name="zip" class="form-control form-control-lg" required/>
 
                     </div>
                           </div>
                       <div class="col-md-6 mb-4">
                           <div class="form-outline ">
                               <label class="" for="">Country</label>
-                      <input type="text" id="Country" name="country" class="form-control form-control-lg" />
+                      <input type="text" id="Country" name="country" class="form-control form-control-lg" required/>
 
                           </div>
                     </div>
@@ -192,7 +202,7 @@
             <div class="row" style="padding: 2vh 0;">
 
                 <div class="col" style="font-weight: bold">TOTAL Amount to Pay</div>
-                <div class="col text-right" style="font-weight: bold"><span id="total_amount_to_pay" ></span> &#8377;</div>
+                <div class="col text-right" style="font-weight: bold"><span id="total_amount_to_pay" ></span> $</div>
                 <input type="hidden" name="final_total" id="final_total">
                 <input type="hidden" name="tax_price" id="tax_price">
                 <input type="hidden" name="shipment_charge" id="shipment_charge">
@@ -201,9 +211,9 @@
                      <hr/>
                 <h5>Select Payment Type</h5>
             <div class="row" style="padding: 2vh 0;">
-                <input type="hidden" name="payment_type" id="payment_type_input">
+                <input type="hidden" name="payment_type" id="payment_type_input" value="cod">
                 <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 select_payment">
-                    <div class="text-center payment_type" id="cod">
+                    <div class="text-center payment_type active"  id="cod">
                         Cash On Delivery
                     </div>
                 </div>
@@ -232,7 +242,15 @@
 {% endblock %}
 
 {% block jsfiles %}
-
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"
+        integrity="sha512-DNeDhsl+FWnx5B1EQzsayHMyP6Xl/Mg+vcnFPXGNjUZrW28hQaa1+A4qL9M+AiOMmkAhKAWYHh1a+t6qxthzUw=="
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css"
+        integrity="sha512-yye/u0ehQsrVrfSd6biT17t39Rg9kNc+vENcCXZuMz2a+LWFGvXUnYuWUW6pbfYj1jcBb/C39UZw2ciQvwDDvg=="
+        crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+        integrity="sha512-BNZ1x39RMH+UYylOW419beaGO0wqdSkO7pi1rYDYco9OL3uvXaC/GTqA5O4CVK2j4K9ZkoDNSSHVkEQKkgwdiw=="
+        crossorigin="anonymous"></script>
     <script>
          $(document).ready(function (){
              Mycart = JSON.parse(localStorage.getItem('Mycart'));
@@ -276,5 +294,34 @@
         $("#payment_type_input").val($(this).attr('id'))
 
     })
+
+
+
+
     </script>
+
+    <script>
+
+    var input = document.querySelector("#contact");
+    window.intlTelInput(input, {
+        separateDialCode: true,
+        customPlaceholder: function (
+            selectedCountryPlaceholder,
+            selectedCountryData
+        ) {
+
+            return "e.g. " + selectedCountryPlaceholder;
+        },
+    });
+
+
+    function validateFrom(){
+        if($(".payment_type").hasClass('active')){
+            alert('Please select any one payment type')
+        }
+        else{
+
+        }
+    }
+</script>
 {% endblock jsfiles %}

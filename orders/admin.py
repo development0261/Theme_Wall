@@ -16,7 +16,7 @@ def custom_titled_filter(title):
 class OrderAdmin(admin.ModelAdmin):
 
     list_filter = ['user','paymentMethod','isPaid','totalPrice','paidAt','payment_id','status']
-    list_display = ['user','paymentMethod','isPaid','totalPrice','paidAt','payment_id','deliveredAt','isDelivered','status']
+    list_display = ['user','paymentMethod','isPaid','totalPrice','paidAt','payment_id','deliveredAt','status']
     list_editable = ['status','isPaid']
 
 admin.site.register(Order,OrderAdmin)

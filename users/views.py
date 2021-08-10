@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model,login,authenticate
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from .models import Profile,CustomeUser,SellerRequest
+from .models import Profile,CustomeUser,SellerRequest,Address
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 import random
 from django.core.mail import send_mail
@@ -252,39 +252,36 @@ def terms_condition(request):
 def sendActivation(request):
     if request.method == "POST" and request.user.is_authenticated:
         proof = request.FILES['proof']
-        message = request.POST['message']
+        contact = request.POST['contact']
         fullname= request.POST['fullname']
         if not 'ImageName' in request.POST or not 'proof' in request.FILES:
             messages.error(request,'Please fill all details of form')
             return redirect('home')
 
-        request.user.fullname = fullname
-        request.user.save()
-        act_msg = SellerRequest(email=request.user.email, message=message, user=request.user,proof=proof)
+
+        act_msg = SellerRequest(email=request.user.email,user=request.user,proof=proof)
         act_msg.save()
-        user = CustomeUser.objects.get(email=request.user.email)
 
-        user.save()
-        from django.conf import settings
-        import cv2
-        imagePath = act_msg.proof.path
-        image = cv2.imread(imagePath)
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-        faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-        faces = faceCascade.detectMultiScale(
-            gray,
-            scaleFactor=1.3,
-            minNeighbors=3,
-            minSize=(30, 30)
-        )
-        for (x, y, w, h) in faces:
-            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-        for (x, y, w, h) in faces:
-            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            roi_color = image[y:y + h, x:x + w]
-            cv2.imwrite(settings.MEDIA_ROOT + '/proofs/'+str(request.user.username)+'_faces.jpg', roi_color)
+        # from django.conf import settings
+        # import cv2
+        # imagePath = act_msg.proof.path
+        # image = cv2.imread(imagePath)
+        # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        #
+        # faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+        # faces = faceCascade.detectMultiScale(
+        #     gray,
+        #     scaleFactor=1.3,
+        #     minNeighbors=3,
+        #     minSize=(30, 30)
+        # )
+        # for (x, y, w, h) in faces:
+        #     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        #
+        # for (x, y, w, h) in faces:
+        #     cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        #     roi_color = image[y:y + h, x:x + w]
+        #     cv2.imwrite(settings.MEDIA_ROOT + '/proofs/'+str(request.user.username)+'_faces.jpg', roi_color)
 
         ImageName =  request.POST['ImageName'].split(',')[1]
         import base64
@@ -292,28 +289,44 @@ def sendActivation(request):
             fh.write(base64.b64decode(ImageName))
 
         captured_face = settings.MEDIA_ROOT + '/proofs/'+str(request.user.username)+'_captureFace.jpg'
-        verify_with = imagePath
+        verify_with = act_msg.proof.path
         results = []
         cap = face_recognition.load_image_file(captured_face)
         ids = face_recognition.load_image_file(verify_with)
-        if face_recognition.face_encodings(cap) == []:
-            results[0] = False
-        else:
+        try:
             cap_encoding = face_recognition.face_encodings(cap)[0]
             id_encoding = face_recognition.face_encodings(ids)[0]
 
             results = face_recognition.compare_faces([cap_encoding], id_encoding)
-            print(results)
-            if results[0] == True:
-                messages.success(request,'Your Account Accepted as Seller Account')
-                request.user.role = 'seller'
-                request.user.save()
-            else:
-                messages.error(request, 'Your ID Proof Image and Capture Image Does not Match. Please try Again')
+
+            request.user.fullname = fullname
+            request.user.contact_no = contact
+            request.user.save()
+
+            pincode = request.POST['zip']
+            city = request.POST['city']
+            state = request.POST['state']
+            country = request.POST['country']
+            address = request.POST['address']
+
+            sellerAddress = Address(pincode=pincode,city=city,state=state,country=country,address=address,user=request.user)
+            sellerAddress.save()
+
+        except:
+            results[0] = False
+        print(results)
+        if results[0] == True:
+            messages.success(request,'Your Account Accepted as Seller Account')
+            request.user.role = 'seller'
+            request.user.save()
+        else:
+            messages.error(request, 'Your ID Proof Image and Capture Image Does not Match. Please try Again')
 
         return redirect("sellerDash")
 
+def sellerVarification(request):
 
+    return render(request,'products/sellerVarification.html')
 
 
 def activateAccount(request,email):

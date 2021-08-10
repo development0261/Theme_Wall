@@ -31,7 +31,6 @@ class Order(models.Model):
         max_digits=20, decimal_places=2, null=True, blank=True)
     isPaid = models.BooleanField(default=False)
     paidAt = models.DateTimeField(auto_now_add=False, null=True, blank=True)
-    isDelivered = models.BooleanField(default=False)
     deliveredAt = models.DateTimeField(
         auto_now_add=False, null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
@@ -81,7 +80,7 @@ class ShippingAddress(models.Model):
 
 
     def __str__(self):
-        return str(self.address)
+        return "{},{},{}".format(self.city,self.state,self.country)
 
 class wishlist(models.Model):
     product = models.ForeignKey(item,on_delete=models.CASCADE)

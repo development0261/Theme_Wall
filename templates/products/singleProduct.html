@@ -316,7 +316,7 @@ hr {
                 </div>
              <p id="ProductCount_{{ product.pk }}" style="display: none">{{ product.quantity }} </p>
                 <div class="about"> <span class="font-weight-bold" id="ProductName_{{ product.pk }}">{{  product.name }} </span>
-                    <h4 class="font-weight-bold" id="ProductPrice_{{ product.pk }}">&#8377; {{ product.price }}</h4>
+                    <h4 class="font-weight-bold" id="ProductPrice_{{ product.pk }}">$ {{ product.price }}</h4>
                 </div>
                 {% if product.quantity %}
             <div class="buttons"> <span id="divadd_{{product.pk}}" class="divproduct"><button class="btn btn-dark btn-long addProduct" id="addProduct_{{ product.pk }}">Add to Cart</button></span> <button class="btn btn-outline-dark addToWishList" id="addToWishList_{{product.pk}}"> <i class="fa fa-heart"></i> </button> </div>

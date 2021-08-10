@@ -9,7 +9,19 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css">
 <link href="{% static 'css/addProduct.css' %}" rel="stylesheet" />
-<style>
+    <script src=
+"https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js">
+    </script>
+    <script src=
+"https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js">
+    </script>
+    <link href=
+"http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css"
+          rel="stylesheet" type="text/css" />
+        <link href=
+    {% static "colorpicker-master/jquery.colorpicker.css"  %}
+          rel="stylesheet" type="text/css" />
+    <style>
   .form-group .form-control {
     display: block !important;
   }
@@ -78,7 +90,7 @@ td.sorting_1 {
       <tr>
 
         <td>{{ item.name }}</td>
-        <td>{{  item.price }} &#8377;</td>
+        <td>{{  item.price }} $</td>
 
         <td>{{ item.quantity }}</td>
         <td>{{  item.item_category }}</td>
@@ -111,7 +123,7 @@ td.sorting_1 {
               class="fa fa-trash"> </i></a>
 
         </td>
-        <td>{{  item.offer_price }} &#8377;</td>
+        <td>{{  item.offer_price }} $</td>
         <td>
           <p>
             {{ item.description }}
@@ -213,7 +225,8 @@ td.sorting_1 {
                     <div class="d-flex align-items-center">
                       <div class="color-list w-100">
                         <div class="d-flex ">
-                          <input type="text" name="color[]" class="form-control" />
+                          <input type="text" name="color[]" class="form-control" id="my_color_picker" />
+                            <input type="color" id="html5colorpicker" onchange="clickColor(0, -1, -1, 5)" value="#ff0000" style="width:85%;">
                           <div class="add__button">
                             <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>
                               </button>
@@ -324,6 +337,10 @@ td.sorting_1 {
 <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.2.9/js/responsive.bootstrap4.min.js"></script>
+       <script src=
+"{% static 'colorpicker-master/jquery.colorpicker.js' %}">
+    </script>
+
 <script>
   $(document).on('click','.editProduct',function (){
       var id = $(this).attr('id').slice(12,)
@@ -439,7 +456,7 @@ $("#edit-form").empty()
 
                                    :`
                                         <div class="add__button close__button">
-                  <button type="button" class="btn btn-danger btn-remove-size" ><span class="fa fa-remove"></span></span>
+                  <button type="button" class="btn btn-danger btn-remove-size" ><span class="fas fa-minus"></span></span>
                     </button>
                 </div>
                                    `}
@@ -491,7 +508,7 @@ $("#edit-form").empty()
 
                                    :`
                                       <div class="add__button close__button">
-          <button type="button" class="btn btn-danger btn-remove-color"><span class="fa fa-remove"></span>
+          <button type="button" class="btn btn-danger btn-remove-color"><span class="fas fa-minus"></span>
             </button>
         </div>
                                    `}
@@ -603,7 +620,7 @@ $("#edit-form").empty()
                             <option value="l">l</option>
                         </select>
                 <div class="add__button close__button">
-                  <button type="button" class="btn btn-danger btn-remove-size" ><span class="fa fa-remove"></span></span>
+                  <button type="button" class="btn btn-danger btn-remove-size" ><span class="fas fa-minus"></span></span>
                     </button>
                 </div>
 						</div>
@@ -620,7 +637,7 @@ $("#edit-form").empty()
       <div class="d-flex color-input">
         <input type="text" name="color[]" class="form-control" />
         <div class="add__button close__button">
-          <button type="button" class="btn btn-danger btn-remove-color"><span class="fa fa-remove"></span>
+          <button type="button" class="btn btn-danger btn-remove-color"><span class="fas fa-minus"></span>
             </button>
         </div>
       </div>
@@ -661,5 +678,23 @@ $("#edit-form").empty()
             }
         }
 
+           $(document).ready(function () {
+
+            $('#my_color_picker').colorpicker({
+                color: '#000',
+                onShow: function (colpkr) {
+                    $(colpkr).fadeIn(500);
+                    return false;
+                },
+                onHide: function (colpkr) {
+                    $(colpkr).fadeOut(500);
+                    return false;
+                },
+                onChange: function (hsb, hex, rgb) {
+                    $('#my_color_picker').css('backgroundColor', '#' + hex);
+                }
+            });
+            //            $('#<%=txtReserveType.ClientID %>')
+        });
 </script>
 {% endblock jsfiles %}

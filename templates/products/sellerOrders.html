@@ -193,7 +193,8 @@
 
                         <th>Total Amount</th>
                         <th>Status</th>
-                        <th>View Products</th>
+                        <th>Products</th>
+                        <th>Invoice</th>
                         <th>Payment id</th>
                         <th>deliveredAt</th>
                         <th>Created At</th>
@@ -207,13 +208,14 @@
                     <tr>
                          <td id="orderId_{{ order.pk }}">{{ order.uuid }}</td>
                         <td>{{ order.paymentMethod | upper}}</td>
-                        <td>{% if order.isPaid %}<span style="color: green">Paid</span>{% else %}<span style="color: red">Pending</span> {% endif %}</td>
+                        <td>{% if order.isPaid %}<span style="color: green;font-weight: bold">Paid</span>{% else %}<span style="color: red;font-weight: bold">Pending</span> {% endif %}</td>
 {#                        <td>{% if order.isDelivered %}<span style="color: green">Delivered</span>{% else %}<span style="color: red">Pending</span> {% endif %}</td>#}
 
                         <td id="total_price_{{ order.pk }}">$ {{ order.totalPrice }}</td>
                         <td><button class="btn btn-outline-dark updateStatus" id="updateStatus_{{ order.pk }}">Update Status</button></td>
-                        <td><button class="btn btn-dark displayProducts" id="displayProducts_{{ order.pk }}">Display Products</button></td>
-                        <td>Payemnt ID</td>
+                        <td><button class="btn btn-dark displayProducts" id="displayProducts_{{ order.pk }}"><i class="fas fa-eye"></i></button></td>
+                        <td><a class="btn btn-success" href="{% url 'invoice' order.pk %}"><i class="fas fa-file-invoice"></i></a></td>
+                        <td>Payment ID</td>
                         <td>{{ order.deliveredAt }}</td>
                         <td>{{  order.createdAt}}</td>
 

@@ -23,7 +23,7 @@ class Address(models.Model):
 	city = models.CharField(max_length=100,default="")
 	state = models.CharField(max_length=100,default="")
 	country = models.CharField(max_length=100,default="")
-	address  = models.TextField()
+	address = models.TextField()
 	pincode = models.CharField(max_length=100,default="")
 	user = models.ForeignKey(CustomeUser,on_delete=models.CASCADE)
 
@@ -31,7 +31,6 @@ class Address(models.Model):
 class SellerRequest(models.Model):
 	email = models.CharField(max_length=200)
 	user = models.ForeignKey(CustomeUser,on_delete=models.CASCADE)
-	message = models.TextField()
 	proof = models.FileField(upload_to='proofs',default="")
 	date = models.DateTimeField(auto_now_add=True)
 	def __str__(self):

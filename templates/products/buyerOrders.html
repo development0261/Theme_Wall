@@ -182,6 +182,7 @@
 
                         <th>Total Amount</th>
                         <th>View Products</th>
+                        <th>View Invoice</th>
                         <th>Payment id</th>
                         <th>deliveredAt</th>
                         <th>Created At</th>
@@ -194,12 +195,13 @@
                 {% for order in totalOrders %}
                     <tr>
                          <td id="orderId_{{ order.pk }}">{{ order.uuid }}</td>
-                        <td>{{ order.paymentMethod}}</td>
-                        <td>{% if order.isPaid %}<span style="color: green">Paid</span>{% else %}<span style="color: red">Pending</span> {% endif %}</td>
+                        <td>{{ order.paymentMethod | upper }}</td>
+                        <td>{% if order.isPaid %}<span style="color: green;font-weight: bold">Paid</span>{% else %}<span style="color: red;font-weight: bold">Pending</span> {% endif %}</td>
                         <td>{{ order.status }}</td>
 
                         <td id="total_price_{{ order.pk }}">$ {{ order.totalPrice }}</td>
-                        <td><button class="btn btn-success displayProducts" id="displayProducts_{{ order.pk }}">Display Products</button></td>
+                        <td><button class="btn btn-success displayProducts" id="displayProducts_{{ order.pk }}">View Products</button></td>
+                        <td><a class="btn btn-dark " href="{% url 'invoice' order.pk %}"><i class="fas fa-file-invoice"></i></a></td>
                         <td>Payemnt ID</td>
                         <td>{{ order.deliveredAt }}</td>
                         <td>{{  order.createdAt}}</td>

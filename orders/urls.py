@@ -5,7 +5,7 @@ urlpatterns = [
     path('cart/',cart,name="cart"),
     path('checkout/',checkout,name="checkout"),
     path('placeOrder/',placeOrder,name="placeOrder"),
-    path('invoice/',invoice,name="invoice"),
+    path('invoice/<int:id>/',invoice,name="invoice"),
     path('myOrders/',myOrders,name="myOrders"),
     path('sellerOrders/',sellerOrders,name="sellerOrders"),
     path('orderProducts/<int:id>/',orderProducts,name="orderProducts"),
@@ -13,4 +13,5 @@ urlpatterns = [
     path('updateStatus/',updateStatus,name="updateStatus"),
     path('addToWishList/',addToWishList,name="addToWishList"),
     path('fetchWishlist/',fetchWishlist,name="fetchWishlist"),
+
 ]

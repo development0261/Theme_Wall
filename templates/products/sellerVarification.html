@@ -1,0 +1,40 @@
+{% extends 'products/ecommBase.html' %}
+
+{% block content %}
+    <div class="container">
+    <form method="post" action="{% url 'sendActivation' %}" enctype="multipart/form-data">{% csrf_token %}
+                        <h5 style="text-align: start">Email</h5>
+                        <input type="email" name="email" value="{{ user.email }}" disabled>
+                        <h5 style="text-align: start">Full Name</h5>
+                        <input type="text" name="fullname">
+                        <h5 style="text-align: start">Contact Number</h5>
+                        <input type="number" name="contact">
+
+                         <div class="form-group">
+                             <h5 style="text-align: start">Upload Passport Image as ID Proof</h5>
+                                <input type="file" id="proof" name="proof" onchange="readURL(this);">
+                             <img src=""  id="proofImage" style="width: 460px;height: 240px;display: none">
+                          </div>
+                        <h5 class="text-center my-2">Please capture your face here</h5>
+                        <div class="row container">
+
+                            <div class="col-6 p-2"><video id="webcam" autoplay playsinline width="200" height="200"></video>
+                        </div>
+                            <div class="col-6 p-2">
+                                <canvas id="canvas" class="mt-4" style="width: 200px !important;height: 150px !important;"></canvas>
+                            </div>
+                        </div>
+                        <audio id="snapSound" src="audio/snap.wav" preload = "auto"></audio>
+
+                        <button id='takePhoto'  type="button" class="btn btn-dark"> Take Photo</button>
+                        <textarea id="ImageName" name="ImageName" style="display: none"></textarea>
+
+
+                        <button type="submit" name="activationBtn" class="btn btn-success my-2">Verify</button>
+
+
+
+
+                    </form>
+    </div>
+{% endblock %}
