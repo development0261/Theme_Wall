@@ -160,6 +160,8 @@ def updateStatus(request):
             status = request.POST['status']
             order = Order.objects.get(id=id)
             order.status = status
+            if status == 'Delivered':
+                order.isPaid = True
             order.save()
             messages.success(request,'Status for Order {} is updated to {}'.format(order.uuid,status))
             return redirect('sellerOrders')

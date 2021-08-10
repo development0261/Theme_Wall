@@ -305,14 +305,11 @@ def sendActivation(request):
             results = face_recognition.compare_faces([cap_encoding], id_encoding)
             print(results)
             if results[0] == True:
-                messages.success(request,'Your Account Accept as Seller Account')
+                messages.success(request,'Your Account Accepted as Seller Account')
                 request.user.role = 'seller'
                 request.user.save()
             else:
-                messages.error(request, 'Your ID Proof Image and Captrue Image Doesnot Match. Please try Again')
-
-
-        messages.success(request, "Please visit your email address to activate your account")
+                messages.error(request, 'Your ID Proof Image and Capture Image Does not Match. Please try Again')
 
         return redirect("sellerDash")
 
