@@ -18,7 +18,7 @@ from email.mime.image import MIMEImage
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
-YOUR_DOMAIN = "https://themes-wall.herokuapp.com/"
+YOUR_DOMAIN = "https://themes-wall.herokuapp.com"
 
 # Create your views here.
 def ordersIndex(request):
@@ -90,6 +90,16 @@ def placeOrder(request):
                 msg.content_subtype = 'html'  # Main content is text/html
                 msg.mixed_subtype = 'related'
                 msg.send()
+
+                # html_content = render_to_string('products/emailProducts.html', context=context).strip()
+                # msg = EmailMultiAlternatives("You have received orders for your products on men's wall", html_content,
+                #                              settings.EMAIL_HOST_USER, [order.user.email]
+                #                              )
+                # msg.content_subtype = 'html'  # Main content is text/html
+                # msg.mixed_subtype = 'related'
+                # msg.send()
+
+
                 return redirect('/orders/invoice/'+str(order.pk))
             else:
                 session = stripe.checkout.Session.create(
@@ -143,6 +153,15 @@ def invoice(request,id):
                msg.content_subtype = 'html'  # Main content is text/html
                msg.mixed_subtype = 'related'
                msg.send()
+
+               # html_content = render_to_string('products/emailProducts.html', context=context).strip()
+               # msg = EmailMultiAlternatives("You have received orders for your products on men's wall", html_content,
+               #                              settings.EMAIL_HOST_USER, [order.user.email]
+               #                              )
+               # msg.content_subtype = 'html'  # Main content is text/html
+               # msg.mixed_subtype = 'related'
+               # msg.send()
+
 
        address = ShippingAddress.objects.get(order=order)
        return render(request, 'products/invoice.html', {'order': order, 'address': address})
