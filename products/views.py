@@ -1,5 +1,6 @@
 import random
 
+import webcolors
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.hashers import make_password
 from django.core import serializers
@@ -75,12 +76,14 @@ def addProduct(request):
                 if sizes[0] != '':
                     sizes = set(sizes)
                     for size in sizes:
+                        if size == "No_Size":
+                            break
                         it_size = item_size(size=size, item=prod)
                         it_size.save()
                 if colors[0] != '':
                     colors = set(colors)
                     for color in colors:
-                        it_color = item_color(color=color, item=prod)
+                        it_color = item_color(color=str(color).lower(), item=prod)
                         it_color.save()
                 messages.success(request, "Your Product is added successfully")
 
@@ -165,12 +168,15 @@ def updateProduct(request,id):
                         prod.save()
 
                     if sizes[0] != '':
+
                         sizes = set(sizes)
                         item_size.objects.filter(item=prod).delete()
 
                         for size in sizes:
-                             it_size = item_size(size=size,item=prod)
-                             it_size.save()
+                            if size == "No_Size":
+                                break
+                            it_size = item_size(size=size,item=prod)
+                            it_size.save()
                     if colors[0] != '':
                         colors = set(colors)
                         item_color.objects.filter(item=prod).delete()
@@ -205,23 +211,32 @@ def buyproducts(request):
         elif filter == 'lowest':
             all_items= all_items.order_by('price')
 
+    if 'color' in request.GET:
+        all_items = all_items.filter(color__color="#"+request.GET['color'])
+
     if request.method == "POST":
         searched = request.POST['searchBox']
         all_items = all_items.filter(Q(name__icontains=searched) | Q(description__icontains=searched))
 
-    # paginator = Paginator(all_items, 15)
-    # page = request.GET.get('page')
-    # paged_items = paginator.get_page(page)
+    paginator = Paginator(all_items, 15)
+    page = request.GET.get('page')
+    paged_items = paginator.get_page(page)
 
     all_categories = category.objects.all()
-
-
-    return render(request,'products/index.html',{'all_items':all_items,'all_categories':all_categories})
+    colors = item_color.objects.all().values_list('color',flat=True).distinct()
+    colors_to_send = []
+    # for color in colors:
+    #     colors_to_send.append(webcolors.rgb_to_name(webcolors.hex_to_rgb(color)))
+    print(colors_to_send)
+    return render(request,'products/index.html',{'all_items':paged_items,'all_categories':all_categories,'colors':colors})
 
 def singleProduct(request,id):
-    single_item = get_object_or_404(item,id=id)
-    print(single_item)
-    return render(request,'products/singleProduct.html',{"product":single_item})
+    try:
+        single_item = get_object_or_404(item, id=id)
+        print(single_item)
+        return render(request, 'products/singleProduct.html', {"product": single_item})
+    except:
+        return redirect('home')
 
 def buyerprofile(request):
     if request.method == "POST" and request.user.is_authenticated:
@@ -232,6 +247,7 @@ def buyerprofile(request):
         confirmpassword = request.POST.get('confirmpassword','')
         city = request.POST['city']
         state = request.POST['state']
+        contact = request.POST['contact']
         zip = request.POST['zip']
         country = request.POST['country']
         address = request.POST['address']
@@ -247,6 +263,7 @@ def buyerprofile(request):
         request.user.fullname = name
         request.user.username = username
         request.user.email = email
+        request.user.contact_no = contact
         request.user.save()
         address1 = Address.objects.filter(user=request.user).last()
         address1.city=city

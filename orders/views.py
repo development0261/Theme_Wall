@@ -1,14 +1,24 @@
+import datetime
+
+from django.conf import settings
 from django.contrib import messages
 from django.core import serializers
+from django.core.mail import send_mail
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Order,ShippingAddress,OrderItem,wishlist
 from products.models import item
 from users.models import  Address
+import stripe
+from email.mime.image import MIMEImage
 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+stripe.api_key = settings.STRIPE_PRIVATE_KEY
+YOUR_DOMAIN = settings.MY_DOMAIN
 
 # Create your views here.
 def ordersIndex(request):
@@ -71,8 +81,38 @@ def placeOrder(request):
                 user_address = Address(city=city,state=state,country=country,pincode=zip,user=request.user,address=address1+" "+address2)
                 user_address.save()
 
-
-            return redirect('/orders/invoice/'+str(order.pk))
+            if payment_type == 'cod':
+                context = {'order': order}
+                html_content = render_to_string('products/email.html', context=context).strip()
+                msg = EmailMultiAlternatives("Your Order has been Placed with The Men's Wall",html_content,
+                          settings.EMAIL_HOST_USER,[order.user.email]
+                          )
+                msg.content_subtype = 'html'  # Main content is text/html
+                msg.mixed_subtype = 'related'
+                msg.send()
+                return redirect('/orders/invoice/'+str(order.pk))
+            else:
+                session = stripe.checkout.Session.create(
+                    client_reference_id=request.user.id if request.user.is_authenticated else None,
+                    payment_method_types=['card'],
+                    line_items=[{
+                        'price_data': {
+                            'currency': 'inr',
+                            'product_data': {
+                                'name': "Payment to The Men's Wall",
+                            },
+                            'unit_amount': int(order.totalPrice * 100),
+                        },
+                        'quantity': 1,
+                    }],
+                    metadata={
+                        "order_id": order.uuid
+                    },
+                    mode='payment',
+                    success_url=YOUR_DOMAIN + '/orders/invoice/'+str(order.pk),
+                    cancel_url=YOUR_DOMAIN + '/orders/paymentFail/',
+                )
+                return redirect('/orders/stripecheckout/'+session.id)
 
         else:
             messages.error(request,'Not Valid Request')
@@ -80,9 +120,30 @@ def placeOrder(request):
     else:
         return redirect('home')
 
+def stripecheckout(request,session_id):
+    return render(request,'products/stripe.html',{'session_id':session_id})
+
 def invoice(request,id):
    try:
        order = Order.objects.get(pk=int(id))
+       if 'access' in request.GET:
+           print('access')
+           pass
+       else:
+
+           if order.paymentMethod == 'stripe':
+               order.isPaid = True
+               order.paidAt = datetime.datetime.now()
+               order.save()
+               context = {'order': order}
+               html_content = render_to_string('products/email.html', context=context).strip()
+               msg = EmailMultiAlternatives("Your Order has been Placed with The Men's Wall", html_content,
+                                            settings.EMAIL_HOST_USER, [order.user.email]
+                                            )
+               msg.content_subtype = 'html'  # Main content is text/html
+               msg.mixed_subtype = 'related'
+               msg.send()
+
        address = ShippingAddress.objects.get(order=order)
        return render(request, 'products/invoice.html', {'order': order, 'address': address})
    except:
@@ -171,6 +232,7 @@ def updateStatus(request):
             order.status = status
             if status == 'Delivered':
                 order.isPaid = True
+                order.deliveredAt = datetime.datetime.now()
 
             order.save()
             messages.success(request,'Status for Order {} is updated to {}'.format(order.uuid,status))
@@ -214,3 +276,36 @@ def fetchWishlist(request):
         products_list.append(wish.product)
     return JsonResponse({'msg': 'success', 'products': serializers.serialize('json', products_list, ensure_ascii=False)})
 
+@csrf_exempt
+def webhook(request):
+    print("Webhook")
+    endpoint_secret = settings.STRIPE_ENDPOINT_SECRET
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, endpoint_secret
+        )
+    except ValueError as e:
+        # Invalid payload
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return HttpResponse(status=400)
+
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        print("Payment was successful.")
+        session = event['data']['object']
+        ID=session["metadata"]["order_id"]
+        order = Order.objects.get(id=ID)
+        order.isPaid = True
+        order.save()
+
+    return HttpResponse(status=200)
+
+def paymentFail(request):
+
+    return render(request,'products/paymentFail.html')

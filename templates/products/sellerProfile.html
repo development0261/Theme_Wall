@@ -70,6 +70,45 @@
                         <input type="text" class="form-control" name="fullname" placeholder="" value="{{ user.fullname }}" id="company">
                     </div>
                 </div>
+
+                <div class="col-md-12 mb-2">
+                    <div class="form-group">
+                        <label for="company">Contact Number</label>
+                        <input type="text" class="form-control" name="contact" placeholder="" value="{{ user.contact_no }}" id="company">
+                    </div>
+                </div>
+
+                    <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label for="zip">Zip</label>
+                        <input type="text" class="form-control" name="zip" placeholder="" value="{{ address.pincode }}" id="zip">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" name="city" placeholder="" value="{{ address.city }}" id="city">
+                    </div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <input type="text" class="form-control" name="state" placeholder="" value="{{ address.state }}" id="state">
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <input type="text" class="form-control" name="country" placeholder="" value="{{ address.country }}" id="country">
+                    </div>
+                </div>
+                <div class="col-md-12 mb-2">
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea class="form-control" name="address" placeholder="" >{{ address.address }}</textarea>
+                    </div>
+                </div>
                 <div class="col-md-12 mb-2">
                     <div class="form-group">
                         <label for="company">Password</label>

@@ -1,0 +1,17 @@
+{% extends 'products/ecommBase.html' %}
+
+{% block content %}
+<input type="hidden" value="{{ session_id }}" id="sessionId">
+
+{% endblock %}
+
+{% block jsfiles %}
+     <script src="https://js.stripe.com/v3/"></script>
+<script>
+$(document).ready(function (){
+        var stripe = Stripe('pk_test_BOoQL7wvEGMzyqkNptY1iu4I00iB5h1R9w');
+        var stripeStatus = stripe.redirectToCheckout({ sessionId: $("#sessionId").val() });
+        console.log(stripeStatus)
+})
+</script>
+{% endblock %}

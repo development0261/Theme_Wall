@@ -391,33 +391,28 @@ $(".delete_item").click(function(){
 })
 
 
-       function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-   }
-   async function Tutor() {
-
-         await sleep(3000);
-
-   }
+  function sleep(milliseconds) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}
 
 $(document).ready(function (){
     updateCart(Mycart)
 })
     $("#checkout").click(async  function (){
 
-        if (localStorage.getItem('ShipmentCart') == null) {
+
             var ShipmentCart = {};
-
-        } else {
-
-            ShipmentCart = JSON.parse(localStorage.getItem('ShipmentCart'));
             ShipmentCart['shipmentCharge'] = $("#shipment").html()
             ShipmentCart['tax'] = $("#tax").html()
             ShipmentCart['total'] = $("#final_total").html()
 
-        }
+
 		await localStorage.setItem('ShipmentCart', JSON.stringify(ShipmentCart))
-          Tutor()
+
         location.href="/orders/checkout"
     })
 </script>

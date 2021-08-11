@@ -10,8 +10,10 @@ urlpatterns = [
     path('sellerOrders/',sellerOrders,name="sellerOrders"),
     path('orderProducts/<int:id>/',orderProducts,name="orderProducts"),
     path('fetchStatus/<int:id>/',fetchStatus,name="fetchStatus"),
+    path('stripecheckout/<str:session_id>/',stripecheckout,name="stripecheckout"),
     path('updateStatus/',updateStatus,name="updateStatus"),
     path('addToWishList/',addToWishList,name="addToWishList"),
     path('fetchWishlist/',fetchWishlist,name="fetchWishlist"),
-
+    path('webhooks/stripe/',webhook,name="webhook"),
+    path('paymentFail/',paymentFail,name="paymentFail")
 ]

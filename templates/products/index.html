@@ -1,6 +1,7 @@
 {% extends "products/ecommBase.html" %}
 {% load static %}
 {% block style %}
+    {% load custom_tags %}
  <style>
 .search__input {
     border-color: #f0f2f5;
@@ -217,7 +218,87 @@ h5 {
 	right: 10px;
     color: #3E83C5;
 }
+.colorBox{
+    width: 75px;
+    height: 25px;
+    content: "";
+    border:1px solid black;
+    border-radius: 5px;
+    padding: 2px 50px;
+}
 
+.selectedColor{
+    border: 1px solid #3E83C5 ;
+    border-radius: 5px;
+    padding: 6px;
+}
+
+.mt-100 {
+    margin-top: 100px
+}
+
+.product-wrapper,
+.product-img {
+    overflow: hidden;
+    position: relative
+}
+
+.mb-45 {
+    margin-bottom: 45px
+}
+
+.product-action {
+    bottom: 0px;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    transition: all 0.6s ease 0s
+}
+
+.product-wrapper {
+    border-radius: 10px
+}
+
+.product-img>span {
+    background-color: #fff;
+    box-shadow: 0 0 8px 1.7px rgba(0, 0, 0, 0.06);
+    color: #333;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    left: 20px;
+    letter-spacing: 1px;
+    padding: 3px 12px;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    top: 20px
+}
+
+.product-action-style {
+    background-color: #fff;
+    box-shadow: 0 0 8px 1.7px rgba(0, 0, 0, 0.06);
+    display: inline-block;
+    padding: 16px 2px 12px
+}
+
+.product-action-style>a {
+    color: #979797;
+    line-height: 1;
+    padding: 0 21px;
+    position: relative
+}
+
+.product-action-style>a.action-plus {
+    font-size: 18px
+}
+
+.product-wrapper:hover .product-action {
+    bottom: 20px;
+    opacity: 1
+}
     </style>
 
 {% endblock %}
@@ -229,7 +310,7 @@ h5 {
         <div class="col-md-3">
             <div class="categories__wrp" style="border-radius: 5px">
                 <h4 class="text-center" >Categories</h4>
-            <hr/>
+                    <hr/>
                 <div class="widget__category">
 
                     <ul class="menu--mobile mt-2">
@@ -261,6 +342,22 @@ h5 {
                     </ul>
                 </div>
             </div>
+
+             <div class="mt-2 categories__wrp" style="background-color: #eeeeee;border-radius: 5px">
+                    <h6 class="p-1 border-bottom">Filter By</h6>
+                    <p class="mb-2">Color </p>
+                    <ul class="list-group" style="height: 300px;overflow-y: scroll">
+                        {% for color in colors %}
+                            {% if request.GET.cat_id %}
+                                <li class="list-group-item list-group-item-action mb-2 rounded"><a href="{{ request.path }}?cat_id={{ request.GET.cat_id }}&color={{ color|removeHash }}" style="display: flex;justify-content: center;text-decoration: none" ><span class="{% if request.GET.color == color|removeHash %} selectedColor {% endif %}"> <span class="colorBox" style="background-color: {{ color }};color: {{ color }}"></span></span> </a></li>
+                            {% else %}
+                                <li class="list-group-item list-group-item-action mb-2 rounded"><a href="{{ request.path }}?color={{ color|removeHash }}" style="display: flex;justify-content: center"> <span  class="{% if request.GET.color == color|removeHash %} selectedColor {% endif %}"><span class="colorBox" style="background-color: {{ color }};color: {{ color }}"></span></span> </a></li>
+                            {% endif %}
+
+                        {% endfor %}
+                    </ul>
+             </div>
+
 
 
         </div>
@@ -299,10 +396,13 @@ h5 {
                 </div>
             </div>
             </form>
+
             <div class="container mt-5 mb-5">
     <div class="d-flex justify-content-center row">
         <div class="col-md-10">
             {% for item in all_items %}
+
+
             <div class="row p-2 bg-white border rounded mt-2">
                 <div class="col-md-3 mt-1"><a href="{% url 'singleProduct' item.id %}"><img class="img-fluid img-responsive rounded product-image" id="ProductImage_{{ item.pk }}"  src="{{ item.image.url }}"></a></div>
                 <div class="col-md-6 mt-1">
@@ -363,7 +463,7 @@ h5 {
         </div>
     </div>
 </div>
-            <div class="pagination__inner mb-2">
+            <div class="pagination__inner mb-2 d-flex justify-content-center">
                 <nav aria-label="Page navigation example">
                      {% if all_items.has_other_pages %}
                     <ul class="pagination">
@@ -392,10 +492,9 @@ h5 {
                     {% endif %}
                   </nav>
             </div>
+            </div>
         </div>
-       </div>
     </div>
-
 {% endblock %}
 
 

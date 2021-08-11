@@ -249,9 +249,11 @@ td.sorting_1 {
                       <div class="size-list w-100">
                         <div class="d-flex">
                           <select name="size[]" class="form-control mb-2">
+
                             <option value="s">s</option>
                             <option value="m">m</option>
                             <option value="l">l</option>
+                              <option value="No_Size">No Size</option>
                           </select>
                           <div class="add__button">
                             <button type="button" class="btn btn-success btn-sm btn-add-size"><span class="fa fa-plus"></span>
@@ -289,7 +291,7 @@ td.sorting_1 {
                     <input type="file" id="file" class="input-file" name="image">
                     <label for="file" class="btn btn-tertiary js-labelFile">
                       <i class="icon fa fa-check"></i>
-                      <span class="js-fileName">Choose a file</span>
+                      <span class="js-fileName">Choose a file (Please Prefer JPG or JPEG Image to Upload)</span>
                     </label>
                   </div>
                   
@@ -397,7 +399,7 @@ td.sorting_1 {
           success: function(data) {
              if(data.msg = 'success'){
                 item = JSON.parse(data.item)
-
+                console.log(item[0].fields.name)
 $("#edit-form").empty()
                 categories = JSON.parse(data.categories)
                  console.log(categories)
@@ -408,8 +410,8 @@ $("#edit-form").empty()
               <div class="row">
                 <div class="col-6">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Product Name</label>
-                    <input type="text" class="form-control" value=${item[0].fields.name} id="editName" name="name" aria-describedby="emailHelp">
+                    <label for="">Product Name</label>
+                    <input type="text" class="form-control" value=${item[0].fields.name} id="editName" name="name" aria-describedby="">
                   </div>
                 </div>
                 <div class="col-6">
@@ -443,7 +445,7 @@ $("#edit-form").empty()
                      <div class="col-6 ">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Product Serial No</label>
-                    <input type="text" class="form-control" name="serial_no" value=${item[0].fields.serial_no} aria-describedby="emailHelp">
+                    <input type="text" class="form-control" name="serial_no" value="${item[0].fields.serial_no}" aria-describedby="emailHelp">
                   </div>
                 </div>
                      <div class="col-6 ">
@@ -503,6 +505,7 @@ $("#edit-form").empty()
                                         <option value="s" ${ item == 's' ? 'selected' : '' }>s</option>
                                         <option value="m" ${ item == 'm' ? 'selected' : '' }>m</option>
                                         <option value="l" ${ item == 'l' ? 'selected' : '' }>l</option>
+                                         <option value="No_Size " ${ item == '' ? 'selected' : '' }>No Size</option>
                                       </select>
                             <div class="add__button">
                                         <button type="button" class="btn btn-success btn-sm btn-add-size"><span class="fa fa-plus"></span>
@@ -521,6 +524,7 @@ $("#edit-form").empty()
                                         <option value="s" ${ item == 's' ? 'selected' : '' }>s</option>
                                         <option value="m" ${ item == 'm' ? 'selected' : '' }>m</option>
                                         <option value="l" ${ item == 'l' ? 'selected' : '' }>l</option>
+<option value="No_Size " ${ item == '' ? 'selected' : '' }>No Size</option>
                                       </select>
                                         ${ index == 0 ?
                                                 `
@@ -572,7 +576,7 @@ $("#edit-form").empty()
                             return(
                                 `
                                 <div class="d-flex color-input">
-                          <input type="text" name="color[]" value="${item}" class="form-control" />
+                         <span class="color-picker"> <input type="color" name="color[]" value="${item}" class="form-control colorPicker" /></span>
                           ${ index == 0 ?
                                                 `
                                                  <div class="add__button">
@@ -694,6 +698,7 @@ $("#edit-form").empty()
                             <option value="s">s</option>
                             <option value="m">m</option>
                             <option value="l">l</option>
+<option value="No_Size ">No Size</option>
                         </select>
                 <div class="add__button close__button">
                   <button type="button" class="btn btn-danger btn-remove-size" ><span class="fas fa-minus"></span></span>

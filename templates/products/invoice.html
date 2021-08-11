@@ -207,16 +207,16 @@
 {% load custom_tags %}
 {% block content %}
     <div class="container">
-     <div id="invoice" >
+     <div  >
 
     <div class="toolbar hidden-print">
         <div class="text-right">
-            <button id="printInvoice" class="btn btn-info"><i class="fa fa-print"></i> Print</button>
-            <button class="btn btn-info"><i class="fa fa-file-pdf-o"></i> Export as PDF</button>
+            <button id="printInvoice" class="btn btn-info"><i class="fas fa-print"></i> Print</button>
+
         </div>
         <hr>
     </div>
-    <div class="invoice overflow-auto">
+    <div class="invoice overflow-auto" id="invoice">
         <div style="min-width: 600px">
             <header>
                 <div class="row">
@@ -240,6 +240,7 @@
                     <div class="col invoice-to">
                         <div class="text-gray-light" >INVOICE TO:</div>
                         <h2 class="to">{{ order.user.fullname}}</h2>
+                        <h6>Contact No : {{ order.user.contact_no }}</h6>
                         <p>{{ address.zip }}, {{ address.address }}</p>
                         <div class="address">{{ address }}</div>
                         <div class="email"><a href="mailto:{{ order.user.email }}">{{ order.user.email }}</a></div>
@@ -313,6 +314,7 @@
 {% endblock %}
 
 {% block jsfiles %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
 <script>
  $('#printInvoice').click(function(){
             Popup($('.invoice')[0].outerHTML);
@@ -329,6 +331,46 @@
 				Counter += parseInt(Mycart[count][1]);
 			}
 		document.getElementById('CartCounter').innerHTML = Counter;
+
+
+
+			var doc = new jsPDF();
+
+ function saveDiv(divId, title) {
+     console.log(divId)
+ var elementHTML = $('#'+divId).html();
+ console.log(elementHTML)
+var specialElementHandlers = {
+    '#elementH': function (element, renderer) {
+        return true;
+    }
+};
+doc.fromHTML(elementHTML, 15, 15, {
+    'width': 150,
+    'elementHandlers': specialElementHandlers
+},
+function(bla){doc.save(`${title}.pdf`)});
+
+}
+
+function printDiv(divId,
+  title) {
+
+  let mywindow = window.open('', 'PRINT', 'height=650,width=900,top=100,left=150');
+
+  mywindow.document.write(`<html><head><title>${title}</title>`);
+  mywindow.document.write('</head><body >');
+  mywindow.document.write(document.getElementById(divId).innerHTML);
+  mywindow.document.write('</body></html>');
+
+  mywindow.document.close(); // necessary for IE >= 10
+  mywindow.focus(); // necessary for IE >= 10*/
+
+  mywindow.print();
+  mywindow.close();
+
+  return true;
+}
 
 </script>
 {% endblock %}

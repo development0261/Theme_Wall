@@ -195,7 +195,7 @@
                         <th>Status</th>
                         <th>Products</th>
                         <th>Invoice</th>
-                        <th>Payment id</th>
+
                         <th>deliveredAt</th>
                         <th>Created At</th>
 
@@ -214,8 +214,8 @@
                         <td id="total_price_{{ order.pk }}">$ {{ order.totalPrice }}</td>
                         <td><button class="btn btn-outline-dark updateStatus" id="updateStatus_{{ order.pk }}">Update Status</button></td>
                         <td><button class="btn btn-dark displayProducts" id="displayProducts_{{ order.pk }}"><i class="fas fa-eye"></i></button></td>
-                        <td><a class="btn btn-success" href="{% url 'invoice' order.pk %}"><i class="fas fa-file-invoice"></i></a></td>
-                        <td>Payment ID</td>
+                        <td><a class="btn btn-success" href="{% url 'invoice' order.pk %}?access=read"><i class="fas fa-file-invoice"></i></a></td>
+
                         <td>{{ order.deliveredAt }}</td>
                         <td>{{  order.createdAt}}</td>
 

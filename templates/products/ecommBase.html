@@ -15,7 +15,27 @@
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
     <style>
+        ::-webkit-scrollbar {
+  width: 5px;
 
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #3E83C5 ;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #89C34A ;
+    border-radius: 50px;
+    height: 100px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #89C34A ;
+}
         form input , form select {
             width: inherit;
             max-width: inherit;
@@ -147,11 +167,11 @@
 
 
          <li class="nav-item">
-        <a class="nav-link {% if '/products/buyproducts/' == request.path %}active {% endif %}" href="{% url 'buyproducts' %}" ><i class="fa fa-home" aria-hidden="true"></i>&nbsp;Home</a>
+        <a class="nav-link {% if '/products/buyproducts/' == request.path %}active {% endif %}" href="{% url 'buyproducts' %}" ><i class="fas fa-home" aria-hidden="true"></i>&nbsp;Home</a>
       </li>
 
  <li class="nav-item">
-        <a class="nav-link {% if '/orders/myOrders/' == request.path %}active {% endif %}" href="{% url 'myOrders' %}"><i class="fa fa-truck" aria-hidden="true"></i>&nbsp;My Orders</a>
+        <a class="nav-link {% if '/orders/myOrders/' == request.path %}active {% endif %}" href="{% url 'myOrders' %}"><i class="fas fa-box" aria-hidden="true"></i>&nbsp;My Orders</a>
       </li>
             <li class="nav-item">
         <a class="nav-link " href="{% url 'logout' %}">{% if '/orders/myOrders/' == request.path %}<i class="fas fa-sign-out-alt"></i>{% else %}<i class="fas fa-sign-out-alt" aria-hidden="true"></i>{% endif %}&nbsp;Logout</a>
@@ -312,7 +332,7 @@ Mycart = JSON.parse(localStorage.getItem('Mycart'));
                                     <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${product.pk}"><img src="/media/${product.image}" width="100" alt="Product"></a>
                                       <div class="p-2  ml-4 text-center">
                                         <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">${product.name}</a></h5>
-                                                                <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">${product.price}</a></h5>
+                                                                <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">$ ${product.price}</a></h5>
 
 
                                       </div>

@@ -55,14 +55,14 @@ class item_size(models.Model):
         ('l','l'),
     ]
     item = models.ForeignKey(item,on_delete=models.CASCADE)
-    size = models.CharField(choices=size_list,max_length=5)
+    size = models.CharField(choices=size_list,max_length=5,null=True,blank=True)
 
     def __str__(self):
         return "Size : {} for item : {}".format(self.size,self.item)
 
 class item_color(models.Model):
     color = models.CharField(max_length=100)
-    item = models.ForeignKey(item, on_delete=models.CASCADE)
+    item = models.ForeignKey(item, on_delete=models.CASCADE,related_name='color')
     def __str__(self):
         return "Color : {} for item : {}".format(self.color,self.item)
 

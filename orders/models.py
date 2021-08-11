@@ -35,7 +35,7 @@ class Order(models.Model):
         auto_now_add=False, null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.AutoField(primary_key=True, editable=False)
-    payment_id = models.TextField(default=" ",null=True,blank=True)
+
     status = models.CharField(choices=status_type,null=True,blank=True,max_length=50)
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True, editable=False)
 

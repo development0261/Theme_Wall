@@ -173,3 +173,11 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'mikcraft1995@gmail.com'
 EMAIL_HOST_PASSWORD = 'irdcudexygqgvjzw'
+
+if DEBUG:
+    MY_DOMAIN = 'http://127.0.0.1:8000'
+else:
+    MY_DOMAIN = "https://themes-wall.herokuapp.com/"
+STRIPE_PUBLIC_KEY='pk_test_BOoQL7wvEGMzyqkNptY1iu4I00iB5h1R9w'
+STRIPE_PRIVATE_KEY='sk_test_u5wdCQEZ7X9PPfeVZ7OeoC5R00odgYpEJD'
+STRIPE_ENDPOINT_SECRET = ''
