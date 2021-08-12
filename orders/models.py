@@ -77,8 +77,6 @@ class ShippingAddress(models.Model):
     shippingPrice = models.DecimalField(
         max_digits=7, decimal_places=2, null=True, blank=True)
     id = models.AutoField(primary_key=True, editable=False)
-
-
     def __str__(self):
         return "{},{},{}".format(self.city,self.state,self.country)
 

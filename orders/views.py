@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import Order,ShippingAddress,OrderItem,wishlist
 from products.models import item
-from users.models import  Address
+from users.models import Address, CustomeUser
 import stripe
 from email.mime.image import MIMEImage
 
@@ -91,15 +91,22 @@ def placeOrder(request):
                 msg.mixed_subtype = 'related'
                 msg.send()
 
-                # html_content = render_to_string('products/emailProducts.html', context=context).strip()
-                # msg = EmailMultiAlternatives("You have received orders for your products on men's wall", html_content,
-                #                              settings.EMAIL_HOST_USER, [order.user.email]
-                #                              )
-                # msg.content_subtype = 'html'  # Main content is text/html
-                # msg.mixed_subtype = 'related'
-                # msg.send()
+                order_products = order.get_order_items()
+                orders_sellers = order_products.values_list('product__seller',flat=True).distinct()
+                products_of_same_seller = {}
 
+                for seller in orders_sellers:
+                    products_of_same_seller[seller] = order_products.filter(product__seller=seller)
 
+                for seller,products in products_of_same_seller.items():
+                    context = {'order': order,'products':products,'YOUR_DOMAIN':YOUR_DOMAIN}
+                    html_content = render_to_string('products/emailProducts.html', context=context).strip()
+                    msg = EmailMultiAlternatives("You have received orders for your products on men's wall", html_content,
+                                                 settings.EMAIL_HOST_USER, [CustomeUser.objects.get(pk=seller).email]
+                                                 )
+                    msg.content_subtype = 'html'  # Main content is text/html
+                    msg.mixed_subtype = 'related'
+                    msg.send()
                 return redirect('/orders/invoice/'+str(order.pk))
             else:
                 session = stripe.checkout.Session.create(
@@ -154,13 +161,24 @@ def invoice(request,id):
                msg.mixed_subtype = 'related'
                msg.send()
 
-               # html_content = render_to_string('products/emailProducts.html', context=context).strip()
-               # msg = EmailMultiAlternatives("You have received orders for your products on men's wall", html_content,
-               #                              settings.EMAIL_HOST_USER, [order.user.email]
-               #                              )
-               # msg.content_subtype = 'html'  # Main content is text/html
-               # msg.mixed_subtype = 'related'
-               # msg.send()
+               order_products = order.get_order_items()
+               orders_sellers = order_products.values_list('product__seller', flat=True).distinct()
+               products_of_same_seller = {}
+
+               for seller in orders_sellers:
+                   products_of_same_seller[seller] = order_products.filter(product__seller=seller)
+
+               for seller, products in products_of_same_seller.items():
+                   context = {'order': order, 'products': products,'YOUR_DOMAIN':YOUR_DOMAIN}
+                   html_content = render_to_string('products/emailProducts.html', context=context).strip()
+                   msg = EmailMultiAlternatives("You have received orders for your products on men's wall",
+                                                html_content,
+                                                settings.EMAIL_HOST_USER, [CustomeUser.objects.get(pk=seller).email]
+                                                )
+                   msg.content_subtype = 'html'  # Main content is text/html
+                   msg.mixed_subtype = 'related'
+                   msg.send()
+
 
 
        address = ShippingAddress.objects.get(order=order)
@@ -176,9 +194,7 @@ def myOrders(request):
             totalPendigOrders = Order.objects.filter(Q(user=request.user) and ~Q(status='Delivered')).count()
             totalPaidOrders = Order.objects.filter(user=request.user,isPaid=True).count()
             totalUnPaidOrders = Order.objects.filter(user=request.user,isPaid=False).count()
-
             totalOrders =  Order.objects.filter(user=request.user)
-
             return render(request,'products/buyerOrders.html',{
                 'totalDeliveredOrders':totalDeliveredOrders,
                 'totalPendigOrders':totalPendigOrders,
@@ -190,10 +206,8 @@ def myOrders(request):
         return redirect('home')
 
 def orderProducts(request,id):
-
     order_products = OrderItem.objects.filter(order_id=id)
     order_products = serializers.serialize('json', order_products, ensure_ascii=False)
-
     return JsonResponse({'msg':'success','products':order_products})
 
 def sellerOrders(request):
@@ -204,9 +218,7 @@ def sellerOrders(request):
             totalPendigOrders = []
             totalPaidOrders = []
             totalUnPaidOrders = []
-
             totalOrders = []
-
             for order_id in seller_orders:
                 order = Order.objects.get(pk=order_id[0])
                 totalOrders.append(order)
@@ -231,13 +243,11 @@ def sellerOrders(request):
 
 def fetchStatus(request,id):
     if request.user.is_authenticated:
-
         try:
             order = Order.objects.get(id=id)
             return JsonResponse({'msg':'success','status':order.status})
         except:
             return JsonResponse({'msg':'error'})
-
     else:
         return redirect('login')
 

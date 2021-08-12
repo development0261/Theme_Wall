@@ -10,7 +10,7 @@
         <div class="row d-flex justify-content-center">
             <div class="col-md-6 col-lg-6 col-sm-10 col-xs-10" style="border: 2px solid #3E83C5;padding: 15px">
                  <div class="companyLogo">
-                                <img src="https://themes-wall.herokuapp.com/static/images/logo_png.png" width="200">
+                                <img src="https://themes-wall.herokuapp.com/static/images/logo_png.png" width="200" />
                  </div>
 
                 <div class="emailContent">
@@ -21,21 +21,27 @@
 
 
                         </div>
-                    <h6 class="my-2"> Products </h6>
-                    <div class="row container my-2">
-                        <div class="col-3">
-                             <img src="http://127.0.0.1:8000/static/images/avatar.png"  width="120" />
+                    <h6 class="my-2" style="font-size: 0.8rem;">Products </h6>
+                 {% for item in products %}
+                        <div class="row container my-2">
+                            <div class="col-3">
+                                 <img src="{{ YOUR_DOMAIN }}{{ item.product.image.url }}"  width="120" />
+                            </div>
+                             <div class="col-9">
+                                 <h6 style="font-size: 0.7rem;margin: 0px 2px"> Serial No : {{ item.product.serial_no }} </h6>
+                                 <h6 style="font-size: 0.7rem;margin: 0px 2px"> Product Name : {{ item.product.name }} </h6>
+                                 <h6 style="font-size: 0.7rem;margin: 0px 2px"> Color : <span style=" height: 10px;
+    width: 10px;
+    border : 1px solid black;
+    border-radius: 50%;
+    display: inline-block;background-color: #{{ item.color }}" ></span> </h6>
+                                 <h6 style="font-size: 0.7rem;margin: 0px 2px"> Size : {{ item.size }} </h6>
+                                 <h6 style="font-size: 0.7rem;margin: 0px 2px"> Qty : {{ item.qty }} </h6>
+                             </div>
                         </div>
-                         <div class="col-9">
-                             <h6 style="font-size: 0.9rem"> Serial No : {{ item.product.serial_no }} </h6>
-                             <h6 style="font-size: 0.9rem"> Product Name : {{ item.product.name }} </h6>
-                             <h6 style="font-size: 0.9rem"> Color : {{ item.color }} </h6>
-                             <h6 style="font-size: 0.9rem"> Size : {{ item.size }} </h6>
-                             <h6 style="font-size: 0.9rem"> Qty : {{ item.qty }} </h6>
-                         </div>
+                        <hr/>
+                  {% endfor %}
 
-                    </div>
-                 <hr/>
             </div>
         </div>
 

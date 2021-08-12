@@ -73,11 +73,12 @@ def addProduct(request):
 
                 if sizes[0] != '':
                     sizes = set(sizes)
-                    for size in sizes:
-                        if size == "No_Size":
-                            break
-                        it_size = item_size(size=size, item=prod)
-                        it_size.save()
+                    if 'No_Size' not in sizes:
+
+                        for size in sizes:
+
+                            it_size = item_size(size=size, item=prod)
+                            it_size.save()
                 if colors[0] != '':
                     colors = set(colors)
                     for color in colors:
@@ -141,6 +142,7 @@ def updateProduct(request,id):
                     offer = request.POST['offer']
                     it_category = request.POST['category']
                     quantity = request.POST['quantity']
+                    serial_no = request.POST['serial_no']
 
                     description = request.POST['description']
                     sizes = request.POST.getlist('size[]')
@@ -149,6 +151,7 @@ def updateProduct(request,id):
                     prod = get_object_or_404(item,id=id)
                     if prod:
                         prod.name = name
+                        prod.serial_no = serial_no
                         prod.price = price
                         prod.offer_price = offer
                         prod.item_category= category.objects.get(id=it_category)
@@ -169,12 +172,12 @@ def updateProduct(request,id):
 
                         sizes = set(sizes)
                         item_size.objects.filter(item=prod).delete()
+                        if 'No_Size' not in sizes:
 
-                        for size in sizes:
-                            if size == "No_Size":
-                                break
-                            it_size = item_size(size=size,item=prod)
-                            it_size.save()
+                            for size in sizes:
+                                it_size = item_size(size=size, item=prod)
+                                it_size.save()
+
                     if colors[0] != '':
                         colors = set(colors)
                         item_color.objects.filter(item=prod).delete()
@@ -220,7 +223,8 @@ def buyproducts(request):
     page = request.GET.get('page')
     paged_items = paginator.get_page(page)
 
-    all_categories = category.objects.all()
+    all_categories = item.objects.all().values_list('item_category__pk','item_category__name').distinct()
+    print(all_categories)
     colors = item_color.objects.all().values_list('color',flat=True).distinct()
     colors_to_send = []
     # for color in colors:
