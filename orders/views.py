@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Order,ShippingAddress,OrderItem,wishlist
-from products.models import item
+from products.models import item, item_qty
 from users.models import Address, CustomeUser
 import stripe
 from email.mime.image import MIMEImage
@@ -74,8 +74,9 @@ def placeOrder(request):
                                           )
                 order_product.save()
 
-                product.quantity = int(product.quantity) - int(qtys[it])
-                product.save()
+                prod_qty = item_qty.objects.get(product=order_product.product,color__color__iexact='#'+order_product.color,size__size__iexact=order_product.size)
+                prod_qty.quantity = int(prod_qty.quantity) - int(qtys[it])
+                prod_qty.save()
 
             if not Address.objects.filter(user=request.user).exists():
                 user_address = Address(city=city,state=state,country=country,pincode=zip,user=request.user,address=address1+" "+address2)
@@ -194,7 +195,9 @@ def myOrders(request):
             totalPendigOrders = Order.objects.filter(Q(user=request.user) and ~Q(status='Delivered')).count()
             totalPaidOrders = Order.objects.filter(user=request.user,isPaid=True).count()
             totalUnPaidOrders = Order.objects.filter(user=request.user,isPaid=False).count()
-            totalOrders =  Order.objects.filter(user=request.user)
+            totalOrders =  Order.objects.filter(user=request.user).order_by(
+                '-createdAt'
+            )
             return render(request,'products/buyerOrders.html',{
                 'totalDeliveredOrders':totalDeliveredOrders,
                 'totalPendigOrders':totalPendigOrders,
@@ -213,7 +216,9 @@ def orderProducts(request,id):
 def sellerOrders(request):
     if request.user.is_authenticated:
         if request.user.role == 'seller':
-            seller_orders = OrderItem.objects.filter(product__seller=request.user).values_list('order__id').distinct()
+            seller_orders = OrderItem.objects.filter(product__seller=request.user).values_list('order__id').distinct().order_by(
+                '-createdAt'
+            )
             totalDeliveredOrders =[]
             totalPendigOrders = []
             totalPaidOrders = []
@@ -338,3 +343,11 @@ def webhook(request):
 def paymentFail(request):
 
     return render(request,'products/paymentFail.html')
+
+
+def removeFromWishList(request,id):
+
+        product = wishlist.objects.get(product__pk=id)
+        product.delete()
+        return JsonResponse({'msg':'success'})
+

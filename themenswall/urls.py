@@ -34,6 +34,7 @@ urlpatterns = [
     path('sendActivation/', sendActivation, name='sendActivation'),
     path('sellerVarification/', sellerVarification, name='sellerVarification'),
     path('activateAccount/<str:email>/', activateAccount, name='activateAccount'),
+    path('contactus/',user_views.contactus,name="contactus"),
 ]
 
 if settings.DEBUG:

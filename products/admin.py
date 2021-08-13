@@ -23,10 +23,17 @@ class ColorAdmin(admin.ModelAdmin):
 
 admin.site.register(item_color,ColorAdmin)
 
+class QtyAdmin(admin.ModelAdmin):
+    list_display = [
+      'product','quantity','size','color'
+    ]
+    list_editable = ['quantity']
+admin.site.register(item_qty,QtyAdmin)
+
 class itemAdmin(admin.ModelAdmin):
     def thumbnail(self,object):
         return format_html('<img src="{}" width="40" style="border-radius:50px">'.format(object.image.url))
-    list_display = ['id','name','price','is_available','quantity','thumbnail']
+    list_display = ['id','name','price','is_available','thumbnail']
     inlines = (SizeInliner,colorInliner)
 
 

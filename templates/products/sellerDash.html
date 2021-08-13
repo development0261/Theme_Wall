@@ -37,7 +37,7 @@ td.sorting_1 {
   .dot {
     height: 15px;
     width: 15px;
-         margin-bottom: 4px;
+
     margin-right: -2px;
     border : 1px solid black;
     border-radius: 50%;
@@ -62,8 +62,8 @@ td.sorting_1 {
 }
 
 .color-picker {
-  padding: 10px 15px;
-  border-radius: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
   border: 1px solid #ccc;
   background-color: #f8f9f9;
 }
@@ -96,11 +96,10 @@ td.sorting_1 {
         <th>Name</th>
         <th>Price</th>
 
-        <th>Quantity</th>
+        <th>Color - Size - Qty</th>
         <th>Category</th>
         <th>Image</th>
-        <th>Size.</th>
-        <th>Color</th>
+
         <th>Created Date</th>
 
         <th>Actions </th>
@@ -116,28 +115,16 @@ td.sorting_1 {
         <td>{{ item.name }}</td>
         <td>{{  item.price }} $</td>
 
-        <td>{{ item.quantity }}</td>
+        <td>{% for thing in item.get_qtys %}
+            <span class="dot" style="background-color: {{ thing.color.color }};margin-left: 5px"></span> -
+            <span style="margin-left: 5px"> {{ thing.size.size | title }}</span> -
+            <span style="margin-left: 5px"> {{ thing.quantity }}</span>
+            <br/>
+        {% endfor %}</td>
         <td>{{  item.item_category }}</td>
 
         <td><img src="{{ item.image.url }}" width="60" /></td>
-        <td>
-          {% if item.get_size|length > 0 %}
-          {% for size in item.get_size %}
-          {{ size }}
-          {% endfor %}
-          {% else %}
-          No Size Added
-          {% endif %}
-        </td>
-        <td class="sorting_1">
-          {% if item.get_color|length > 0 %}
-          {% for color in item.get_color %}
-          <span class="dot" style="background-color: {{ color }}"></span>
-          {% endfor %}
-          {% else %}
-          No Color Added
-          {% endif %}
-        </td>
+
         <td>{{ item.created_at }}</td>
 
         <td>
@@ -183,6 +170,19 @@ td.sorting_1 {
                     <input type="text" class="form-control" name="name" aria-describedby="emailHelp">
                   </div>
                 </div>
+                  <div class="col-6">
+                  <div class="form-group">
+
+                    <label for="catid">Product Category</label>
+
+                    <select class="form-control" id="catid" name="category" style="display: inherit;">
+                      {% for category in all_categories %}
+                      <option value="{{ category.id }}">{{ category.name }}</option>
+                      {% endfor %}
+                    </select>
+
+                  </div>
+                </div>
                 <div class="col-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Product Price</label>
@@ -197,12 +197,7 @@ td.sorting_1 {
                       aria-describedby="emailHelp">
                   </div>
                 </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Product Quantity</label>
-                    <input type="number" class="form-control" name="quantity" aria-describedby="emailHelp">
-                  </div>
-                </div>
+
                 <div class="col-12">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Product Description</label>
@@ -229,22 +224,12 @@ td.sorting_1 {
                   </div>
                 </div>
 
-                <div class="col-12">
-                  <div class="form-group">
 
-                    <label for="catid">Product Category</label>
-
-                    <select class="form-control" id="catid" name="category" style="display: inherit;">
-                      {% for category in all_categories %}
-                      <option value="{{ category.id }}">{{ category.name }}</option>
-                      {% endfor %}
-                    </select>
-
-                  </div>
-                </div>
-                <div class="col-6">
+                <div class="col-12 product_things_list ">
+                    <div class="row container">
+                    <div class="col-4">
                   <div class="form-group my-2">
-                    <label for="exampleInputEmail1"> Product Sizes Available</label>
+                    <label for="exampleInputEmail1">Sizes</label>
                     <div class="d-flex align-items-center">
                       <div class="size-list w-100">
                         <div class="d-flex">
@@ -255,37 +240,71 @@ td.sorting_1 {
                             <option value="l">l</option>
                               <option value="No_Size">No Size</option>
                           </select>
-                          <div class="add__button">
-                            <button type="button" class="btn btn-success btn-sm btn-add-size"><span class="fa fa-plus"></span>
-                              </button>
-                          </div>
+{#                          <div class="add__button">#}
+{#                            <button type="button" class="btn btn-success btn-sm btn-add-size"><span class="fa fa-plus"></span>#}
+{#                              </button>#}
+{#                          </div>#}
                         </div>
                       </div>
-  
-                      
-                    </div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group my-2">
-                    <label for="exampleInputEmail1"> Product Colors Available</label>
-                    <div class="d-flex align-items-center">
-                      <div class="color-list w-100">
-                        <div class="d-flex ">
 
-<span class="color-picker"><input type="color" name="color[]" class="form-control colorPicker"  id="my_color_picker" />
-</span>
-                          <div class="add__button">
-                            <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>
-                              </button>
-                          </div>
-                        </div>
-                      </div>
-  
-                      
+
                     </div>
                   </div>
                 </div>
+                    <div class="col-3">
+                          <div class="form-group my-2">
+                            <label for="exampleInputEmail1">Colors</label>
+                            <div class="d-flex align-items-center">
+                              <div class="color-list w-100">
+                                <div class="d-flex ">
+
+        <span class="color-picker"><input type="color" name="color[]" class="form-control colorPicker"  id="my_color_picker" />
+        </span>
+{#                                  <div class="add__button">#}
+{#                                    <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>#}
+{#                                      </button>#}
+{#                                  </div>#}
+                                </div>
+                              </div>
+
+
+                            </div>
+                          </div>
+                        </div>
+                    <div class="col-4">
+                          <div class="form-group my-2">
+                            <label for="exampleInputEmail1">Quantity</label>
+                            <div class="d-flex align-items-center">
+                              <div class="qty-list w-100">
+                                <div class="d-flex ">
+
+        <input type="number" name="qty[]" class="form-control colorPicker"  id="qty" required/>
+
+
+                                </div>
+                              </div>
+
+
+                            </div>
+                          </div>
+                        </div>
+                   <div class="col-1">
+                       <div class="form-group my-2" style="padding: 25px 0px">
+                        <div class="add__button">
+                                    <button type="button" class="btn btn-success btn-sm btn-add-things"><span class="fa fa-plus"></span>
+                                      </button>
+                                  </div>
+                       </div>
+                   </div>
+{#                    <div class="">#}
+{#                            <a  href="#" type="button" class="btn-sm btn-add-things" style="color: #337ab7"><span class="fa fa-plus"> Add Another</span>#}
+{#                              </a>#}
+{#                    </div>#}
+                </div>
+                </div>
+
+
+
                 <div class="col-12 browser__img" >
                   <div class="form-group">
                     <input type="file" id="file" class="input-file" name="image">
@@ -398,11 +417,12 @@ td.sorting_1 {
 
           success: function(data) {
              if(data.msg = 'success'){
+
                 item = JSON.parse(data.item)
-                console.log(item[0].fields.name)
-$("#edit-form").empty()
+
+                $("#edit-form").empty()
                 categories = JSON.parse(data.categories)
-                 console.log(categories)
+                 console.log(data.serialized_things)
                  $("#edit-form").append(
                      `
                       <form  method="post" action="/products/updateProduct/${id}/" enctype="multipart/form-data" class="product__form">
@@ -412,6 +432,29 @@ $("#edit-form").empty()
                   <div class="form-group">
                     <label for="">Product Name</label>
                     <input type="text" class="form-control" value=${item[0].fields.name} id="editName" name="name" aria-describedby="">
+                  </div>
+                </div>
+                  <div class="col-6">
+                  <div class="form-group">
+
+                    <label for="catid">Product Category</label>
+
+                    <select class="form-control" id="catid" name="category" style="display: inherit;" >
+                      ${
+                            categories.map((item1,index)=>{
+                                return(
+                                    `
+                                        <option value="${item1.pk}" ${ item1.pk == item[0].fields.item_category? 'selected' : '' }
+
+                                            >${item1.fields.name}</option>
+                                    `
+                                )
+                            }).join('')
+                     }
+
+
+                    </select>
+
                   </div>
                 </div>
                 <div class="col-6">
@@ -428,12 +471,7 @@ $("#edit-form").empty()
                       aria-describedby="emailHelp">
                   </div>
                 </div>
-                <div class="col-6">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Product Quantity</label>
-                    <input type="number" class="form-control" id="productQuantity" value=${item[0].fields.quantity} name="quantity" aria-describedby="emailHelp">
-                  </div>
-                </div>
+
                 <div class="col-12">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Product Description</label>
@@ -470,141 +508,187 @@ $("#edit-form").empty()
                     </select>
                   </div>
                 </div>
-                <div class="col-12">
-                  <div class="form-group">
+                <div class="col-12 product_things_list ">
+                 ${
+                        data.things_list.length == 0 ? `
 
-                    <label for="catid">Product Category</label>
+                    <div class="row container">
+                    <div class="col-4">
+                  <div class="form-group my-2">
+                    <label for="exampleInputEmail1">Sizes</label>
+                    <div class="d-flex align-items-center">
+                      <div class="size-list w-100">
+                        <div class="d-flex">
+                          <select name="size[]" class="form-control mb-2">
 
-                    <select class="form-control" id="catid" name="category" style="display: inherit;" >
-                      ${
-                            categories.map((item1,index)=>{
+                            <option value="s">s</option>
+                            <option value="m">m</option>
+                            <option value="l">l</option>
+                              <option value="No_Size">No Size</option>
+                          </select>
+{#                          <div class="add__button">#}
+{#                            <button type="button" class="btn btn-success btn-sm btn-add-size"><span class="fa fa-plus"></span>#}
+{#                              </button>#}
+{#                          </div>#}
+                        </div>
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+                    <div class="col-3">
+                          <div class="form-group my-2">
+                            <label for="exampleInputEmail1">Colors</label>
+                            <div class="d-flex align-items-center">
+                              <div class="color-list w-100">
+                                <div class="d-flex ">
+
+        <span class="color-picker"><input type="color" name="color[]" class="form-control colorPicker"  id="my_color_picker" />
+        </span>
+{#                                  <div class="add__button">#}
+{#                                    <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>#}
+{#                                      </button>#}
+{#                                  </div>#}
+                                </div>
+                              </div>
+
+
+                            </div>
+                          </div>
+                        </div>
+                    <div class="col-4">
+                          <div class="form-group my-2">
+                            <label for="exampleInputEmail1">Quantity</label>
+                            <div class="d-flex align-items-center">
+                              <div class="qty-list w-100">
+                                <div class="d-flex ">
+
+        <input type="number" name="qty[]" class="form-control colorPicker"  id="qty" required />
+
+
+                                </div>
+                              </div>
+
+
+                            </div>
+                          </div>
+                        </div>
+                   <div class="col-1">
+                       <div class="form-group my-2" style="padding: 25px 0px">
+                        <div class="add__button">
+                                    <button type="button" class="btn btn-success btn-sm btn-add-things"><span class="fa fa-plus"></span>
+                                      </button>
+                                  </div>
+                       </div>
+                   </div>
+{#                    <div class="">#}
+{#                            <a  href="#" type="button" class="btn-sm btn-add-things" style="color: #337ab7"><span class="fa fa-plus"> Add Another</span>#}
+{#                              </a>#}
+{#                    </div>#}
+                </div>
+
+                        `:``
+                     }
+
+
+
+
+                     ${
+                            data.things_list.map((item,index)=>{
                                 return(
                                     `
-                                        <option value="${item1.pk}" ${ item1.pk == item[0].fields.item_category? 'selected' : '' }
+                                    <div class="row container things-input">
+                           <div class="col-4">
+                  <div class="form-group my-2">
+                   ${index == 0 ? ` <label for="exampleInputEmail1">Sizes</label>`: ``}
+                    <div class="d-flex align-items-center">
+                      <div class="size-list w-100">
 
-                                            >${item1.fields.name}</option>
+                             <div class="d-flex size-input">
+                                      <select name="size[]" class="form-control mb-2">
+                                        <option value="s" ${ item.size == 's' ? 'selected' : '' }>s</option>
+                                        <option value="m" ${ item.size == 'm' ? 'selected' : '' }>m</option>
+                                        <option value="l" ${ item.size == 'l' ? 'selected' : '' }>l</option>
+                                         <option value="No_Size " ${ item.size == '' ? 'selected' : '' }>No Size</option>
+                                      </select>
+
+                                      </div>
+
+
+
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+                     <div class="col-3">
+                  <div class="form-group my-2">
+                  ${index == 0 ? ` <label for="exampleInputEmail1">Colors</label>`: ``}
+                    <div class="d-flex align-items-center">
+                      <div class="color-list w-100">
+
+                            <div class="d-flex color-input ">
+                        <span class="color-picker">  <input type="color" name="color[]" value="${item.color}" class="form-control" /> </span>
+                         <div class="add__button">
+
+
+                          </div>
+    </div>
+
+
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+
+                    <div class="col-4">
+                          <div class="form-group my-2">
+                           ${index == 0 ? ` <label for="exampleInputEmail1">Quantity</label>`: ``}
+                            <div class="d-flex align-items-center">
+                              <div class="qty-list w-100">
+                                <div class="d-flex ">
+
+        <input type="number" name="qty[]" class="form-control colorPicker"  value="${item.qty}" id="qty" required />
+
+
+                                </div>
+                              </div>
+
+
+                            </div>
+                          </div>
+                        </div>
+                   <div class="col-1">
+                    ${index == 0 ? ` <div class="form-group my-2" style="padding: 25px 0px">
+                        <div class="add__button">
+                                    <button type="button" class="btn btn-success btn-sm btn-add-things"><span class="fa fa-plus"></span>
+                                      </button>
+                                  </div>
+                       </div>`:`<div class="form-group my-2">
+                         <div class="add__button close__button" >
+                  <button type="button" class="btn btn-danger btn-remove-things" ><span class="fas fa-minus"></span></span>
+                    </button>
+                </div>`}
+
+                   </div>
+</div>
                                     `
                                 )
                             }).join('')
                      }
-
-
-                    </select>
-
-                  </div>
+   </div>
+{#                    <div class="">#}
+{#                            <a  href="#" type="button" class="btn-sm btn-add-things" style="color: #337ab7"><span class="fa fa-plus"> Add Another</span>#}
+{#                              </a>#}
+{#                    </div>#}
                 </div>
-                <div class="col-6">
-                  <div class="form-group my-2">
-                    <label for="exampleInputEmail1"> Product Sizes Available</label>
-                    <div class="d-flex align-items-center">
-                      <div class="size-list w-100">
-                      ${
-                            data.sizes.length == 0 ? `
-                             <div class="d-flex size-input">
-                                      <select name="size[]" class="form-control mb-2">
-                                        <option value="s" ${ item == 's' ? 'selected' : '' }>s</option>
-                                        <option value="m" ${ item == 'm' ? 'selected' : '' }>m</option>
-                                        <option value="l" ${ item == 'l' ? 'selected' : '' }>l</option>
-                                         <option value="No_Size " ${ item == '' ? 'selected' : '' }>No Size</option>
-                                      </select>
-                            <div class="add__button">
-                                        <button type="button" class="btn btn-success btn-sm btn-add-size"><span class="fa fa-plus"></span>
-                                          </button>
-                                      </div>
-                                      </div>
-                            `:``
-                     }
-                       ${
-                         data.sizes.map((item,index)=>{
-                             return(
-
-                                   `
-                                      <div class="d-flex size-input">
-                                      <select name="size[]" class="form-control mb-2">
-                                        <option value="s" ${ item == 's' ? 'selected' : '' }>s</option>
-                                        <option value="m" ${ item == 'm' ? 'selected' : '' }>m</option>
-                                        <option value="l" ${ item == 'l' ? 'selected' : '' }>l</option>
-<option value="No_Size " ${ item == '' ? 'selected' : '' }>No Size</option>
-                                      </select>
-                                        ${ index == 0 ?
-                                                `
-                                                <div class="add__button">
-                                        <button type="button" class="btn btn-success btn-sm btn-add-size"><span class="fa fa-plus"></span>
-                                          </button>
-                                      </div>
-                                                `
-
-                                   :`
-                                        <div class="add__button close__button">
-                  <button type="button" class="btn btn-danger btn-remove-size" ><span class="fas fa-minus"></span></span>
-                    </button>
-                </div>
-                                   `}
-
-                                    </div>
-                                   `
-
-                             )
-                         }).join('')
-                     }
-
-                      </div>
 
 
-                    </div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-group my-2">
-                    <label for="exampleInputEmail1"> Product Colors Available</label>
-                    <div class="d-flex align-items-center">
-                      <div class="color-list w-100">
-                      ${
-                            data.colors.length == 0 ? `
-                            <div class="d-flex color-input">
-                          <input type="text" name="color[]" value="${item}" class="form-control" />
-                         <div class="add__button">
 
-                            <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>
-                              </button>
-                          </div>
-    </div>
-                            `:``
-              }
-                      ${
-                        data.colors.map((item,index)=>{
-                            return(
-                                `
-                                <div class="d-flex color-input">
-                         <span class="color-picker"> <input type="color" name="color[]" value="${item}" class="form-control colorPicker" /></span>
-                          ${ index == 0 ?
-                                                `
-                                                 <div class="add__button">
-
-                            <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>
-                              </button>
-                          </div>
-                                                `
-
-                                   :`
-                                      <div class="add__button close__button">
-          <button type="button" class="btn btn-danger btn-remove-color"><span class="fas fa-minus"></span>
-            </button>
-        </div>
-                                   `}
-
-                        </div>
-                                `
-                            )
-                        }).join('')
-                     }
-
-                      </div>
-
-
-                    </div>
-                  </div>
-                </div>
 
                 <div class="col-4 browser__img" >
                   <div class="form-group">
@@ -679,11 +763,98 @@ $("#edit-form").empty()
       $(this).closest('.size-input').remove();
     });
     $(document).on('click', '.btn-remove-color', function () {
-        console.log('remove color')
+
       $(this).closest('.color-input').remove();
+    });
+    $(document).on('click', '.btn-remove-things', function () {
+
+      $(this).closest('.things-input').remove();
     });
 
 
+
+    $(document).on('click','.btn-add-things',function (){
+        $('.product_things_list').append(`
+        <div class="row container things-input">
+                    <div class="col-4">
+                  <div class="form-group my-2">
+
+                    <div class="d-flex align-items-center">
+                      <div class="size-list w-100">
+                        <div class="d-flex">
+                          <select name="size[]" class="form-control mb-2">
+
+                            <option value="s" selected>s</option>
+                            <option value="m">m</option>
+                            <option value="l">l</option>
+                              <option value="No_Size">No Size</option>
+                          </select>
+                          {#<div class="add__button">#}
+                          {#  <button type="button" class="btn btn-success btn-sm btn-add-size"><span class="fa fa-plus"></span>#}
+                          {#    </button>#}
+                          {#</div>#}
+                        </div>
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+                    <div class="col-3">
+                          <div class="form-group my-2">
+
+                            <div class="d-flex align-items-center">
+                              <div class="color-list w-100">
+                                <div class="d-flex ">
+
+        <span class="color-picker"><input type="color" name="color[]" class="form-control colorPicker"  id="my_color_picker" />
+        </span>
+                                  {#<div class="add__button">#}
+                                  {#  <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>#}
+                                  {#    </button>#}
+                                  {#</div>#}
+                                </div>
+                              </div>
+
+
+                            </div>
+                          </div>
+                        </div>
+                    <div class="col-4">
+                          <div class="form-group my-2">
+
+                            <div class="d-flex align-items-center">
+                              <div class="qty-list w-100">
+                                <div class="d-flex ">
+
+                                    <input type="number" name="qty[]" class="form-control colorPicker"  id="qty" />
+
+
+                                </div>
+                              </div>
+
+
+                            </div>
+                          </div>
+
+                    </div>
+
+                        <div class="col-1" >
+                        <div class="form-group my-2">
+                         <div class="add__button close__button" >
+                  <button type="button" class="btn btn-danger btn-remove-things" ><span class="fas fa-minus"></span></span>
+                    </button>
+                </div>
+                         </div>
+                        </div>
+{#                    <div class="">#}
+{#                            <a  href="#" type="button" class="btn-sm btn-add-things" style="color: #337ab7"><span class="fa fa-plus"> Add Another</span>#}
+{#                              </a>#}
+{#                    </div>#}
+                </div>
+        `
+        )
+    })
 
     $(document).on('click','.btn-add-size',function (){
         console.log("add size")

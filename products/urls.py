@@ -14,4 +14,5 @@ urlpatterns = [
     path("buyproducts/",buyproducts,name="buyproducts"),
     path("checkwebcam/",checkwebcam,name="checkwebcam"),
     path("singleProduct/<int:id>/",singleProduct,name="singleProduct"),
+    path("getColorBySize/<str:size>/<int:id>/",getColorBySize,name="getColorBySize"),
 ]

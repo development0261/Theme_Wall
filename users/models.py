@@ -36,6 +36,14 @@ class SellerRequest(models.Model):
 	def __str__(self):
 		return "{} want to be seller on email {}".format(self.user,self.email)
 
+class Messages(models.Model):
+	firstname = models.CharField(max_length=200)
+	lastname = models.CharField(max_length=200)
+	email = models.CharField(max_length=100)
+	content = models.TextField()
+
+	def __str__(self):
+		return "{} : {}".format(self.email,self.content[:100])
 
 class Profile(models.Model):
 	user = models.OneToOneField(CustomeUser, on_delete=models.CASCADE)
@@ -69,6 +77,4 @@ post_save.connect(post_save_user_model_receiver, sender=settings.AUTH_USER_MODEL
 
 # 	def __str__(self):
 # 		return "From {}, to {}".format(self.from_user.username, self.to_user.username)
-
-
 

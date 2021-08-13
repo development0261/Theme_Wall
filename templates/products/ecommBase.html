@@ -9,33 +9,29 @@
     <meta name="keywords" content=""/>
     <title>The men's wall</title>
     <link rel="icon" href="{% static 'images/fav.png' %}" type="image/png" sizes="16x16">
-
-
-
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
     <style>
         ::-webkit-scrollbar {
-  width: 5px;
+              width: 5px;
 
-}
+            }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: #3E83C5 ;
-}
+            /* Track */
+            ::-webkit-scrollbar-track {
+              background: #3E83C5 ;
+            }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #89C34A ;
-    border-radius: 50px;
-    height: 100px;
-}
+            /* Handle */
+            ::-webkit-scrollbar-thumb {
+              background: #89C34A ;
+                border-radius: 50px;
+                height: 100px;
+            }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #89C34A ;
-}
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+              background: #89C34A ;
+            }
         form input , form select {
             width: inherit;
             max-width: inherit;
@@ -137,8 +133,8 @@
 <body>
 <nav class="navbar navbar-expand-md bg-light navbar-light">
   <!-- Brand -->
-  <a class="navbar-brand" href="{% url 'home' %}" style="width:35%">
-          <img src="{% static 'images/logo_png.png' %}" alt="" width="40%">
+  <a class="navbar-brand" href="{% url 'home' %}" style="width:27%">
+          <img src="{% static 'images/logo_png.png' %}" alt="" width="55%">
        </a>
 
   <!-- Toggler/collapsibe Button -->
@@ -154,32 +150,36 @@
         <a class="nav-link active" href="{% url 'sellerDash' %}" ><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;My Products</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'sellerOrders' %}"><i class="fa fa-shopping-basket" aria-hidden="true"></i>&nbsp;My Orders</a>
+        <a class="nav-link" href="{% url 'sellerOrders' %}"><i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;My Orders</a>
       </li>
     <li class="nav-item ">
         <a class="nav-link" href="{% url 'profile' %}"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Profile</a>
       </li>
-        <li class="nav-item ">
-        <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt" aria-hidden="true"></i>&nbsp;Logout</a>
-      </li>
+
 
         {% else  %}
 
 
-         <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link {% if '/products/buyproducts/' == request.path %}active {% endif %}" href="{% url 'buyproducts' %}" ><i class="fas fa-home" aria-hidden="true"></i>&nbsp;Home</a>
       </li>
 
- <li class="nav-item">
+      <li class="nav-item">
         <a class="nav-link {% if '/orders/myOrders/' == request.path %}active {% endif %}" href="{% url 'myOrders' %}"><i class="fas fa-box" aria-hidden="true"></i>&nbsp;My Orders</a>
       </li>
-            <li class="nav-item">
-        <a class="nav-link " href="{% url 'logout' %}">{% if '/orders/myOrders/' == request.path %}<i class="fas fa-sign-out-alt"></i>{% else %}<i class="fas fa-sign-out-alt" aria-hidden="true"></i>{% endif %}&nbsp;Logout</a>
-      </li>
+
+
            <li class="nav-item">
         <a class="nav-link {% if '/products/buyerprofile/' == request.path %}active {% endif %}" href="{% url 'buyerprofile' %}"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Profile</a>
       </li>
+
         {% endif  %}
+     <li class="nav-item">
+        <a class="nav-link  {% if '/contactus/' == request.path %}active{% endif %}" href="{% url 'contactus' %}"><i class="fas fa-envelope-open-text" aria-hidden="true"></i>&nbsp;Contact Us</a>
+      </li>
+        <li class="nav-item">
+        <a class="nav-link " href="{% url 'logout' %}">{% if '/orders/myOrders/' == request.path %}<i class="fas fa-sign-out-alt"></i>{% else %}<i class="fas fa-sign-out-alt" aria-hidden="true"></i>{% endif %}&nbsp;Logout</a>
+      </li>
     </ul>
    {% if user.role == "buyer" %}
     <ul class="navbar-nav ml-auto" style="margin-right: 10px">
@@ -187,7 +187,7 @@
          <li class="nav-item">
             <a class="nav-link" style="color: deeppink">
                 <i class="fa fa-heart"  id="popWishlist"></i>
-            <span class="badge badge-dark" id="whishListCounter" style="border-radius: 50px">0</span>
+
             </a>
 
 
@@ -195,8 +195,8 @@
 
          <li class="nav-item" style="list-style: none !important;">
             <a class="nav-link" href="{% url 'cart' %}" style="color: #3E83C5">
-            <i class="fa fa-shopping-basket"  id="popcart"></i>
-            <span class="badge badge-dark" id="CartCounter" style="border-radius: 50px">0</span>
+            <i class="fa fa-shopping-cart"  id="popcart"></i>
+            <span class="badge badge-dark" id="CartCounter" style="border-radius: 50px;background-color: #89C34A">0</span>
             </a>
          </li>
     </ul>
@@ -324,16 +324,16 @@ Mycart = JSON.parse(localStorage.getItem('Mycart'));
         $.get( "{% url 'fetchWishlist' %}", function( data ) {
              $("#wishListProducts").empty()
                 products = JSON.parse(data.products)
-                console.log(products)
-                    for(let i=0;i< products.length;i++){
+            console.log(products.length)
+                   if(products.length > 0){ for(let i=0;i< products.length;i++){
                         product = products[i].fields
                           $("#wishListProducts").append(
-                              `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="product_${product.pk}">
-                                    <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${product.pk}"><img src="/media/${product.image}" width="100" alt="Product"></a>
-                                      <div class="p-2  ml-4 text-center">
-                                        <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">${product.name}</a></h5>
-                                                                <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">$ ${product.price}</a></h5>
-
+                              `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="wishlistproduct_${products[i].pk}">
+                                    <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${products[i].pk}"><img src="/media/${product.image}" width="100" alt="Product"></a>
+                                      <div class="p-2  ml-4">
+                                        <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a>${product.name}</a></h5>
+                                                                <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a>$ ${product.price}</a></h5>
+                                                    <a style="color: #337ab7;text-decoration: none" href="#" id="removefromWishList_${products[i].pk}" class="removefromWishList"><i class="fas fa-trash"></i> Remove</a>
 
                                       </div>
                                     </div>
@@ -342,7 +342,11 @@ Mycart = JSON.parse(localStorage.getItem('Mycart'));
                                   </div>
                               `
                             )
-                    }
+                    }}
+			        else{
+			             $("#wishListProducts").append(`<h6 style="color: #337ab7">Empty Wishlist<h6>`)
+                   }
+
             });
         	$('.wishlist-drawer-push').toggleClass('cart-drawer-pushtoleft');
 			$('.wishlist-drawer-right').toggleClass('cart-drawer-open');
@@ -360,16 +364,16 @@ Mycart = JSON.parse(localStorage.getItem('Mycart'));
                 $("#wishListProducts").empty()
                 if(data.msg == "success"){
                  products = JSON.parse(data.products)
-
-                    for(let i=0;i< products.length;i++){
+                    if(products.length > 0){
+                        for(let i=0;i< products.length;i++){
                         product = products[i].fields
                           $("#wishListProducts").append(
-                              `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="product_${product.pk}">
-                                    <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${product.pk}"><img src="/media/${product.image}" width="100" alt="Product"></a>
-                                      <div class="p-2  ml-4 text-center">
+                              `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="wishlistproduct_${products[i].pk}">
+                                    <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${products[i].pk}"><img src="/media/${product.image}" width="100" alt="Product"></a>
+                                      <div class="p-2  ml-4">
                                         <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">${product.name}</a></h5>
                                                                 <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">${product.price}</a></h5>
-
+                                             <a style="color: #337ab7;text-decoration: none" href="#" id="removefromWishList_${products[i].pk}" class="removefromWishList"><i class="fas fa-trash"></i> Remove</a>
 
                                       </div>
                                     </div>
@@ -379,22 +383,28 @@ Mycart = JSON.parse(localStorage.getItem('Mycart'));
                               `
                             )
                     }
+                    }
+			        else{
+                    $("#wishListProducts").append(`<h6 style="color: #337ab7">Empty Wishlist<h6>`)
+                    }
+
 
                 }
 
                 else if(data.msg == "alreadyExist"){
                     alert("Product Already Exists in Wishlist")
                      products = JSON.parse(data.products)
-                    for(let i=0;i< products.length;i++){
+                    if(products.length > 0){
+                        for(let i=0;i< products.length;i++){
                         product = products[i].fields
-                        console.log(product)
+
                           $("#wishListProducts").append(
-                              `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="product_${product.pk}">
-                                    <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${product.pk}"><img src="/media/${product.image}" width="100" alt="Product"></a>
-                                      <div class="p-2  ml-4 text-center">
+                              `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="wishlistproduct_${products[i].pk}">
+                                    <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${products[i].pk}"><img src="/media/${product.image}" width="100" alt="Product"></a>
+                                      <div class="p-2  ml-4">
                                         <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">${product.name}</a></h5>
                                         <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="#">$ ${product.price}</a></h5>
-
+                                         <a style="color: #337ab7;text-decoration: none" href="#" id="removefromWishList_${products[i].pk}" class="removefromWishList"><i class="fas fa-trash"></i> Remove</a>
 
                                       </div>
                                     </div>
@@ -403,6 +413,10 @@ Mycart = JSON.parse(localStorage.getItem('Mycart'));
                                   </div>
                               `
                             )
+                    }
+                    }
+                    else{
+                        $("#wishListProducts").append(`<h6 style="color: #337ab7">Empty Wishlist<h6>`)
                     }
 
                 }
@@ -413,6 +427,20 @@ Mycart = JSON.parse(localStorage.getItem('Mycart'));
               });
 
         })
+
+    $(document).on('click','.removefromWishList',function (){
+        var prod_id = this.id.slice(19,)
+         $.get("/orders/removeFromWishList/"+prod_id, function(data, status){
+                if(data.msg === 'success'){
+                    $("#wishlistproduct_"+prod_id).remove()
+                    if($("#wishListProducts").children().length <=0 ){
+                         $("#wishListProducts").append(`<h6 style="color: #337ab7">Empty Wishlist<h6>`)
+                    }
+                }else{
+                    alert("Something Went Wrong")
+                }
+              });
+    })
 </script>
 {% block jsfiles %}{% endblock jsfiles %}
 </body>

@@ -175,6 +175,7 @@
                  <thead>
                     <tr>
                         <th>Order Id</th>
+
                         <th>Payment</th>
                         <th>Is Paid</th>
                         <th>Status</th>
@@ -185,7 +186,7 @@
                         <th>View Invoice</th>
 
                         <th>deliveredAt</th>
-                        <th>Created At</th>
+                         <th>Created At</th>
 
 
 
@@ -194,7 +195,7 @@
                 <tbody>
                 {% for order in totalOrders %}
                     <tr>
-                         <td id="orderId_{{ order.pk }}">{{ order.uuid }}</td>
+                           <td id="orderId_{{ order.pk }}">{{ order.uuid }}</td>
                         <td>{{ order.paymentMethod | upper }}</td>
                         <td>{% if order.isPaid %}<span style="color: green;font-weight: bold">Paid</span>{% else %}<span style="color: red;font-weight: bold">Pending</span> {% endif %}</td>
                         <td>{{ order.status }}</td>
@@ -204,7 +205,9 @@
                         <td><a class="btn btn-dark " href="{% url 'invoice' order.pk %}?access=read"><i class="fas fa-file-invoice"></i></a></td>
 
                         <td>{{ order.deliveredAt }}</td>
-                        <td>{{  order.createdAt}}</td>
+                     <td>{{  order.createdAt}}</td>
+
+
 
                     </tr>
                 {% endfor %}
@@ -249,7 +252,8 @@
         $(document).ready(function () {
     $('#myTable').DataTable({
       'responsive': true,
-      'scrollX': true
+      'scrollX': true,
+         "order": []
     });
   });
 

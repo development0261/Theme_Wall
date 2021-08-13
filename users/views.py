@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model,login,authenticate
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from .models import Profile,CustomeUser,SellerRequest,Address
+from .models import Profile,CustomeUser,SellerRequest,Address,Messages
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 import random
 from django.core.mail import send_mail
@@ -240,14 +240,11 @@ def search_users(request):
     }
     return render(request, "users/search_users.html", context)
 
-
 def privacy_policy(request):
     return render(request, 'users/privacy_policy.html')
 
-
 def terms_condition(request):
     return render(request, 'users/terms_condition.html')
-
 
 def sendActivation(request):
     if request.method == "POST" and request.user.is_authenticated:
@@ -257,8 +254,6 @@ def sendActivation(request):
         if not 'ImageName' in request.POST or not 'proof' in request.FILES:
             messages.error(request,'Please fill all details of form')
             return redirect('home')
-
-
         act_msg = SellerRequest(email=request.user.email,user=request.user,proof=proof)
         act_msg.save()
 
@@ -325,13 +320,24 @@ def sendActivation(request):
         return redirect("sellerDash")
 
 def sellerVarification(request):
-
     return render(request,'products/sellerVarification.html')
-
 
 def activateAccount(request,email):
     user = CustomeUser.objects.get(email=email)
     user.role = 'seller'
     user.save()
     return redirect('sellerDash')
+
+
+def contactus(request):
+    if request.method == "POST":
+        fname = request.POST['fname']
+        lname = request.POST['lname']
+        email = request.POST['email']
+        comment = request.POST['comment']
+        msg = Messages(firstname=fname,lastname=lname,email=email,content=comment)
+        msg.save()
+        messages.success(request,'Your Messages has been sent Successfully')
+
+    return render(request,'products/contactus.html')
 

@@ -21,7 +21,6 @@ class item(models.Model):
     price = models.DecimalField(max_digits=50,decimal_places=2)
     offer_price = models.DecimalField(max_digits=50,decimal_places=2,default=0)
     image = models.FileField(upload_to='items',default="",null=True,blank=True)
-    quantity = models.IntegerField()
     item_category = models.ForeignKey(category,on_delete=models.CASCADE)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -48,6 +47,14 @@ class item(models.Model):
         except:
             return []
 
+    def get_qtys(self):
+        try:
+            qtys = item_qty.objects.filter(product = self)
+            return qtys
+        except:
+            return []
+
+
 class item_size(models.Model):
     size_list = [
         ('s','s'),
@@ -67,5 +74,11 @@ class item_color(models.Model):
         return "Color : {} for item : {}".format(self.color,self.item)
 
 
+class item_qty(models.Model):
+    product = models.ForeignKey(item,on_delete=models.CASCADE)
+    size = models.ForeignKey(item_size,on_delete=models.CASCADE,related_name='size_qty')
+    color = models.ForeignKey(item_color,on_delete=models.CASCADE,related_name='color_qty')
+    quantity = models.IntegerField()
 
-
+    def __str__(self):
+        return  "{} {} with size : {} and color {} ".format(self.quantity,self.product,self.size,self.color)
