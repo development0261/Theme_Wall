@@ -18,7 +18,7 @@ from email.mime.image import MIMEImage
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
-YOUR_DOMAIN = "http://127.0.0.1:8000"
+YOUR_DOMAIN = "https://themes-wall.herokuapp.com"
 
 # Create your views here.
 def ordersIndex(request):
