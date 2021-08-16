@@ -18,7 +18,7 @@ from email.mime.image import MIMEImage
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
-YOUR_DOMAIN = "https://themes-wall.herokuapp.com"
+YOUR_DOMAIN = "http://127.0.0.1:8000"
 
 # Create your views here.
 def ordersIndex(request):
@@ -217,7 +217,7 @@ def sellerOrders(request):
     if request.user.is_authenticated:
         if request.user.role == 'seller':
             seller_orders = OrderItem.objects.filter(product__seller=request.user).values_list('order__id').distinct().order_by(
-                '-createdAt'
+                '-order__createdAt'
             )
             totalDeliveredOrders =[]
             totalPendigOrders = []

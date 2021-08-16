@@ -21,7 +21,7 @@ class Order(models.Model):
             'Delivered','Delivered'
         )
     ]
-    user = models.ForeignKey(CustomeUser, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(CustomeUser, on_delete=models.CASCADE, null=True)
     paymentMethod = models.CharField(max_length=200, null=True, blank=True)
     taxPrice = models.DecimalField(
         max_digits=20, decimal_places=2, null=True, blank=True)
@@ -52,7 +52,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    product = models.ForeignKey(item, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(item, on_delete=models.CASCADE, null=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True,related_name='order_item')
     name = models.CharField(max_length=200, null=True, blank=True)
     qty = models.IntegerField(null=True, blank=True, default=0)

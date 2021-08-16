@@ -77,13 +77,18 @@ def addProduct(request):
 
                     if 'No_Size' not in sizes:
                         for size in sizes:
-                            it_size = item_size(size=size, item=prod)
-                            it_size.save()
-                            added_sizes.append(it_size)
+                            if not item_size.objects.filter(size=size, item=prod).exists():
+                                it_size = item_size(size=size, item=prod)
+                                it_size.save()
+                                added_sizes.append(it_size)
+                            else:
+                                it_size = item_size.objects.get(size=size, item=prod)
+                                added_sizes.append(it_size)
                     else:
-                        it_size = item_size(size="No Size Added", item=prod)
+                        it_size = item_size(size="No_Size", item=prod)
                         it_size.save()
-                        added_sizes.append(it_size)
+                        for size in sizes:
+                            added_sizes.append(it_size)
 
                 if colors[0] != '':
                     colors = set(colors)
@@ -195,13 +200,19 @@ def updateProduct(request,id):
                         item_size.objects.filter(item=prod).delete()
                         if 'No_Size' not in sizes:
                             for size in sizes:
-                                it_size = item_size(size=size, item=prod)
-                                it_size.save()
-                                added_sizes.append(it_size)
+                                if not item_size.objects.filter(size=size, item=prod).exists():
+                                    it_size = item_size(size=size, item=prod)
+                                    it_size.save()
+                                    added_sizes.append(it_size)
+                                else:
+                                    it_size = item_size.objects.get(size=size, item=prod)
+                                    added_sizes.append(it_size)
                         else:
-                            it_size = item_size(size="No Size Added", item=prod)
-                            it_size.save()
-                            added_sizes.append(it_size)
+
+                                it_size = item_size(size="No_Size", item=prod)
+                                it_size.save()
+                                for size in sizes:
+                                    added_sizes.append(it_size)
 
                     if colors[0] != '':
                         colors = set(colors)
@@ -266,12 +277,11 @@ def buyproducts(request):
     return render(request,'products/index.html',{'all_items':paged_items,'all_categories':all_categories,'colors':colors})
 
 def singleProduct(request,id):
-    try:
+
         single_item = get_object_or_404(item, id=id)
 
         return render(request, 'products/singleProduct.html', {"product": single_item})
-    except:
-        return redirect('home')
+
 
 def buyerprofile(request):
     if request.method == "POST" and request.user.is_authenticated:

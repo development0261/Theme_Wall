@@ -1,5 +1,6 @@
 {% extends "products/ecommBase.html" %}
 {% load static %}
+{% load humanize %}
 {% block style %}
     {% load custom_tags %}
  <style>
@@ -139,29 +140,7 @@ ul{
     color: red
 }
 
-.strike-text {
-    color: red;
-    text-decoration: line-through
-}
 
-.product-image {
-    width: 100%
-}
-
-.dot {
-    height: 15px;
-    width: 15px;
-
-    margin-left: 2%;
-    margin-top: 2%;
-    border : 1px solid black;
-    border-radius: 50%;
-    display: inline-block;
-  }
-.spec-1 {
-    color: #938787;
-    font-size: 15px
-}
 
 h5 {
     font-weight: 400
@@ -225,6 +204,16 @@ h5 {
     border:1px solid black;
     border-radius: 5px;
     padding: 2px 50px;
+}
+
+.colorBoxSmall{
+    width: 75px;
+    height: 25px;
+    content: "";
+    border:1px solid black;
+    border-radius: 5px;
+    padding: 2px 20px;
+    margin: 0px 5px;
 }
 
 .selectedColor{
@@ -481,6 +470,87 @@ h5 {
 
 }
 
+.newcard a {
+	 text-decoration: none;
+}
+/* Card Styles */
+ .newcard .card-sl {
+	 border-radius: 8px;
+	 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+ .newcard .card-image img {
+	 max-height: 166px;
+	 max-width: 100%;
+	 border-radius: 8px 8px 0px 0;
+     object-fit: contain;
+
+}
+ .newcard .card-action {
+	 position: relative;
+	 float: right;
+	 margin-top: -25px;
+	 margin-right: 20px;
+	 z-index: 2;
+	 color: #89C34A;
+	 background: #fff;
+	 border-radius: 100%;
+	 padding: 10px 14px;
+	 font-size: 15px;
+	 box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.19);
+}
+ .newcard .card-action:hover {
+	 color: #fff;
+	 background: #89C34A;
+	 -webkit-animation: pulse 1.5s infinite;
+}
+ .newcard .card-heading {
+	 font-size: 18px;
+	 font-weight: bold;
+	 background: #fff;
+	 padding: 10px 15px;
+}
+ .newcard .card-text {
+	 padding: 10px 15px;
+	 background: #fff;
+	 font-size: 14px;
+	 color: #636262;
+}
+ .newcard .card-button {
+	 display: flex;
+	 justify-content: center;
+	 padding: 10px 0;
+	 width: 100%;
+	 background-color: #3E83C5;
+	 color: #fff;
+	 border-radius: 0 0 8px 8px;
+}
+ .newcard .card-button:hover {
+	 text-decoration: none;
+	 background-color: #3E83C5;
+	 color: #fff;
+}
+ @-webkit-keyframes pulse {
+	 0% {
+		 -moz-transform: scale(0.9);
+		 -ms-transform: scale(0.9);
+		 -webkit-transform: scale(0.9);
+		 transform: scale(0.9);
+	}
+	 70% {
+		 -moz-transform: scale(1);
+		 -ms-transform: scale(1);
+		 -webkit-transform: scale(1);
+		 transform: scale(1);
+		 box-shadow: 0 0 0 50px rgba(90, 153, 212, 0);
+	}
+	 100% {
+		 -moz-transform: scale(0.9);
+		 -ms-transform: scale(0.9);
+		 -webkit-transform: scale(0.9);
+		 transform: scale(0.9);
+		 box-shadow: 0 0 0 0 rgba(90, 153, 212, 0);
+	}
+}
 
     </style>
 
@@ -584,68 +654,122 @@ h5 {
 
             <div class="container mt-5 mb-5">
     <div class="d-flex justify-content-center row">
-        <div class="col-md-10">
+{#        <div class="col-md-10">#}
+{##}
+{#            {% if all_items|length > 0 %}#}
+{#                 {% for item in all_items %}#}
+{##}
+{##}
+{#            <div class="row p-2 bg-white border rounded mt-2">#}
+{#                <div class="col-md-3 mt-1"><a href="{% url 'singleProduct' item.id %}"><img class="img-fluid img-responsive rounded product-image" id="ProductImage_{{ item.pk }}"  src="{{ item.image.url }}"></a></div>#}
+{#                <div class="col-md-6 mt-1">#}
+{#                    <h5 id="ProductName_{{ item.pk }}">{{ item.name }}</h5>#}
+{#                    <div class="d-flex flex-row">#}
+{#                        <div class="ratings mr-2">#}
+{#                        {% with ''|center:item.rating as range %}#}
+{#									 {% for _ in range %}#}
+{#									 <i class="fa fa-star"></i>#}
+{#								     {% endfor %}#}
+{#									 {% endwith %}#}
+{##}
+{#                            </div>#}
+{#                    </div>#}
+{#                <p id="ProductCount_{{ item.pk }}" style="display: none">{{ item.quantity }} </p>#}
+{#                  {% if item.get_color|length > 0 %}#}
+{#                    <div class="mt-1 mb-1 spec-1"><span style="color: black;font-weight: bold">Colors : </span>#}
+{##}
+{#                      {% for color in item.get_color %}#}
+{#                      <span class="dot" style="background-color: {{ color }}"></span>#}
+{#                      {% endfor %}#}
+{#                       </div>#}
+{##}
+{##}
+{##}
+{#                 {% endif %}#}
+{#                 {% if item.get_size|length > 0 %}#}
+{#                      {% if not item.check_if_no_size %}#}
+{#                    <div class="mt-1 mb-1 spec-1"><span style="color: black;font-weight: bold">Size : </span>#}
+{##}
+{#                      {% for size in item.get_size %}#}
+{#                    <span style="color: #0e0e0e;padding: 0px 2px">{{ size|title }}</span>#}
+{#                      {% endfor %}#}
+{##}
+{##}
+{#                        </div>#}
+{#                          {% endif %}#}
+{#                 {% endif %}#}
+{#<span style="color: black;font-weight: bold">Seller : </span><span style="color: #0e0e0e;padding: 0px 2px">{{ item.seller.fullname }}</span>#}
+{#                    <p class="text-justify text-truncate para mb-0">{{ item.description | truncatewords:20 }}</p>#}
+{##}
+{#                </div>#}
+{#                <div class="align-items-center align-content-center col-md-3 border-left mt-1">#}
+{#                    <div class="d-flex flex-row align-items-center">#}
+{#                        <h4 class="mr-1" id="ProductPrice_{{ item.pk }}">${{ item.price }}</h4>#}
+{#                    </div>#}
+{##}
+{#                    <div class="d-flex flex-column mt-4">#}
+{##}
+{#                        <a class="btn btn-dark btn-sm" type="button" href="{% url 'singleProduct' item.pk %}" ><i class="fa fa-shopping-cart"></i>&nbsp;Add to Cart</a>#}
+{##}
+{#                      <!--  <button class="btn btn-outline-dark btn-sm mt-2" type="button"><i class="fa fa-eye"></i>&nbsp;View Details</button> -->#}
+{#                        <button class="btn btn-outline-dark btn-sm mt-2 addToWishList" id="addToWishList_{{item.pk}}" type="button"><i class="fa fa-heart"></i>&nbsp;Add to wishlist</button>#}
+{#                    </div>#}
+{#                    </div>#}
+{#            </div>#}
+{#            {% endfor %}#}
+{#            {% else %}#}
+{#                <h4 style="text-transform: uppercase;text-align: center;color: #337ab7">No Products Found which Match Your Filter</h4>#}
+{#            {% endif %}#}
+{#        </div>#}
+     <div class="container newcard">
+        <div class="row">
+        {% if all_items|length > 0 %}
+             {% for item in all_items %}
+            <div class="col-md-4 mt-3">
+                <div class="card-sl">
+                    <div class="card-image">
+                        <img
+                            src="{{ item.image.url }}" style="width: 100%; height:100%" />
+                    </div>
 
-            {% if all_items|length > 0 %}
-                 {% for item in all_items %}
-
-
-            <div class="row p-2 bg-white border rounded mt-2">
-                <div class="col-md-3 mt-1"><a href="{% url 'singleProduct' item.id %}"><img class="img-fluid img-responsive rounded product-image" id="ProductImage_{{ item.pk }}"  src="{{ item.image.url }}"></a></div>
-                <div class="col-md-6 mt-1">
-                    <h5 id="ProductName_{{ item.pk }}">{{ item.name }}</h5>
-                    <div class="d-flex flex-row">
-                        <div class="ratings mr-2">
-                        {% with ''|center:item.rating as range %}
+                    <a class="card-action addToWishList" id="addToWishList_{{item.pk}}" ><i class="fa fa-heart"></i></a>
+                    <div class="card-heading">
+                        {{item.name}}
+                         <div style="color: #337ab7">
+                            {% with ''|center:item.rating as range %}
 									 {% for _ in range %}
 									 <i class="fa fa-star"></i>
 								     {% endfor %}
 									 {% endwith %}
 
-                            </div>
-                    </div>
-                <p id="ProductCount_{{ item.pk }}" style="display: none">{{ item.quantity }} </p>
-                  {% if item.get_color|length > 0 %}
-                    <div class="mt-1 mb-1 spec-1"><span style="color: black;font-weight: bold">Colors : </span>
-
-                      {% for color in item.get_color %}
-                      <span class="dot" style="background-color: {{ color }}"></span>
-                      {% endfor %}
-                       </div>
-
-
-
-                 {% endif %}
-                 {% if item.get_size|length > 0 %}
-                    <div class="mt-1 mb-1 spec-1"><span style="color: black;font-weight: bold">Size : </span>
-
-                      {% for size in item.get_size %}
-                      <span style="color: #0e0e0e;padding: 0px 2px">{{ size|title }}</span>
-                      {% endfor %}
-
 
                         </div>
+                    </div>
+                    <div class="card-text">
+                        {% if item.get_color|length > 0 %}
+
+
+                      {% for color in item.get_color %}
+                       <span class="colorBoxSmall" style="background-color:{{ color }} "></span>
+                      {% endfor %}
+
+
+
+
                  {% endif %}
-<span style="color: black;font-weight: bold">Seller : </span><span style="color: #0e0e0e;padding: 0px 2px">{{ item.seller.fullname }}</span>
-                    <p class="text-justify text-truncate para mb-0">{{ item.description | truncatewords:20 }}</p>
 
+                    </div>
+
+                    <div class="card-text" style="font-weight: bold">
+                        $ {{ item.price | intcomma }}
+
+
+                    </div>
+                    <a href="{% url 'singleProduct' item.pk %}" class="card-button">Purchase &nbsp;<i class="fas fa-shopping-cart"></i></a>
                 </div>
-                <div class="align-items-center align-content-center col-md-3 border-left mt-1">
-                    <div class="d-flex flex-row align-items-center">
-                        <h4 class="mr-1" id="ProductPrice_{{ item.pk }}">${{ item.price }}</h4>
-                    </div>
-
-                    <div class="d-flex flex-column mt-4">
-
-                        <a class="btn btn-dark btn-sm" type="button" href="{% url 'singleProduct' item.pk %}" ><i class="fa fa-shopping-cart"></i>&nbsp;Add to Cart</a>
-
-                      <!--  <button class="btn btn-outline-dark btn-sm mt-2" type="button"><i class="fa fa-eye"></i>&nbsp;View Details</button> -->
-                        <button class="btn btn-outline-dark btn-sm mt-2 addToWishList" id="addToWishList_{{item.pk}}" type="button"><i class="fa fa-heart"></i>&nbsp;Add to wishlist</button>
-                    </div>
-                    </div>
             </div>
             {% endfor %}
-            {% else %}
+         {% else %}
                 <h4 style="text-transform: uppercase;text-align: center;color: #337ab7">No Products Found which Match Your Filter</h4>
             {% endif %}
         </div>
@@ -690,14 +814,7 @@ h5 {
 
 
 {% block jsfiles %}
-    <script>
-    $('#searchBox').keypress(function(event){
-    var keycode = (event.keyCode ? event.keyCode : event.which);
-    if(keycode == '13'){
-        alert('You pressed a "enter" key in textbox');
-    }
-});
-    </script>
+
 
     <script>
         var MyitName = {};
@@ -713,7 +830,6 @@ h5 {
 
         $(document).on('click','.addProduct',function (){
             var prodId = $(this).attr('id').slice(11,)
-
             if(Mycart[prodId]!= undefined){
                 qty = Mycart[prodId][1] + 1;
             }
@@ -721,14 +837,11 @@ h5 {
                     qty = 1;
                     productName = $('#ProductName_'+prodId).html();
                     productPrice = $('#ProductPrice_'+prodId).html().slice(1,);
-
                     productCount = $('#ProductCount_'+prodId).html();
                     img_url = $("#ProductImage_"+prodId).attr('src');
                     img_url = img_url.replace('url(','').replace(')','').replace(/\"/gi, "");
                     console.log(img_url)
                     Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url];
-
-
             }
             updateCart(Mycart)
         })
@@ -748,4 +861,4 @@ h5 {
 
 
     </script>
-{% endblock jsfiles %}
+{% endblock  %}

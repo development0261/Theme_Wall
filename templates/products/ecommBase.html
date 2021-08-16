@@ -10,7 +10,13 @@
     <title>The men's wall</title>
     <link rel="icon" href="{% static 'images/fav.png' %}" type="image/png" sizes="16x16">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <style>
+        body{
+            font-family: 'Roboto', sans-serif !important;
+        }
         ::-webkit-scrollbar {
               width: 5px;
 
@@ -261,7 +267,6 @@
                         <h5 style="text-align: start">Detail</h5>
                         <textarea name="message"></textarea>
                         <button type="submit" name="activationBtn" class="btn btn-success">Send Message</button>
-
                     </form>
                 </div>
             </div>
@@ -271,7 +276,7 @@
         </div>
     </div>
 </div>
- <div class="wishlist-drawer wishlist-drawer-right">
+ <div class="wishlist-drawer wishlist-drawer-right" style="z-index: 10">
             <span>Your Wishlist</span>
             <div class="close-btn1">
                 <i class="fas fa-times fa-2x"></i>

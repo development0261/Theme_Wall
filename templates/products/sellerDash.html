@@ -60,7 +60,15 @@ td.sorting_1 {
 [type='color']::-webkit-color-swatch {
   border: none;
 }
-
+.colorBoxSmall{
+    width: 75px;
+    height: 25px;
+    content: "";
+    border:1px solid black;
+    border-radius: 5px;
+    padding: 1px 20px;
+    margin: 3px 5px;
+}
 .color-picker {
   padding: 5px 10px;
   border-radius: 5px;
@@ -116,7 +124,7 @@ td.sorting_1 {
         <td>{{  item.price }} $</td>
 
         <td>{% for thing in item.get_qtys %}
-            <span class="dot" style="background-color: {{ thing.color.color }};margin-left: 5px"></span> -
+            <span class="colorBoxSmall" style="background-color: {{ thing.color.color }};margin-left: 5px"></span> -
             <span style="margin-left: 5px"> {{ thing.size.size | title }}</span> -
             <span style="margin-left: 5px"> {{ thing.quantity }}</span>
             <br/>
@@ -193,7 +201,7 @@ td.sorting_1 {
                 <div class="col-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Offer Price</label>
-                    <input type="text" class="form-control" placeholder="USD" name="offer"
+                    <input type="text" class="form-control" placeholder="USD" value="0" name="offer"
                       aria-describedby="emailHelp">
                   </div>
                 </div>
@@ -422,7 +430,7 @@ td.sorting_1 {
 
                 $("#edit-form").empty()
                 categories = JSON.parse(data.categories)
-                 console.log(data.serialized_things)
+
                  $("#edit-form").append(
                      `
                       <form  method="post" action="/products/updateProduct/${id}/" enctype="multipart/form-data" class="product__form">
@@ -431,7 +439,7 @@ td.sorting_1 {
                 <div class="col-6">
                   <div class="form-group">
                     <label for="">Product Name</label>
-                    <input type="text" class="form-control" value=${item[0].fields.name} id="editName" name="name" aria-describedby="">
+                    <input type="text" class="form-control" value="${item[0].fields.name}" id="editName" name="name" aria-describedby="">
                   </div>
                 </div>
                   <div class="col-6">
@@ -610,7 +618,7 @@ td.sorting_1 {
                                         <option value="s" ${ item.size == 's' ? 'selected' : '' }>s</option>
                                         <option value="m" ${ item.size == 'm' ? 'selected' : '' }>m</option>
                                         <option value="l" ${ item.size == 'l' ? 'selected' : '' }>l</option>
-                                         <option value="No_Size " ${ item.size == '' ? 'selected' : '' }>No Size</option>
+                                         <option value="No_Size" ${ item.size == 'No_Size' ? 'selected' : '' }>No Size</option>
                                       </select>
 
                                       </div>
@@ -662,6 +670,7 @@ td.sorting_1 {
                             </div>
                           </div>
                         </div>
+
                    <div class="col-1">
                     ${index == 0 ? ` <div class="form-group my-2" style="padding: 25px 0px">
                         <div class="add__button">
@@ -671,21 +680,23 @@ td.sorting_1 {
                        </div>`:`<div class="form-group my-2">
                          <div class="add__button close__button" >
                   <button type="button" class="btn btn-danger btn-remove-things" ><span class="fas fa-minus"></span></span>
-                    </button>
+                    </button></div>
                 </div>`}
 
                    </div>
 </div>
-                                    `
+
+`
                                 )
                             }).join('')
                      }
    </div>
+
 {#                    <div class="">#}
 {#                            <a  href="#" type="button" class="btn-sm btn-add-things" style="color: #337ab7"><span class="fa fa-plus"> Add Another</span>#}
 {#                              </a>#}
 {#                    </div>#}
-                </div>
+
 
 
 

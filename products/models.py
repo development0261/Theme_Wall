@@ -34,7 +34,7 @@ class item(models.Model):
 
     def get_size(self):
         try:
-            sizes = item_size.objects.filter(item=self)
+            sizes = item_size.objects.filter(item=self).distinct()
 
             return [size.size for size in sizes]
         except:
@@ -54,18 +54,30 @@ class item(models.Model):
         except:
             return []
 
+    def check_if_no_size(self):
+
+            sizes = item_qty.objects.filter(product=self).values_list('size__size',flat=True)
+
+            if 'No_Size' in sizes:
+                return True
+            else:
+                return False
+
 
 class item_size(models.Model):
     size_list = [
         ('s','s'),
         ('m','m'),
         ('l','l'),
+        ('No_Size','No_Size'),
     ]
     item = models.ForeignKey(item,on_delete=models.CASCADE)
-    size = models.CharField(choices=size_list,max_length=5,null=True,blank=True)
+    size = models.CharField(choices=size_list,max_length=20,null=True,blank=True)
 
     def __str__(self):
         return "Size : {} for item : {}".format(self.size,self.item)
+
+
 
 class item_color(models.Model):
     color = models.CharField(max_length=100)
@@ -82,3 +94,4 @@ class item_qty(models.Model):
 
     def __str__(self):
         return  "{} {} with size : {} and color {} ".format(self.quantity,self.product,self.size,self.color)
+

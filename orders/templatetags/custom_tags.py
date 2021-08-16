@@ -14,3 +14,7 @@ def multiply(qty, unit_price, *args, **kwargs):
 @register.filter
 def removeHash(color):
     return str(color)[1:]
+
+@register.simple_tag
+def define(val=None):
+  return val

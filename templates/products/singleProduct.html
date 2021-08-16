@@ -1,6 +1,7 @@
 {% extends "products/ecommBase.html" %}
 {% load static %}
 {% load custom_tags %}
+{% load humanize %}
 {% block style %}
 <link rel='stylesheet' href='https://sachinchoolur.github.io/lightslider/dist/css/lightslider.css'>
 <style>
@@ -309,11 +310,11 @@ hr {
 
                           {% with ''|center:product.rating as range %}
 									 {% for _ in range %}
-									 <i class="fa fa-star"></i>
+                                         <i class="fa fa-star"></i>
 								     {% endfor %}
-									 {% endwith %}
+                          {% endwith %}
 
-                            </div>
+                    </div>
                 </div>
 
                 <div class="about"> <span class="font-weight-bold" id="ProductName_{{ product.pk }}">{{  product.name }} </span>
@@ -324,17 +325,22 @@ hr {
 
                 <hr>
                 <div class="product-description">
+
+                    {% if not product.check_if_no_size %}
                     {% if product.get_qtys %}
                          <div><span class="font-weight-bold">Size:</span>
                     <div class="my-size mt-2">
                      <select style="padding: 5px 10px" class="size_select">
-                     <option> Select Size</option>
+                     <option value="SELECT_SIZE"> Select Size</option>
                        {% for things in product.get_qtys %}
 
                               {% if things.quantity > 0 %}
+                                {% if things.size.size != prevSize %}
                                 <option value="{{ things.size.size | title }}">
                                     {{ things.size.size | title }}
                                 </option>
+                                    {% endif %}
+                                  {% define things.size.size as prevSize %}
                               {% endif %}
 
 {#                                <span class="size_square" id="size_{{ product.pk }}" style="padding: 2px 10px;border: 1px solid black">{{ things.size.size | title }}</span>#}
@@ -343,6 +349,7 @@ hr {
                     </div>
                     {% endif %}
 
+                {% endif %}
 
 
                    {% if product.get_qtys %}
@@ -350,7 +357,12 @@ hr {
 
                        <div style="display: none" id="filteredColor"><span class="font-weight-bold">Color:</span></div>
                     <div class="my-color">
-
+                        {% if product.check_if_no_size %}
+                            {% for things in product.get_qtys %}
+                            <p id="ProductCount_{{ product.pk }}_NO_SIZE_{{things.color.color|removeHash}}" style="display: none">{{things.quantity}}</p>
+                            <span class="dot" id="color_{{ product.pk }}" style="background-color:{{things.color.color}}"   ></span>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                   {% endif %}
 
@@ -394,6 +406,17 @@ hr {
 <script src='https://sachinchoolur.github.io/lightslider/dist/js/lightslider.js'></script>
 
 <script>
+
+$(document).ready(function () {
+    var usedNames = {};
+$(".size_select > option").each(function () {
+    if(usedNames[this.text]) {
+        $(this).remove();
+    } else {
+        usedNames[this.text] = this.value;
+    }
+});
+})
     $('#lightSlider').lightSlider({
         gallery: true,
         item: 1,
@@ -485,18 +508,28 @@ function hex(x) {
                     color = $(this).css('background-color')
                 }
             });
-             size = $(".size_select").val()
+                        {% if product.check_if_no_size %}
+                            size = "NO_SIZE"
+                        {% else %}
+                            size = $(".size_select").val()
+
+                        {% endif %}
+
 
             if(color === "" && $(".my-color").children().length > 0){
 
                     }
-                    else if(size === "" && $(".my-size").children().length > 0){
+                    else if(size === "SELECT_SIZE" && $(".my-size").children().length > 0){
 
                     }else if($(".my-color").children().length > 0){
                          color = rgb2hex(color).slice(1,)
                     }
 
+            {% if not product.check_if_no_size %}
             var prodId = id.toString()+"_"+color.toString()+"_"+size.toString()
+            {% else %}
+            var prodId = id.toString()+"_"+color.toString()
+            {% endif %}
             if(Mycart[prodId]!= undefined){
                 Mycart[prodId][1] = Mycart[prodId][1] + 1;
             }
@@ -514,7 +547,7 @@ function hex(x) {
                     if(color === "" &&  $(".my-color").children().length > 0){
                         alert("Please Select Color of Product")
                     }
-                    else if(size === "" &&  $(".my-size").children().length > 0){
+                    else if(size === "SELECT_SIZE" &&  $(".my-size").children().length > 0){
                         alert("Please Select Size of Product")
                     }
                     else{
@@ -531,7 +564,7 @@ function hex(x) {
                 <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${Mycart[item][0]}"><img src="${Mycart[item][5]}" width="100" alt="Product"></a>
                   <div class="p-2  ml-4 text-center">
                     <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="shop-single-v1.html">${Mycart[item][2]}</a></h5>
-                    ${ Mycart[item][7] ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Size :</span><span id="size_${item[0]}" style="font-size: 0.9rem">${Mycart[item][7]}</span></div>`:``}
+                    ${ Mycart[item][7] != "NO_SIZE" ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Size :</span><span id="size_${item[0]}" style="font-size: 0.9rem">${Mycart[item][7]}</span></div>`:``}
 
                     ${Mycart[item][6] ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Color:</span> <span class="small-dot" id="color_${item[0]}" style="background-color: #${Mycart[item][6]}"> </span></div>`:''}
 
@@ -546,8 +579,11 @@ function hex(x) {
 
 
             $(this).addClass('active');
-			$('.cart-drawer-push').addClass('cart-drawer-pushtoleft');
+            if(!$("#cartProducts").is(':empty')) {
+                $('.cart-drawer-push').addClass('cart-drawer-pushtoleft');
 			$('.cart-drawer-right').addClass('cart-drawer-open');
+            }
+
           //  location.href="http://127.0.0.1:8000/orders/cart/"
         })
 

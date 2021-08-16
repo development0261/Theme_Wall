@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'users.apps.UsersConfig',
     'feed.apps.FeedConfig',
     'crispy_forms',
@@ -73,6 +74,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'feed.views.CountNotifications',
                 'feed.views.GetProfile',
+
             ],
         },
     },
