@@ -597,8 +597,10 @@ h5 {
             </div>
 
              <div class="mt-2 categories__wrp" style="background-color: #eeeeee;border-radius: 5px">
-                    <h6 class="p-1 border-bottom">Filter By</h6>
-                    <p class="mb-2">Color </p>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="p-1 border-bottom">Filter By</h6>
+                    <p class="p-1" style="font-weight: bold">Color </p>
+                    </div>
                     <ul class="list-group" style="height: 300px;overflow-y: scroll">
                         {% for color in colors %}
                             {% if request.GET.cat_id %}
@@ -617,7 +619,7 @@ h5 {
         <div class="col-md-9 ">
             <form action="{% url 'buyproducts' %}" method="post">{% csrf_token %}
                 <div class="input-group search__input">
-                <input type="search" class="form-control" name="searchBox" value="" id="searchBox" placeholder="Search's item" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                <input type="search" class="form-control" name="searchBox" value="{% if searched %} {{ searched }}{% endif %}" id="searchBox" placeholder="Search's item" aria-label="Recipient's username" aria-describedby="basic-addon2">
                   <div class="input-group-append">
                     <button type="search" class="btn btn-dark" style="border-top-right-radius: 5px !important;
                     border-top-left-radius: 0px !important;border-bottom-right-radius: 5px !important;border-bottom-left-radius: 0px !important
@@ -628,22 +630,22 @@ h5 {
 
 
                             {% if request.GET.cat_id %}
-                                   <option value="{{ request.path }}?filter=latest&cat_id={{ request.GET.cat_id  }}" {% if request.GET.filter == 'latest' %} selected {% endif %}>Latest</option>
+                                   <option value="{{ request.path }}?filter=latest&cat_id={{ request.GET.cat_id  }}" {% if request.GET.filter == 'latest' %} selected {% endif %}>Latest Products</option>
                                 {% else %}
-                              <option value="{{ request.path }}?filter=latest" {% if request.GET.filter == 'latest' %} selected {% endif %}>Latest</option>
+                              <option value="{{ request.path }}?filter=latest" {% if request.GET.filter == 'latest' %} selected {% endif %}>Latest Products</option>
                             {% endif %}
 
 
                                 {% if request.GET.cat_id %}
-                                   <option value="{{ request.path }}?filter=highest&cat_id={{ request.GET.cat_id  }}" {% if request.GET.filter == 'highest' %} selected {% endif %}>Highest</option>
+                                   <option value="{{ request.path }}?filter=highest&cat_id={{ request.GET.cat_id  }}" {% if request.GET.filter == 'highest' %} selected {% endif %}>Price Low to High</option>
                                 {% else %}
-                             <option value="{{ request.path }}?filter=highest" {% if request.GET.filter == 'highest' %} selected {% endif %}>Highest</option>
+                             <option value="{{ request.path }}?filter=highest" {% if request.GET.filter == 'highest' %} selected {% endif %}>Price Low to High</option>
                                 {% endif %}
 
                                {% if request.GET.cat_id %}
-                                   <option value="{{ request.path }}?filter=lowest&cat_id={{ request.GET.cat_id  }}" {% if request.GET.filter == 'lowest' %} selected {% endif %}>Lowest</option>
+                                   <option value="{{ request.path }}?filter=lowest&cat_id={{ request.GET.cat_id  }}" {% if request.GET.filter == 'lowest' %} selected {% endif %}>Price High to Low</option>
                                 {% else %}
-                              <option value="{{ request.path }}?filter=lowest" {% if request.GET.filter == 'lowest' %} selected {% endif %}>Lowest</option>
+                              <option value="{{ request.path }}?filter=lowest" {% if request.GET.filter == 'lowest' %} selected {% endif %}>Price High to Low</option>
                                 {% endif %}
 
 
@@ -728,8 +730,10 @@ h5 {
             <div class="col-md-4 mt-3">
                 <div class="card-sl">
                     <div class="card-image">
-                        <img
+                        <a href="{% url 'singleProduct' item.pk%}{% if request.GET.cat_id %}?cat_id={{ request.GET.cat_id }}{% endif %}"><img
                             src="{{ item.image.url }}" style="width: 100%; height:100%" />
+
+                        </a>
                     </div>
 
                     <a class="card-action addToWishList" id="addToWishList_{{item.pk}}" ><i class="fa fa-heart"></i></a>
@@ -772,7 +776,7 @@ h5 {
 
 
                     </div>
-                    <a href="{% url 'singleProduct' item.pk %}" class="card-button">Purchase &nbsp;<i class="fas fa-shopping-cart"></i></a>
+                    <a href="{% url 'singleProduct' item.pk %}{% if request.GET.cat_id %}?cat_id={{ request.GET.cat_id }}{% endif %}" class="card-button">Purchase &nbsp;<i class="fas fa-shopping-cart"></i></a>
                 </div>
             </div>
             {% endfor %}

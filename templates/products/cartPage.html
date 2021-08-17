@@ -235,7 +235,7 @@ a:hover {
                 <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${Mycart[item][0]}"><img src="${Mycart[item][5]}" width="160" alt="Product"></a>
                   <div class="p-2  ml-4 text-center">
                     <h5 class="product-title fs-base mb-2"><a href="shop-single-v1.html">${Mycart[item][2]}</a></h5>
-                    <div class="fs-sm"><span class="text-muted me-2">Size :</span><span id="size_${item[0]}">${Mycart[item][7]}</span></div>
+                  ${Mycart[item][7] === 'NO_SIZE' ? '':`<div class="fs-sm"><span class="text-muted me-2">Size :</span><span id="size_${item[0]}">${Mycart[item][7]}</span></div>` }
                     <div class="fs-sm"><span class="text-muted me-2">Color:</span> <span class="dot" id="color_${item[0]}" style="background-color: #${Mycart[item][6]}"> </span></div>
 
                   </div>

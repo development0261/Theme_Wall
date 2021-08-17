@@ -225,9 +225,9 @@
                     </div>
                     <div class="col company-details">
                         <h2 class="name">
-                            <a target="_blank" href="https://lobianijs.com">
+
                             The Men's Wall
-                            </a>
+
                         </h2>
                         <div>455 Foggy Heights, AZ 85004, US</div>
                         <div>(123) 456-789</div>
@@ -265,7 +265,7 @@
                         {% for item in order.get_order_items %}
                         <tr>
                             <td class="no">{{ forloop.counter }}</td>
-                            <td class="text-left"><h3><a href="{% url 'singleProduct' item.product.pk %}" >{{ item.name }}</a></h3><span>Size : {{ item.size }}</span>
+                            <td class="text-left"><h3><a href="{% url 'singleProduct' item.product.pk %}" >{{ item.name }}</a></h3>{% if not item.size == 'NO_SIZE' %} <span>Size : {{ item.size }}</span>{% endif %}
                                 <span>Color : <span class="dot" style="background-color: #{{ item.color }}"></span></span>
                             </td>
                             <td class="unit">${{ item.price }}</td>
@@ -290,7 +290,12 @@
                         <tr>
                             <td colspan="2"></td>
                             <td colspan="2">TAX</td>
-                            <td>${{ totaltax }}</td>
+                            <td>${{ order.taxPrice }}</td>
+                        </tr>
+                         <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2" style="text-transform: uppercase">Shipment Charge</td>
+                            <td>${{ order.shippingPrice }}</td>
                         </tr>
                         <tr>
                             <td colspan="2"></td>

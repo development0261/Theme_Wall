@@ -277,8 +277,8 @@
         </div>
     </div>
 </div>
- <div class="wishlist-drawer wishlist-drawer-right" style="z-index: 10">
-            <span>Your Wishlist</span>
+ <div class="wishlist-drawer wishlist-drawer-right" style="z-index: 10;overflow-y: scroll">
+            <span style="font-size: 1.4rem">Your Wishlist</span>
             <div class="close-btn1">
                 <i class="fas fa-times fa-2x"></i>
             </div><!-- /.close-btn -->
@@ -440,13 +440,23 @@ Mycart = JSON.parse(localStorage.getItem('Mycart'));
                 if(data.msg === 'success'){
                     $("#wishlistproduct_"+prod_id).remove()
                     if($("#wishListProducts").children().length <=0 ){
-                         $("#wishListProducts").append(`<h6 style="color: #337ab7">Empty Wishlist<h6>`)
+                         $("#wishListProducts").append(`<h6 style="color: #337ab7">You dont have wishlist products<h6>`)
                     }
                 }else{
                     alert("Something Went Wrong")
                 }
               });
     })
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    if (evt.keyCode == 27) {
+         $('.wishlist-drawer-push').removeClass('cart-drawer-pushtoleft');
+         $('.wishlist-drawer-right').removeClass('cart-drawer-open');
+           $('.cart-drawer-push').removeClass('cart-drawer-pushtoleft');
+			$('.cart-drawer-right').removeClass('cart-drawer-open');
+    }
+};
+
 </script>
 {% block jsfiles %}{% endblock jsfiles %}
 </body>

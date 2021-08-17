@@ -291,6 +291,11 @@ hr {
 
 {% block content %}
 <div class="container-fluid mt-2 mb-3">
+    {% if request.GET.cat_id %}
+        <div class="my-2">
+            <a href="{% url 'buyproducts' %}?cat_id={{ request.GET.cat_id }}" class="my-3"><i class="fas fa-arrow-left"></i> Go Back to {{ category }} Products</a>
+        </div>
+    {% endif %}
     <div class="row no-gutters">
         <div class="col-md-5 pr-2">
             <div class="card">
@@ -332,7 +337,7 @@ hr {
 
                     {% if not product.check_if_no_size %}
                     {% if product.get_qtys %}
-                         <div><span class="font-weight-bold">Size:</span>
+                         <div><span class="font-weight-bold">Size :</span>
                     <div class="my-size mt-2">
                      <select style="padding: 5px 10px" class="size_select">
                      <option value="SELECT_SIZE"> Select Size</option>
@@ -413,13 +418,52 @@ hr {
 
 $(document).ready(function () {
     var usedNames = {};
-$(".size_select > option").each(function () {
-    if(usedNames[this.text]) {
-        $(this).remove();
-    } else {
-        usedNames[this.text] = this.value;
+    $(".size_select > option").each(function () {
+        if(usedNames[this.text]) {
+            $(this).remove();
+        } else {
+            usedNames[this.text] = this.value;
+        }
+    });
+
+    if($('.size_select option').length == 2 ){
+        $(".size_select option[value='SELECT_SIZE']").each(function() {
+            $(this).remove();
+        });
+        size = $(".size_select option:first").val()
+         $.get("/products/getColorBySize/"+size+"/{{ product.pk }}/", function(data, status){
+                    if(data.msg == 'success'){
+                        $(".my-color").empty()
+                        if(data.colors.length > 0){
+                             for(let i=0;i<data.colors.length;i++){
+                            if(data.colors[i].qty > 0){
+                                  $(".my-color").append(
+                            `
+                            <p id="ProductCount_{{ product.pk }}_${size}_${data.colors[i].color}" style="display: none">${data.colors[i].qty}</p>
+                            <span class="dot" id="color_{{ product.pk }}" style="background-color: #${data.colors[i].color}"   ></span>
+                            `
+                            )
+                            }
+
+                        }
+
+                                if($(".my-color").find('span').length == 1){
+                                    $('span:first', '.my-color').addClass('active');
+                                }
+                        }
+                    else{
+                          $(".my-color").append('No Colors Available')
+                        }
+
+                    $("#filteredColor").css('display','block')
+                    }
+                  });
+
     }
-});
+
+     if($(".my-color").find('span').length == 1){
+         $('span:first', '.my-color').addClass('active');
+     }
 })
     $('#lightSlider').lightSlider({
         gallery: true,
@@ -566,14 +610,14 @@ function hex(x) {
              $("#cartProducts").empty()
             	for (var item in Mycart) {
              $("#cartProducts").append(
-          `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="product_${item}">
+          `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="cartproduct_${item}">
                 <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${Mycart[item][0]}"><img src="${Mycart[item][5]}" width="100" alt="Product"></a>
                   <div class="p-2  ml-4 text-center">
                     <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="shop-single-v1.html">${Mycart[item][2]}</a></h5>
                     ${ Mycart[item][7] != "NO_SIZE" ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Size :</span><span id="size_${item[0]}" style="font-size: 0.9rem">${Mycart[item][7]}</span></div>`:``}
 
                     ${Mycart[item][6] ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Color:</span> <span class="small-dot" id="color_${item[0]}" style="background-color: #${Mycart[item][6]}"> </span></div>`:''}
-
+                     <a style="color: #337ab7;text-decoration: none" id="removefromcart_${item}" class="removefromcart"><i class="fas fa-trash"></i> Remove</a>
                   </div>
                 </div>
 
@@ -599,8 +643,6 @@ function hex(x) {
             var item ={{ product.id }}
             console.log(item)
 
-
-
         localStorage.setItem('Mycart', JSON.stringify(Mycart))
             var Counter = 0;
 			for (count in Mycart) {
@@ -609,9 +651,6 @@ function hex(x) {
 		document.getElementById('CartCounter').innerHTML = Counter;
 
  }
-
-
-
         function updatepopover(Mycart) {
 
             var popstr = "";
@@ -626,8 +665,6 @@ function hex(x) {
                     i = i + 1;
                 }
             }
-
-
             popstr = popstr + "</div>";
             document.getElementById("popcart").setAttribute('data-content', popstr);
 
@@ -637,13 +674,16 @@ function hex(x) {
                 $j('[data-toggle="popover"]').popover();
             });
             $('#popcart').show();
-
-
         }
-
-
-
-
-
+ $(document).on('click','.removefromcart',function (){
+        var prod_id = this.id.slice(15,)
+        delete Mycart[prod_id];
+        localStorage.setItem('Mycart', JSON.stringify(Mycart));
+        $("#cartproduct_"+prod_id).remove()
+         if($("#cartProducts").children().length <=0 ){
+                         $("#cartProducts").append(`<h6 style="color: #337ab7">You dont have cart products<h6>`)
+                    }
+     updateCart(Mycart)
+    })
     </script>
 {% endblock jsfiles %}

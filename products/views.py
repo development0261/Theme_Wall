@@ -263,9 +263,14 @@ def buyproducts(request):
     if 'color' in request.GET:
         all_items = all_items.filter(color__color="#"+request.GET['color'])
 
+    searched = None
     if request.method == "POST":
         searched = request.POST['searchBox']
-        all_items = all_items.filter(Q(name__icontains=searched) | Q(description__icontains=searched))
+        if str(searched).strip() != '':
+            all_items = all_items.filter(Q(name__icontains=searched) | Q(description__icontains=searched))
+        else:
+            all_items = []
+
 
     paginator = Paginator(all_items, 15)
     page = request.GET.get('page')
@@ -278,13 +283,16 @@ def buyproducts(request):
     # for color in colors:
     #     colors_to_send.append(webcolors.rgb_to_name(webcolors.hex_to_rgb(color)))
 
-    return render(request,'products/index.html',{'all_items':paged_items,'all_categories':all_categories,'colors':colors})
+    return render(request,'products/index.html',{'all_items':paged_items,'all_categories':all_categories,'colors':colors,'searched':searched})
 
 def singleProduct(request,id):
 
         single_item = get_object_or_404(item, id=id)
-
-        return render(request, 'products/singleProduct.html', {"product": single_item})
+        from .models import category
+        if 'cat_id' in request.GET:
+            id = request.GET['cat_id']
+            category = category.objects.get(pk=id).name
+        return render(request, 'products/singleProduct.html', {"product": single_item,'category':category})
 
 
 def buyerprofile(request):

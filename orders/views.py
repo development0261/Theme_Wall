@@ -18,7 +18,7 @@ from email.mime.image import MIMEImage
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
-YOUR_DOMAIN = "https://themes-wall.herokuapp.com"
+YOUR_DOMAIN = "http://127.0.0.1:8000"
 
 # Create your views here.
 def ordersIndex(request):
@@ -66,7 +66,10 @@ def placeOrder(request):
             address.save()
             for it in range(0,len(list(prod_ids))):
                 product = item.objects.get(pk=prod_ids[it])
-                order_product = OrderItem(product=product,order=order,name=product.name,qty=qtys[it],price=float(product.price),image=product.image,
+                price_to_add = product.price
+                if product.offer_price > 0:
+                    price_to_add = product.offer_price
+                order_product = OrderItem(product=product,order=order,name=product.name,qty=qtys[it],price=price_to_add,image=product.image,
                                           color = colors[it],size=sizes[it]
                                           )
                 order_product.save()
