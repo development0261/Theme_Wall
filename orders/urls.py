@@ -15,6 +15,6 @@ urlpatterns = [
     path('addToWishList/',addToWishList,name="addToWishList"),
     path('fetchWishlist/',fetchWishlist,name="fetchWishlist"),
     path('webhooks/stripe/',webhook,name="webhook"),
-    path('paymentFail/',paymentFail,name="paymentFail"),
+    path('paymentFail/<int:id>/',paymentFail,name="paymentFail"),
     path('removeFromWishList/<int:id>/',removeFromWishList,name="removeFromWishList"),
 ]

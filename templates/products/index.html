@@ -746,11 +746,13 @@ h5 {
                         </div>
                     </div>
                     <div class="card-text">
-                        {% if item.get_color|length > 0 %}
+                        {% if item.get_qtys|length > 0 %}
 
 
-                      {% for color in item.get_color %}
-                       <span class="colorBoxSmall" style="background-color:{{ color }} "></span>
+                      {% for things in item.get_qtys %}
+                        {% if things.quantity > 0  %}
+                        <span class="colorBoxSmall" style="background-color:{{ things.color.color }} "></span>
+                          {% endif %}
                       {% endfor %}
 
 
@@ -761,7 +763,12 @@ h5 {
                     </div>
 
                     <div class="card-text" style="font-weight: bold">
+                        {% if item.offer_price > 0 %}
+                        $ {{ item.offer_price | intcomma }} &nbsp;<strike>$ {{ item.price | intcomma }}</strike>
+                        {% else %}
                         $ {{ item.price | intcomma }}
+                        {% endif %}
+
 
 
                     </div>

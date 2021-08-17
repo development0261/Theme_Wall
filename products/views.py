@@ -55,6 +55,8 @@ def addProduct(request):
                 name = request.POST['name']
                 price = request.POST['price']
                 offer = request.POST['offer']
+                if offer == '':
+                    offer = 0
                 it_category = request.POST['category']
                 qtys = request.POST.getlist('qty[]')
                 image = request.FILES['image']
@@ -166,6 +168,8 @@ def updateProduct(request,id):
                     name = request.POST['name']
                     price = request.POST['price']
                     offer = request.POST['offer']
+                    if offer == '':
+                        offer = 0
                     it_category = request.POST['category']
                     qtys = request.POST.getlist('qty[]')
                     serial_no = request.POST['serial_no']
@@ -353,3 +357,4 @@ def getColorBySize(request,size,id):
         return JsonResponse({'msg':'success','colors':colors})
     except:
         return JsonResponse({'msg':'error'})
+

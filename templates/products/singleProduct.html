@@ -318,7 +318,11 @@ hr {
                 </div>
 
                 <div class="about"> <span class="font-weight-bold" id="ProductName_{{ product.pk }}">{{  product.name }} </span>
-                    <h4 class="font-weight-bold" id="ProductPrice_{{ product.pk }}">$ {{ product.price }}</h4>
+                    {% if product.offer_price > 0 %}
+                        <h4 class="font-weight-bold" id="ProductPrice_{{ product.pk }}">$ {{ product.offer_price }}</h4> <span><strike>$ {{ product.price }}</strike></span>
+                     {% else %}
+                        <h4 class="font-weight-bold" id="ProductPrice_{{ product.pk }}">$ {{ product.price }}</h4>
+                    {% endif %}
                 </div>
 
             <div class="buttons"> <span id="divadd_{{product.pk}}" class="divproduct"><button class="btn btn-dark btn-long addProduct" id="addProduct_{{ product.pk }}">Add to Cart</button></span> <button class="btn btn-outline-dark addToWishList" id="addToWishList_{{product.pk}}"> <i class="fa fa-heart"></i> </button> </div>
@@ -447,19 +451,21 @@ $(".size_select > option").each(function () {
 
         $(".size_select").change(function (){
             var size = $(this).val()
-            console.log("getColorBySize/"+$(this).val()+"/{{ product.pk }}")
+
               $.get("/products/getColorBySize/"+$(this).val()+"/{{ product.pk }}/", function(data, status){
                     if(data.msg == 'success'){
                         $(".my-color").empty()
                         if(data.colors.length > 0){
                              for(let i=0;i<data.colors.length;i++){
-                            console.log(data.colors[i])
-                             $(".my-color").append(
+                            if(data.colors[i].qty > 0){
+                                  $(".my-color").append(
                             `
                             <p id="ProductCount_{{ product.pk }}_${size}_${data.colors[i].color}" style="display: none">${data.colors[i].qty}</p>
                             <span class="dot" id="color_{{ product.pk }}" style="background-color: #${data.colors[i].color}"   ></span>
                             `
                             )
+                            }
+
                         }
                         }
                     else{

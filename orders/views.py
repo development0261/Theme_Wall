@@ -47,13 +47,10 @@ def placeOrder(request):
             zip = request.POST['zip']
             country = request.POST['country']
             contact = request.POST['contact']
-
             payment_type = request.POST['payment_type']
             final_total = request.POST['final_total']
             shipment_charge = request.POST['shipment_charge']
             tax_price = request.POST['tax_price']
-
-            print(shipment_charge,tax_price,final_total)
             colors = request.POST.getlist('color[]')
             sizes = request.POST.getlist('size[]')
             prod_ids = request.POST.getlist('prod[]')
@@ -91,7 +88,6 @@ def placeOrder(request):
                 msg.content_subtype = 'html'  # Main content is text/html
                 msg.mixed_subtype = 'related'
                 msg.send()
-
                 order_products = order.get_order_items()
                 orders_sellers = order_products.values_list('product__seller',flat=True).distinct()
                 products_of_same_seller = {}
@@ -121,14 +117,14 @@ def placeOrder(request):
                             },
                             'unit_amount': int(order.totalPrice * 100),
                         },
-                        'quantity': 1,
+                        'quantity': order.get_order_item_count(),
                     }],
                     metadata={
                         "order_id": order.uuid
                     },
                     mode='payment',
                     success_url=YOUR_DOMAIN + '/orders/invoice/'+str(order.pk),
-                    cancel_url=YOUR_DOMAIN + '/orders/paymentFail/',
+                    cancel_url=YOUR_DOMAIN + '/orders/paymentFail/'+str(order.pk),
                 )
                 return redirect('/orders/stripecheckout/'+session.id)
 
@@ -142,50 +138,51 @@ def stripecheckout(request,session_id):
     return render(request,'products/stripe.html',{'session_id':session_id})
 
 def invoice(request,id):
-   try:
-       order = Order.objects.get(pk=int(id))
-       if 'access' in request.GET:
-           print('access')
-           pass
-       else:
+   if request.user.is_authenticated:
+       try:
+           order = Order.objects.get(pk=int(id))
+           if 'access' in request.GET:
+               print('access')
+               pass
+           else:
 
-           if order.paymentMethod == 'stripe':
-               order.isPaid = True
-               order.paidAt = datetime.datetime.now()
-               order.save()
-               context = {'order': order}
-               html_content = render_to_string('products/email.html', context=context).strip()
-               msg = EmailMultiAlternatives("Your Order has been Placed with The Men's Wall", html_content,
-                                            settings.EMAIL_HOST_USER, [order.user.email]
-                                            )
-               msg.content_subtype = 'html'  # Main content is text/html
-               msg.mixed_subtype = 'related'
-               msg.send()
-
-               order_products = order.get_order_items()
-               orders_sellers = order_products.values_list('product__seller', flat=True).distinct()
-               products_of_same_seller = {}
-
-               for seller in orders_sellers:
-                   products_of_same_seller[seller] = order_products.filter(product__seller=seller)
-
-               for seller, products in products_of_same_seller.items():
-                   context = {'order': order, 'products': products,'YOUR_DOMAIN':YOUR_DOMAIN}
-                   html_content = render_to_string('products/emailProducts.html', context=context).strip()
-                   msg = EmailMultiAlternatives("You have received orders for your products on men's wall",
-                                                html_content,
-                                                settings.EMAIL_HOST_USER, [CustomeUser.objects.get(pk=seller).email]
+               if order.paymentMethod == 'stripe':
+                   order.isPaid = True
+                   order.paidAt = datetime.datetime.now()
+                   order.save()
+                   context = {'order': order}
+                   html_content = render_to_string('products/email.html', context=context).strip()
+                   msg = EmailMultiAlternatives("Your Order has been Placed with The Men's Wall", html_content,
+                                                settings.EMAIL_HOST_USER, [order.user.email]
                                                 )
                    msg.content_subtype = 'html'  # Main content is text/html
                    msg.mixed_subtype = 'related'
                    msg.send()
 
+                   order_products = order.get_order_items()
+                   orders_sellers = order_products.values_list('product__seller', flat=True).distinct()
+                   products_of_same_seller = {}
 
+                   for seller in orders_sellers:
+                       products_of_same_seller[seller] = order_products.filter(product__seller=seller)
 
-       address = ShippingAddress.objects.get(order=order)
-       return render(request, 'products/invoice.html', {'order': order, 'address': address})
-   except:
-       return redirect('myOrders')
+                   for seller, products in products_of_same_seller.items():
+                       context = {'order': order, 'products': products, 'YOUR_DOMAIN': YOUR_DOMAIN}
+                       html_content = render_to_string('products/emailProducts.html', context=context).strip()
+                       msg = EmailMultiAlternatives("You have received orders for your products on men's wall",
+                                                    html_content,
+                                                    settings.EMAIL_HOST_USER, [CustomeUser.objects.get(pk=seller).email]
+                                                    )
+                       msg.content_subtype = 'html'  # Main content is text/html
+                       msg.mixed_subtype = 'related'
+                       msg.send()
+
+           address = ShippingAddress.objects.get(order=order)
+           return render(request, 'products/invoice.html', {'order': order, 'address': address})
+       except:
+           return redirect('myOrders')
+   else:
+        return redirect('login')
 
 
 def myOrders(request):
@@ -340,8 +337,12 @@ def webhook(request):
 
     return HttpResponse(status=200)
 
-def paymentFail(request):
-
+def paymentFail(request,id):
+    try:
+        order = Order.objects.get(pk=id)
+        order.delete()
+    except:
+        pass
     return render(request,'products/paymentFail.html')
 
 
