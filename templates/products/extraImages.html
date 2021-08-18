@@ -1,0 +1,204 @@
+{% extends 'products/ecommBase.html' %}
+    {% load static %}
+{% block style %}
+
+    <style rel="stylesheet" href="{% static 'css/addProduct.css' %}"></style>
+    <style>
+    body {
+    background-color: #eee;
+
+}
+    .card {
+    background-color: #fff;
+    padding: 14px;
+    border: none
+}
+
+.demo {
+    width: 100%
+}
+
+ul {
+    list-style: none outside none;
+    padding-left: 0;
+    margin-bottom: 0
+}
+
+li {
+    display: block;
+    float: left;
+    margin-right: 6px;
+    cursor: pointer
+}
+#lightSlider img {
+    display: block;
+    height: auto;
+    width: 100%
+}
+.input-file,.anotherBlock {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h4 class="text-center my-2" style="color: #3E83C5">Add More Images for Product {{ product.name }}</h4>
+        <div class="row">
+            <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12 p-1">
+                <div style="border-radius: 5px" class="p-1">
+                   <div class="card">
+                <div class="demo">
+                    <ul id="lightSlider">
+                        <li data-thumb="{{ product.image.url }}"> <img src="{{ product.image.url }}"  id="ProductImage_{{ product.pk }}" /> </li>
+                    </ul>
+                </div>
+
+                    <h6 class="my-2 font-weight-bold">Serial No : {{ product.serial_no }}</h6>
+                    <h6 class="my-2 font-weight-bold">Name : {{ product.name }}</h6>
+                        </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-lg-8 col-sm-12 col-xs-12 p-1">
+                 <div style="border-radius: 5px" class="p-1">
+                 <div class="card">
+                     <form method="post" enctype="multipart/form-data"> {% csrf_token %}
+                        <div class="image_list">
+                             <div class="row imageBlock">
+                    <div class="col-8 ">
+
+                        <div style="border-radius: 5px" class="p-3">
+
+
+                            <div class="form-group p-3" style="border: 1px dashed black">
+                                <input type="file" id="file" class="input-file" name="image[]">
+                                <label for="file" style="cursor: pointer" class="d-flex justify-content-center">
+                                    <img  src="{% static 'images/upload.png' %}" width="60">
+                                </label>
+
+                                <label class="btn btn-tertiary js-labelFile">
+
+                                  <span class="js-fileName">Choose a file (Please Prefer JPG or JPEG Image to Upload)</span>
+                                </label>
+                              </div>
+
+                    </div>
+                        <a style="text-decoration: none;color: #3E83C5;cursor: pointer" class="px-3 addAnotherImage"><i class="fas fa-plus"></i> Add Another</a>
+                </div>
+                    <div class="col-4 d-flex justify-content-center py-3 ">
+                        <img src="" style="display: none" class="prodExtraImage" width="150" height="150"/>
+                    </div>
+                </div>
+                        </div>
+
+                         <div class="form-group mt-2 d-flex justify-content-center">
+                             <button class="btn btn-success w-50" type="submit">Save Images</button>
+                         </div>
+                     </form>
+
+
+
+                 </div>
+
+                 </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jsfiles %}
+<script>
+  (function() {
+
+    'use strict';
+
+    $('.input-file').each(function() {
+      var $input = $(this),
+          $label = $input.next('.js-labelFile'),
+          labelVal = $label.html();
+
+     $input.on('change', function(element) {
+        var fileName = '';
+        if (element.target.value) fileName = element.target.value.split('\\').pop();
+        fileName ? $label.addClass('has-file').find('.js-fileName').html(fileName) : $label.removeClass('has-file').html(labelVal);
+     });
+    });
+
+  })();
+  
+  $(".input-file").change(function () {
+
+      if (this.files && this.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('.prodExtraImage').attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(this.files[0]);
+        $('.prodExtraImage').css('display','block')
+    }
+  })
+
+  var counter = 1
+
+  $(document).on('click','.addAnotherImage',function () {
+        $(".image_list").append(`
+             <div class="row imageBlock">
+                    <div class="col-8 ">
+                        <div style="border-radius: 5px" class="p-3">
+
+
+                            <div class="form-group p-3" style="border: 1px dashed black">
+                                <input type="file" class="anotherBlock" id="input_file_${counter}" name="image[]">
+                                <label for="input_file_${counter}" style="cursor: pointer" class="d-flex justify-content-center">
+                                    <img  src="{% static 'images/upload.png' %}" width="60">
+                                </label>
+
+                                <label class="btn btn-tertiary js-labelFile">
+
+                                  <span class="js-fileName">Choose a file (Please Prefer JPG or JPEG Image to Upload)</span>
+                                </label>
+                              </div>
+
+                    </div>
+                    <a style="text-decoration: none;color: red;cursor: pointer;float:right" class="px-3 removeImage"><i class="fas fa-trash"></i> Remove</a>
+                    </div>
+                    <div class="col-4 d-flex justify-content-center py-3 ">
+                        <img src="" style="display: none" class="prodExtraImage1" id="prodExtraImage_${counter}" width="150" height="150"/>
+                    </div>
+
+                </div>
+
+        `)
+
+      counter = counter + 1
+  })
+
+
+   $(document).on('click', '.removeImage', function () {
+      $(this).closest('.imageBlock').remove();
+    });
+
+   $(document).on('change','.anotherBlock', function (){
+
+        var id = $(this).attr('id').slice(11,)
+
+      if (this.files && this.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#prodExtraImage_'+id).attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(this.files[0]);
+        $('#prodExtraImage_'+id).css('display','block')
+    }
+  })
+</script>
+{% endblock %}

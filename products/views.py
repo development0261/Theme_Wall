@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from users.models import Address
-from .models import category,item,item_size,item_color,item_qty
+from .models import category,item,item_size,item_color,item_qty,Extra_Images
 from django.contrib import messages
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
@@ -23,7 +23,7 @@ def allProducts(request):
 def sellerDash(request):
     if request.user.is_authenticated and request.user.role == "seller":
         all_categories = category.objects.all()
-        my_products = item.objects.filter(seller=request.user,seller__role='seller')
+        my_products = item.objects.filter(seller=request.user,seller__role='seller').order_by('-created_at')
         return render(request,'products/sellerDash.html',{'all_categories':all_categories,'my_products':my_products})
     else:
         return redirect("home")
@@ -59,7 +59,9 @@ def addProduct(request):
                     offer = 0
                 it_category = request.POST['category']
                 qtys = request.POST.getlist('qty[]')
-                image = request.FILES['image']
+                image = ''
+                if 'image' in request.FILES:
+                    image = request.FILES['image']
                 serial_no = request.POST['serial_no']
                 rating = request.POST['rating']
                 description = request.POST['description']
@@ -138,7 +140,8 @@ def profile(request):
         messages.success(request,"Your Profile is updated successfully")
         return redirect("profile")
 
-    return render(request,'products/sellerProfile.html')
+    address = Address.objects.filter(user=request.user).last()
+    return render(request,'products/sellerProfile.html',{'address':address})
 
 def getProduct(request,id):
     try:
@@ -247,9 +250,11 @@ def updateProduct(request,id):
 
 def buyproducts(request):
     all_items = item.objects.filter(is_available= True)
+    colors = item_color.objects.all().values_list('color', flat=True).distinct()
     if 'cat_id' in request.GET:
         id = request.GET['cat_id']
         all_items = all_items.filter(item_category=category.objects.get(id=int(id)))
+        colors = item_color.objects.filter(item__item_category=category.objects.get(id=int(id))).values_list('color', flat=True).distinct()
 
     if 'filter' in request.GET:
         filter = request.GET['filter']
@@ -278,7 +283,7 @@ def buyproducts(request):
 
     all_categories = item.objects.all().values_list('item_category__pk','item_category__name').distinct()
 
-    colors = item_color.objects.all().values_list('color',flat=True).distinct()
+
     colors_to_send = []
     # for color in colors:
     #     colors_to_send.append(webcolors.rgb_to_name(webcolors.hex_to_rgb(color)))
@@ -366,3 +371,45 @@ def getColorBySize(request,size,id):
     except:
         return JsonResponse({'msg':'error'})
 
+
+def addExtraImage(request,id):
+    if request.user.is_authenticated:
+        if request.user.role == 'seller':
+            product = item.objects.get(pk=id)
+            if request.method == "POST":
+                if 'image[]' in request.FILES:
+                    images = request.FILES.getlist('image[]')
+                    for image in images:
+                        extra_image = Extra_Images(image=image,product=product)
+                        extra_image.save()
+
+                    messages.success(request,'Your Images for {} are added successfully'.format(product.name))
+                    return redirect('sellerDash')
+
+
+            return render(request,'products/extraImages.html',{'product':product})
+        else:
+            return redirect('home')
+    else:
+        return redirect('login')
+
+
+def getExtraImages(request,id):
+    if request.user.role == 'seller':
+        product = item.objects.get(pk=id)
+        images = Extra_Images.objects.filter(product=product)
+        serialized_images = serializers.serialize('json',images,ensure_ascii=False)
+        return JsonResponse({'msg':'success','images':serialized_images})
+    else:
+        return JsonResponse({'msg':'error'})
+
+def removeExtraImage(request,id):
+    if request.user.role == 'seller':
+        try:
+            image = Extra_Images.objects.get(pk=id)
+            image.delete()
+            return JsonResponse({'msg':'success'})
+        except:
+            return JsonResponse({'msg':'error'})
+    else:
+        return JsonResponse({'msg':'error'})

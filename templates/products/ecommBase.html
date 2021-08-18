@@ -293,6 +293,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA8c55_YHLvDHGACkQscgbGLtLRdxBDCfI"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+{% block jsfiles %}{% endblock jsfiles %}
 <script>
     $("#switch_to_seller").click(function () {
         $("#switch_to_seller_modal").modal('toggle')
@@ -426,8 +427,11 @@ Mycart = JSON.parse(localStorage.getItem('Mycart'));
                     }
 
                 }
+                  $('.cart-drawer-push').removeClass('cart-drawer-pushtoleft');
+			$('.cart-drawer-right').removeClass('cart-drawer-open');
                     $('.wishlist-drawer-push').addClass('cart-drawer-pushtoleft');
 			        $('.wishlist-drawer-right').addClass('cart-drawer-open');
+
 			        $("#whishListCounter").html(data.count)
                   localStorage.setItem('wishCounter', JSON.stringify(data.count))
               });
@@ -458,6 +462,6 @@ document.onkeydown = function(evt) {
 };
 
 </script>
-{% block jsfiles %}{% endblock jsfiles %}
+
 </body>
 </html>

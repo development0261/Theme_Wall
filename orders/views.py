@@ -18,7 +18,7 @@ from email.mime.image import MIMEImage
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
-YOUR_DOMAIN = "https://themes-wall.herokuapp.com"
+YOUR_DOMAIN = "http://127.0.0.1:8000"
 
 # Create your views here.
 def ordersIndex(request):
@@ -32,6 +32,8 @@ def cart(request):
 
 def checkout(request):
     if request.user.is_authenticated:
+        past_address = ShippingAddress.objects.filter(order__user = request.user).values_list('address','zip').distinct()
+        print(past_address)
         return render(request,'products/checkout.html')
     else:
         return redirect('login')
@@ -126,6 +128,7 @@ def placeOrder(request):
                         "order_id": order.uuid
                     },
                     mode='payment',
+
                     success_url=YOUR_DOMAIN + '/orders/invoice/'+str(order.pk),
                     cancel_url=YOUR_DOMAIN + '/orders/paymentFail/'+str(order.pk),
                 )
@@ -341,11 +344,10 @@ def webhook(request):
     return HttpResponse(status=200)
 
 def paymentFail(request,id):
-    try:
-        order = Order.objects.get(pk=id)
-        order.delete()
-    except:
-        pass
+
+    order = Order.objects.get(pk=id)
+    order.delete()
+
     return render(request,'products/paymentFail.html')
 
 

@@ -103,15 +103,13 @@ td.sorting_1 {
 
         <th>Name</th>
         <th>Price</th>
-
+         <th>Offer Price</th>
         <th>Color - Size - Qty</th>
         <th>Category</th>
         <th>Image</th>
-
-        <th>Created Date</th>
-
+        <th>Additional Images</th>
         <th>Actions </th>
-          <th>Offer Price</th>
+        <th>Created Date</th>
         <th>Description</th>
 
       </tr>
@@ -120,9 +118,9 @@ td.sorting_1 {
       {% for item in my_products %}
       <tr>
 
-        <td>{{ item.name }}</td>
+        <td id="productName_{{ item.pk }}">{{ item.name }}</td>
         <td>{{  item.price }} $</td>
-
+        <td>{% if item.offer_price > 0 %} {{  item.offer_price }}$ {% else %} No Offer {% endif %}</td>
         <td>{% for thing in item.get_qtys %}
             <span class="colorBoxSmall" style="background-color: {{ thing.color.color }};margin-left: 5px"></span> -
             <span style="margin-left: 5px"> {{ thing.size.size | title }}</span> -
@@ -130,23 +128,18 @@ td.sorting_1 {
             <br/>
         {% endfor %}</td>
         <td>{{  item.item_category }}</td>
-
         <td><img src="{{ item.image.url }}" width="60" /></td>
-
-        <td>{{ item.created_at }}</td>
-
+        <td><a class="btn btn-success" href="{% url 'addExtraImage' item.pk %}" style="padding: 2px 10px;margin: 0px 10px" data-placement="bottom" title="Add Addtional Images"><i class="fas fa-plus"></i></a>  {% if item.get_extra_images|length > 0 %}<button class="btn btn-dark displayImages" id="displayImages_{{ item.pk }}" style="padding: 2px 10px" data-placement="bottom" title="Show Additional Images"><i class="fas fa-image"></i></button>{% endif %}</td>
         <td>
-
-          <a class="btn btn-warning editProduct" id="editproduct_{{ item.pk }}" style="padding: 2px 10px"><i class="fa fa-edit" > </i></a>
-          <a href="{% url 'deleteProduct' item.pk %}" class="btn btn-danger " style="padding: 2px 10px"> <i
-              class="fa fa-trash"> </i></a>
-
+              <a class="btn btn-warning editProduct" id="editproduct_{{ item.pk }}" style="padding: 2px 10px;margin: 0px 10px" data-placement="bottom" title="Edit Product"><i class="fa fa-edit" > </i></a>
+              <a class="btn btn-danger deleteProduct" id="deleteProduct_{{ item.pk }}" style="padding: 2px 10px;cursor: pointer" data-placement="bottom" title="Delete Product"> <i
+                  class="fa fa-trash"> </i></a>
         </td>
-        <td>{{  item.offer_price }} $</td>
-        <td>
-          <p>
-            {{ item.description }}
-          </p>
+      <td>{{ item.created_at }}</td>
+        <td >
+            <p style="word-wrap: break-word"> {{ item.description | truncatewords:20}}</p>
+
+
         </td>
 
       </tr>
@@ -174,16 +167,16 @@ td.sorting_1 {
 
                 <div class="col-6">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Product Name</label>
-                    <input type="text" class="form-control" name="name" aria-describedby="emailHelp">
+                    <label for="exampleInputEmail1">Product Name *</label>
+                    <input type="text" class="form-control" name="name"  required>
                   </div>
                 </div>
                   <div class="col-6">
                   <div class="form-group">
 
-                    <label for="catid">Product Category</label>
+                    <label for="catid">Product Category *</label>
 
-                    <select class="form-control" id="catid" name="category" style="display: inherit;">
+                    <select class="form-control" id="catid" name="category" style="display: inherit;" required>
                       {% for category in all_categories %}
                       <option value="{{ category.id }}">{{ category.name }}</option>
                       {% endfor %}
@@ -193,30 +186,30 @@ td.sorting_1 {
                 </div>
                 <div class="col-6">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Product Price</label>
+                    <label for="exampleInputEmail1">Product Price *</label>
                     <input type="text" class="form-control" placeholder="USD" name="price"
-                      aria-describedby="emailHelp">
+                      aria-describedby="emailHelp" required>
                   </div>
                 </div>
                 <div class="col-6">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Offer Price</label>
                     <input type="text" class="form-control" placeholder="USD" value="0" name="offer"
-                      aria-describedby="emailHelp">
+                      >
                   </div>
                 </div>
 
                 <div class="col-12">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Product Description</label>
-                    <textarea rows="5" cols="15" class="form-control" name="description"></textarea>
+                    <textarea rows="5" cols="15" class="form-control" name="description" ></textarea>
                   </div>
                 </div>
 
                      <div class="col-6 ">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Product Serial No</label>
-                    <input type="text" class="form-control" name="serial_no" aria-describedby="emailHelp">
+                    <label for="exampleInputEmail1">Product Serial No *</label>
+                    <input type="text" class="form-control" name="serial_no" required>
                   </div>
                 </div>
                      <div class="col-6 ">
@@ -237,15 +230,15 @@ td.sorting_1 {
                     <div class="row container">
                     <div class="col-4">
                   <div class="form-group my-2">
-                    <label for="exampleInputEmail1">Sizes</label>
+                    <label for="exampleInputEmail1">Sizes *</label>
                     <div class="d-flex align-items-center">
                       <div class="size-list w-100">
                         <div class="d-flex">
-                          <select name="size[]" class="form-control mb-2">
+                          <select name="size[]" class="form-control mb-2" required>
 
-                            <option value="s">s</option>
-                            <option value="m">m</option>
-                            <option value="l">l</option>
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
                               <option value="No_Size">No Size</option>
                           </select>
 {#                          <div class="add__button">#}
@@ -261,12 +254,12 @@ td.sorting_1 {
                 </div>
                     <div class="col-3">
                           <div class="form-group my-2">
-                            <label for="exampleInputEmail1">Colors</label>
+                            <label for="exampleInputEmail1">Colors *</label>
                             <div class="d-flex align-items-center">
                               <div class="color-list w-100">
                                 <div class="d-flex ">
 
-        <span class="color-picker"><input type="color" name="color[]" class="form-control colorPicker"  id="my_color_picker" />
+        <span class="color-picker"><input type="color" name="color[]" class="form-control colorPicker"  id="my_color_picker" required/>
         </span>
 {#                                  <div class="add__button">#}
 {#                                    <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>#}
@@ -281,7 +274,7 @@ td.sorting_1 {
                         </div>
                     <div class="col-4">
                           <div class="form-group my-2">
-                            <label for="exampleInputEmail1">Quantity</label>
+                            <label for="exampleInputEmail1">Stock Quantity *</label>
                             <div class="d-flex align-items-center">
                               <div class="qty-list w-100">
                                 <div class="d-flex ">
@@ -315,7 +308,7 @@ td.sorting_1 {
 
                 <div class="col-12 browser__img" >
                   <div class="form-group">
-                    <input type="file" id="file" class="input-file" name="image">
+                    <input type="file" id="file" class="input-file" name="image" required>
                     <label for="file" class="btn btn-tertiary js-labelFile">
                       <i class="icon fa fa-check"></i>
                       <span class="js-fileName">Choose a file (Please Prefer JPG or JPEG Image to Upload)</span>
@@ -397,8 +390,56 @@ td.sorting_1 {
   </div>
 </div>
 
+<div class="modal fade" id="imagesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: none">
+        <h5 class="modal-title" id="productNameModal"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div id="">
+                <div class="container">
+                    <div class="row" id="productImages">
 
+                    </div>
+                </div>
+          </div>
+      </div>
+      <div class="modal-footer" style="border-top: none">
 
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: none">
+        <h5 class="modal-title" id="productNameModal">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div id="">
+                <div class="container">
+                    <div id="deleteVerification">
+
+                    </div>
+
+                </div>
+          </div>
+      </div>
+      <div class="modal-footer" style="border-top: none">
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}
 {% block jsfiles %}
 
@@ -417,6 +458,74 @@ td.sorting_1 {
     </script>
 
 <script>
+    $(".deleteProduct").click(function (){
+        var id = $(this).attr('id').slice(14,)
+        var productName = $("#productName_"+id).html()
+        $("#deleteVerification").append(`
+            <h5> Are you sure to delete product ${productName} </h5>
+            <a class="my-2 btn btn-danger" href="/products/deleteProduct/${id}">Delete Product</a>
+        `)
+        $("#deleteModal").modal('show')
+    })
+    $(document).on('click','.displayImages',function () {
+        var id = $(this).attr('id').slice(14,)
+        $.ajax({
+          url: "/products/getExtraImages/"+id,
+
+          success: function(data) {
+              if(data.msg == 'success'){
+                  images = JSON.parse(data.images)
+                  console.log(images)
+                  if(images.length > 0){
+                      $("#productNameModal").html('Images of '+$("#productName_"+id).html())
+                      $("#productImages").empty()
+                      for(let i=0;i<images.length;i++){
+
+                            $("#productImages").append(`
+                         <div class="col-4" id="image_${images[i].pk}" class="fetchedExtra">
+                        <div>
+                            <div>
+                            <img src="/media/${images[i].fields.image}" width="150" height="130"/>
+                            </div>
+                            <a style="text-decoration: none;cursor: pointer;color: red" class="mt-1 removeModalImage" id="removeModalImage_${images[i].pk}"><i class="fas fa-minus-circle"></i> Delete</a>
+                        </div>
+                        </div>
+                      `)
+                      }
+
+                      $("#imagesModal").modal('show')
+                  }
+                  else{
+                      alert("No Extra Images are added")
+                  }
+
+              }
+              else{
+                      alert("Something not wrong")
+                  }
+          }});
+
+    })
+
+    $(document).on('click','.removeModalImage',function (){
+        var id = $(this).attr('id').slice(17,)
+        $.ajax({
+          url: "/products/removeExtraImage/"+id,
+
+          success: function(data) {
+              if(data.msg == 'success'){
+                    $("#image_"+id).remove()
+
+                  if($("#productImages").children().length == 0){
+                     $("#imagesModal").modal('hide')
+                  }
+              }
+              else {
+                  alert('something went wrong')
+              }
+          }})
+    })
+
   $(document).on('click','.editProduct',function (){
       var id = $(this).attr('id').slice(12,)
 
@@ -438,16 +547,16 @@ td.sorting_1 {
               <div class="row">
                 <div class="col-6">
                   <div class="form-group">
-                    <label for="">Product Name</label>
-                    <input type="text" class="form-control" value="${item[0].fields.name}" id="editName" name="name" aria-describedby="">
+                    <label for="">Product Name *</label>
+                    <input type="text" class="form-control" value="${item[0].fields.name}" id="editName" name="name" required>
                   </div>
                 </div>
                   <div class="col-6">
                   <div class="form-group">
 
-                    <label for="catid">Product Category</label>
+                    <label for="catid">Product Category *</label>
 
-                    <select class="form-control" id="catid" name="category" style="display: inherit;" >
+                    <select class="form-control" id="catid" name="category" style="display: inherit;" required>
                       ${
                             categories.map((item1,index)=>{
                                 return(
@@ -467,9 +576,9 @@ td.sorting_1 {
                 </div>
                 <div class="col-6">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Product Price</label>
+                    <label for="exampleInputEmail1">Product Price *</label>
                     <input type="text" class="form-control" value=${item[0].fields.price} id="editPrice" placeholder="USD" name="price"
-                      aria-describedby="emailHelp">
+                      required>
                   </div>
                 </div>
                 <div class="col-6">
@@ -490,8 +599,8 @@ td.sorting_1 {
 
                      <div class="col-6 ">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Product Serial No</label>
-                    <input type="text" class="form-control" name="serial_no" value="${item[0].fields.serial_no}" aria-describedby="emailHelp">
+                    <label for="exampleInputEmail1">Product Serial No *</label>
+                    <input type="text" class="form-control" name="serial_no" value="${item[0].fields.serial_no}" required>
                   </div>
                 </div>
                      <div class="col-6 ">
@@ -523,15 +632,15 @@ td.sorting_1 {
                     <div class="row container">
                     <div class="col-4">
                   <div class="form-group my-2">
-                    <label for="exampleInputEmail1">Sizes</label>
+                    <label for="exampleInputEmail1">Sizes *</label>
                     <div class="d-flex align-items-center">
                       <div class="size-list w-100">
                         <div class="d-flex">
-                          <select name="size[]" class="form-control mb-2">
+                          <select name="size[]" class="form-control mb-2" required>
 
-                            <option value="s">s</option>
-                            <option value="m">m</option>
-                            <option value="l">l</option>
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
                               <option value="No_Size">No Size</option>
                           </select>
 {#                          <div class="add__button">#}
@@ -547,12 +656,12 @@ td.sorting_1 {
                 </div>
                     <div class="col-3">
                           <div class="form-group my-2">
-                            <label for="exampleInputEmail1">Colors</label>
+                            <label for="exampleInputEmail1">Colors *</label>
                             <div class="d-flex align-items-center">
                               <div class="color-list w-100">
                                 <div class="d-flex ">
 
-        <span class="color-picker"><input type="color" name="color[]" class="form-control colorPicker"  id="my_color_picker" />
+        <span class="color-picker"><input type="color" name="color[]" class="form-control colorPicker"  id="my_color_picker" required />
         </span>
 {#                                  <div class="add__button">#}
 {#                                    <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>#}
@@ -567,7 +676,7 @@ td.sorting_1 {
                         </div>
                     <div class="col-4">
                           <div class="form-group my-2">
-                            <label for="exampleInputEmail1">Quantity</label>
+                            <label for="exampleInputEmail1">Stock Quantity *</label>
                             <div class="d-flex align-items-center">
                               <div class="qty-list w-100">
                                 <div class="d-flex ">
@@ -609,15 +718,15 @@ td.sorting_1 {
                                     <div class="row container things-input">
                            <div class="col-4">
                   <div class="form-group my-2">
-                   ${index == 0 ? ` <label for="exampleInputEmail1">Sizes</label>`: ``}
+                   ${index == 0 ? ` <label for="exampleInputEmail1">Sizes *</label>`: ``}
                     <div class="d-flex align-items-center">
                       <div class="size-list w-100">
 
                              <div class="d-flex size-input">
-                                      <select name="size[]" class="form-control mb-2">
-                                        <option value="s" ${ item.size == 's' ? 'selected' : '' }>s</option>
-                                        <option value="m" ${ item.size == 'm' ? 'selected' : '' }>m</option>
-                                        <option value="l" ${ item.size == 'l' ? 'selected' : '' }>l</option>
+                                      <select name="size[]" class="form-control mb-2" required>
+                                        <option value="small" ${ item.size == 'small' ? 'selected' : '' }>Small</option>
+                                        <option value="medium" ${ item.size == 'medium' ? 'selected' : '' }>Medium</option>
+                                        <option value="large" ${ item.size == 'large' ? 'selected' : '' }>Large</option>
                                          <option value="No_Size" ${ item.size == 'No_Size' ? 'selected' : '' }>No Size</option>
                                       </select>
 
@@ -633,12 +742,12 @@ td.sorting_1 {
                 </div>
                      <div class="col-3">
                   <div class="form-group my-2">
-                  ${index == 0 ? ` <label for="exampleInputEmail1">Colors</label>`: ``}
+                  ${index == 0 ? ` <label for="exampleInputEmail1">Colors *</label>`: ``}
                     <div class="d-flex align-items-center">
                       <div class="color-list w-100">
 
                             <div class="d-flex color-input ">
-                        <span class="color-picker">  <input type="color" name="color[]" value="${item.color}" class="form-control" /> </span>
+                        <span class="color-picker">  <input type="color" name="color[]" value="${item.color}" class="form-control" required/> </span>
                          <div class="add__button">
 
 
@@ -655,7 +764,7 @@ td.sorting_1 {
 
                     <div class="col-4">
                           <div class="form-group my-2">
-                           ${index == 0 ? ` <label for="exampleInputEmail1">Quantity</label>`: ``}
+                           ${index == 0 ? ` <label for="exampleInputEmail1">Stock Quantity *</label>`: ``}
                             <div class="d-flex align-items-center">
                               <div class="qty-list w-100">
                                 <div class="d-flex ">
@@ -740,7 +849,8 @@ td.sorting_1 {
   $(document).ready(function () {
     $('#example').DataTable({
       'responsive': true,
-      'scrollX': true
+      'scrollX': true,
+        'order':[]
     });
   });
 
@@ -793,11 +903,11 @@ td.sorting_1 {
                     <div class="d-flex align-items-center">
                       <div class="size-list w-100">
                         <div class="d-flex">
-                          <select name="size[]" class="form-control mb-2">
+                          <select name="size[]" class="form-control mb-2" required>
 
-                            <option value="s" selected>s</option>
-                            <option value="m">m</option>
-                            <option value="l">l</option>
+                            <option value="small" selected>Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
                               <option value="No_Size">No Size</option>
                           </select>
                           {#<div class="add__button">#}
@@ -838,7 +948,7 @@ td.sorting_1 {
                               <div class="qty-list w-100">
                                 <div class="d-flex ">
 
-                                    <input type="number" name="qty[]" class="form-control colorPicker"  id="qty" />
+                                    <input type="number" name="qty[]" class="form-control colorPicker"  id="qty" required/>
 
 
                                 </div>
@@ -877,9 +987,9 @@ td.sorting_1 {
 
 
 							<select name="size[]" class="form-control mb-2"  >
-                            <option value="s">s</option>
-                            <option value="m">m</option>
-                            <option value="l">l</option>
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
 <option value="No_Size ">No Size</option>
                         </select>
                 <div class="add__button close__button">

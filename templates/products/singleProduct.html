@@ -3,620 +3,696 @@
 {% load custom_tags %}
 {% load humanize %}
 {% block style %}
-<link rel='stylesheet' href='https://sachinchoolur.github.io/lightslider/dist/css/lightslider.css'>
-<style>
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap");
+    <link rel='stylesheet' href='https://sachinchoolur.github.io/lightslider/dist/css/lightslider.css'>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap");
 
-body {
-    background-color: #eee;
-    font-family: "Poppins", sans-serif
-}
+        body {
+            background-color: #eee;
+            font-family: "Poppins", sans-serif
+        }
 
-.card {
-    background-color: #fff;
-    padding: 14px;
-    border: none
-}
+        .card {
+            background-color: #fff;
+            padding: 14px;
+            border: none
+        }
 
-.demo {
-    width: 100%
-}
+        .demo {
+            width: 100%
+        }
 
-ul {
-    list-style: none outside none;
-    padding-left: 0;
-    margin-bottom: 0
-}
+        ul {
+            list-style: none outside none;
+            padding-left: 0;
+            margin-bottom: 0
+        }
 
-li {
-    display: block;
-    float: left;
-    margin-right: 6px;
-    cursor: pointer
-}
+        li {
+            display: block;
+            float: left;
+            margin-right: 6px;
+            cursor: pointer
+        }
 
-#lightSlider img {
-    display: block;
-    height: auto;
-    width: 100%
-}
+        #lightSlider .lslide {
+            display: block;
+            height: auto;
+            width: 30%
+        }
 
-.stars i {
-    color: #f6d151
-}
+        #lightSlider img {
+            display: block;
+            height: auto;
+            width: 100%
+        }
 
-.stars span {
-    font-size: 13px
-}
 
-hr {
-    color: #d4d4d4
-}
+        .lSSlideOuter .lSPager.lSGallery img {
+            display: block;
 
-.badge {
+            max-width: 100%;
+            height: 50px;
+        }
 
-}
+        .stars i {
+            color: #f6d151
+        }
 
-.badge i {
-    font-size: 10px
-}
+        .stars span {
+            font-size: 13px
+        }
 
-.profile-image {
-    width: 35px
-}
+        hr {
+            color: #d4d4d4
+        }
 
-.comment-ratings i {
-    font-size: 13px
-}
+        .badge {
 
-.username {
-    font-size: 12px
-}
+        }
 
-.comment-profile {
-    line-height: 17px
-}
+        .badge i {
+            font-size: 10px
+        }
 
-.date span {
-    font-size: 12px
-}
+        .profile-image {
+            width: 35px
+        }
 
-.p-ratings i {
-    color: #f6d151;
-    font-size: 12px
-}
+        .comment-ratings i {
+            font-size: 13px
+        }
 
-.btn-long {
-    padding-left: 35px;
-    padding-right: 35px
-}
+        .username {
+            font-size: 12px
+        }
 
-.buttons {
-    margin-top: 15px
-}
+        .comment-profile {
+            line-height: 17px
+        }
 
-.buttons .btn {
-    height: 46px
-}
+        .date span {
+            font-size: 12px
+        }
 
-.buttons .cart {
-    border-color: #ff7676;
-    color: #ff7676
-}
+        .p-ratings i {
+            color: #f6d151;
+            font-size: 12px
+        }
 
-.buttons .cart:hover {
-    background-color: #e86464 !important;
-    color: #fff
-}
+        .btn-long {
+            padding-left: 35px;
+            padding-right: 35px
+        }
 
-.buttons .buy {
-    color: #fff;
-    background-color: #ff7676;
-    border-color: #ff7676
-}
+        .buttons {
+            margin-top: 15px
+        }
 
-.buttons .buy:focus,
-.buy:active {
-    color: #fff;
-    background-color: #ff7676;
-    border-color: #ff7676;
-    box-shadow: none
-}
+        .buttons .btn {
+            height: 46px
+        }
 
-.buttons .buy:hover {
-    color: #fff;
-    background-color: #e86464;
-    border-color: #e86464
-}
+        .buttons .cart {
+            border-color: #ff7676;
+            color: #ff7676
+        }
 
-.buttons .wishlist {
-    background-color: #fff;
-    border-color: #ff7676
-}
+        .buttons .cart:hover {
+            background-color: #e86464 !important;
+            color: #fff
+        }
 
-.buttons .wishlist:hover {
-    background-color: #e86464;
-    border-color: #e86464;
-    color: #fff
-}
+        .buttons .buy {
+            color: #fff;
+            background-color: #ff7676;
+            border-color: #ff7676
+        }
 
-.buttons .wishlist:hover i {
-    color: #fff
-}
+        .buttons .buy:focus,
+        .buy:active {
+            color: #fff;
+            background-color: #ff7676;
+            border-color: #ff7676;
+            box-shadow: none
+        }
 
-.buttons .wishlist i {
-    color: #ff7676
-}
+        .buttons .buy:hover {
+            color: #fff;
+            background-color: #e86464;
+            border-color: #e86464
+        }
 
-.comment-ratings i {
-    color: #f6d151
-}
+        .buttons .wishlist {
+            background-color: #fff;
+            border-color: #ff7676
+        }
 
-.followers {
-    font-size: 9px;
-    color: #d6d4d4
-}
+        .buttons .wishlist:hover {
+            background-color: #e86464;
+            border-color: #e86464;
+            color: #fff
+        }
 
-.store-image {
-    width: 42px
-}
+        .buttons .wishlist:hover i {
+            color: #fff
+        }
 
-.dot {
-    height: 20px;
-    width: 20px;
-    border : 1px solid black;
-    border-radius: 50%;
-    display: inline-block;
-  }
+        .buttons .wishlist i {
+            color: #ff7676
+        }
 
-.small-dot{
+        .comment-ratings i {
+            color: #f6d151
+        }
 
-    height: 12px;
-    width: 12px;
-    border : 1px solid black;
-    border-radius: 50%;
-    display: inline-block;
+        .followers {
+            font-size: 9px;
+            color: #d6d4d4
+        }
 
-}
-.bullet-text {
-    font-size: 12px
-}
+        .store-image {
+            width: 42px
+        }
 
-.my-color {
-    margin-top: 10px;
-    margin-bottom: 10px
-}
-.card-body {
-    padding: 0.3rem 0.3rem 0.2rem
-}
-.btn-dark{
-    color: #fff;
-    background-color: #3E83C5 !important;
-    border-color: #3E83C5 !important;
- }
-.btn-outline-dark {
-    color: #89C34A;
-     border-color: #89C34A !important;
-}
-.btn-outline-dark:hover {
-     color: #fff;
-    background-color: #89C34A !important;
-    border-color: #89C34A !important;
-}
-.sort__by {
-    margin-left: 10px;
-}
+        .dot {
+            height: 20px;
+            width: 20px;
+            border: 1px solid black;
+            border-radius: 50%;
+            display: inline-block;
+        }
 
-.sort__by select{
-    border-radius: 30px;
-    border: 1px solid #000;
-    height: 100%;
-    margin-left: 10px;
-    display: block !important;
-}
-.dot {
-    position: relative;
-}
+        .small-dot {
 
-.dot.active::after {
-    content: "";
-    width: 25px;
-    height: 25px;
-    border: 1px solid #000;
-    display: block;
-    position: absolute;
-    top: -3px;
-    left: -3px;
-}
+            height: 12px;
+            width: 12px;
+            border: 1px solid black;
+            border-radius: 50%;
+            display: inline-block;
 
-.dot {
-    margin: 0 5px;
-}
-.size_square.selected {
-    background-color: #3E83C5;
-    color: #fff;
-    border-color:#3E83C5 !important; ;
-}
-.cart-drawer-push {
-	overflow-x: hidden;
-	position: relative;
-	right: 0;
-}
+        }
 
-.cart-drawer,.wishlist-drawer {
-	background: #fff3cd;
-  	height: 100%;
-  	position: fixed;
-	text-align: center;
-	top: 0;
-	width: 300px;
-	padding: 20px;
-    z-index: 2;
-}
+        .bullet-text {
+            font-size: 12px
+        }
 
-.cart-drawer-right,.wishlist-drawer-right { right: -300px; }
+        .my-color {
+            margin-top: 10px;
+            margin-bottom: 10px
+        }
 
-.cart-drawer-right.cart-drawer-open,.wishlist-drawer.cart-drawer-open { right: 0; }
+        .card-body {
+            padding: 0.3rem 0.3rem 0.2rem
+        }
 
-.cart-drawer-pushtoleft,.wishlist-drawer-pushtoleft { right: 300px; }
+        .btn-dark {
+            color: #fff;
+            background-color: #3E83C5 !important;
+            border-color: #3E83C5 !important;
+        }
 
-.cart-drawer, .cart-drawer-push,.wishlist-drawer,.wishlist-drawer-push {
-	-webkit-transition: all 0.5s ease;
-	-moz-transition: all 0.5s ease;
-	transition: all 0.5s ease;
-}
+        .btn-outline-dark {
+            color: #89C34A;
+            border-color: #89C34A !important;
+        }
 
-.cart-btn {
-	cursor: pointer;
-	display: inline-block;
-	font-size: 30px;
-}
+        .btn-outline-dark:hover {
+            color: #fff;
+            background-color: #89C34A !important;
+            border-color: #89C34A !important;
+        }
 
-.close-btn,.close-btn1{
-	cursor: pointer;
-	position: absolute;
-	top: 10px;
-	right: 10px;
-    color: #3E83C5;
-}
+        .sort__by {
+            margin-left: 10px;
+        }
 
-.arrow-icon {
-    position: absolute;
-    right: 58px;
-    top: 25px;
+        .sort__by select {
+            border-radius: 30px;
+            border: 1px solid #000;
+            height: 100%;
+            margin-left: 10px;
+            display: block !important;
+        }
 
-}
-</style>
+        .dot {
+            position: relative;
+        }
+
+        .dot.active::after {
+            content: "";
+            width: 25px;
+            height: 25px;
+            border: 1px solid #000;
+            display: block;
+            position: absolute;
+            top: -3px;
+            left: -3px;
+        }
+
+        .dot {
+            margin: 0 5px;
+        }
+
+        .size_square.selected {
+            background-color: #3E83C5;
+            color: #fff;
+            border-color: #3E83C5 !important;;
+        }
+
+        .cart-drawer-push {
+            overflow-x: hidden;
+            position: relative;
+            right: 0;
+        }
+
+        .cart-drawer, .wishlist-drawer {
+            background: #fff3cd;
+            height: 100%;
+            position: fixed;
+            text-align: center;
+            top: 0;
+            width: 300px;
+            padding: 20px;
+            z-index: 2;
+        }
+
+        .cart-drawer-right, .wishlist-drawer-right {
+            right: -300px;
+        }
+
+        .cart-drawer-right.cart-drawer-open, .wishlist-drawer.cart-drawer-open {
+            right: 0;
+        }
+
+        .cart-drawer-pushtoleft, .wishlist-drawer-pushtoleft {
+            right: 300px;
+        }
+
+        .cart-drawer, .cart-drawer-push, .wishlist-drawer, .wishlist-drawer-push {
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+        }
+
+        .cart-btn {
+            cursor: pointer;
+            display: inline-block;
+            font-size: 30px;
+        }
+
+        .close-btn, .close-btn1 {
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #3E83C5;
+        }
+
+        .arrow-icon {
+            position: absolute;
+            right: 58px;
+            top: 25px;
+
+        }
+
+        {#    image hover #}
+
+
+        .zoom-image {
+
+            position: relative;
+
+        }
+
+        .zoom-image img {
+
+            cursor: none;
+
+            border-radius: 5px;
+            box-shadow: 0 18px 5px -15px rgba(0, 0, 0, .5);
+
+        }
+
+        .hover-image {
+
+            position: absolute;
+            width: 200px;
+            height: 100px;
+
+            border-radius: 0%;
+
+            {#transform: translate(-50%, -20%);#}
+
+            pointer-events: none;
+
+            box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+
+        }
+
+
+    </style>
 {% endblock %}
 
 {% block content %}
-<div class="container-fluid mt-2 mb-3">
-    {% if request.GET.cat_id %}
-        <div class="my-2">
-            <a href="{% url 'buyproducts' %}?cat_id={{ request.GET.cat_id }}" class="my-3"><i class="fas fa-arrow-left"></i> Go Back to {{ category }} Products</a>
-        </div>
-    {% endif %}
-    <div class="row no-gutters">
-        <div class="col-md-5 pr-2">
-            <div class="card">
-                <div class="demo">
-                    <ul id="lightSlider">
-                        <li> <img src="{{ product.image.url }}"  id="ProductImage_{{ product.pk }}" /> </li>
-
-                    </ul>
-                </div>
+    <div class="container-fluid mt-2 mb-3">
+        {% if request.GET.cat_id %}
+            <div class="my-2">
+                <a href="{% url 'buyproducts' %}?cat_id={{ request.GET.cat_id }}" class="my-3"><i
+                        class="fas fa-arrow-left"></i> Go Back to {{ category }} Products</a>
             </div>
-
-        </div>
-        <div class="col-md-7">
-            <div class="card">
-                <div class="d-flex flex-row align-items-center">
-                    <div class="p-ratings">
-
-                          {% with ''|center:product.rating as range %}
-									 {% for _ in range %}
-                                         <i class="fa fa-star"></i>
-								     {% endfor %}
-                          {% endwith %}
-
+        {% endif %}
+        <div class="row no-gutters">
+            <div class="col-md-5 pr-2">
+                <div class="card">
+                    <div class="demo">
+                        <ul id="lightSlider">
+                            <li data-thumb="{{ product.image.url }}" class="zoom-image"><img
+                                    src="{{ product.image.url }}" id="ProductImage_{{ product.pk }}"/></li>
+                            {% if product.get_extra_images|length > 0 %}
+                                {% for image in product.get_extra_images %}
+                                    <li data-thumb="{{ image.image.url }}" class="zoom-image"><img src="{{ image.image.url }}"/></li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
                     </div>
                 </div>
 
-                <div class="about"> <span class="font-weight-bold" id="ProductName_{{ product.pk }}">{{  product.name }} </span>
-                    {% if product.offer_price > 0 %}
-                        <h4 class="font-weight-bold" id="ProductPrice_{{ product.pk }}">$ {{ product.offer_price }}</h4> <span><strike>$ {{ product.price }}</strike></span>
-                     {% else %}
-                        <h4 class="font-weight-bold" id="ProductPrice_{{ product.pk }}">$ {{ product.price }}</h4>
-                    {% endif %}
-                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="p-ratings">
 
-            <div class="buttons"> <span id="divadd_{{product.pk}}" class="divproduct"><button class="btn btn-dark btn-long addProduct" id="addProduct_{{ product.pk }}">Add to Cart</button></span> <button class="btn btn-outline-dark addToWishList" id="addToWishList_{{product.pk}}"> <i class="fa fa-heart"></i> </button> </div>
+                            {% with ''|center:product.rating as range %}
+                                {% for _ in range %}
+                                    <i class="fa fa-star"></i>
+                                {% endfor %}
+                            {% endwith %}
 
-                <hr>
-                <div class="product-description">
-
-                    {% if not product.check_if_no_size %}
-                    {% if product.get_qtys %}
-                         <div><span class="font-weight-bold">Size :</span>
-                    <div class="my-size mt-2">
-                     <select style="padding: 5px 10px" class="size_select">
-                     <option value="SELECT_SIZE"> Select Size</option>
-                       {% for things in product.get_qtys %}
-
-                              {% if things.quantity > 0 %}
-                                {% if things.size.size != prevSize %}
-                                <option value="{{ things.size.size | title }}">
-                                    {{ things.size.size | title }}
-                                </option>
-                                    {% endif %}
-                                  {% define things.size.size as prevSize %}
-                              {% endif %}
-
-{#                                <span class="size_square" id="size_{{ product.pk }}" style="padding: 2px 10px;border: 1px solid black">{{ things.size.size | title }}</span>#}
-                        {% endfor %}
-                      </select>
+                        </div>
                     </div>
-                    {% endif %}
 
-                {% endif %}
-
-
-                   {% if product.get_qtys %}
-
-
-                       <div style="display: none" id="filteredColor"><span class="font-weight-bold">Color:</span></div>
-                    <div class="my-color">
-                        {% if product.check_if_no_size %}
-                            {% for things in product.get_qtys %}
-                            <p id="ProductCount_{{ product.pk }}_NO_SIZE_{{things.color.color|removeHash}}" style="display: none">{{things.quantity}}</p>
-                            <span class="dot" id="color_{{ product.pk }}" style="background-color:{{things.color.color}}"   ></span>
-                            {% endfor %}
+                    <div class="about"><span class="font-weight-bold"
+                                             id="ProductName_{{ product.pk }}">{{ product.name }} </span>
+                        {% if product.offer_price > 0 %}
+                            <h4 class="font-weight-bold" id="ProductPrice_{{ product.pk }}">
+                                $ {{ product.offer_price }}</h4> <span><strike>$ {{ product.price }}</strike></span>
+                        {% else %}
+                            <h4 class="font-weight-bold" id="ProductPrice_{{ product.pk }}">$ {{ product.price }}</h4>
                         {% endif %}
                     </div>
-                  {% endif %}
 
-
+                    <div class="buttons"><span id="divadd_{{ product.pk }}" class="divproduct"><button
+                            class="btn btn-dark btn-long addProduct"
+                            id="addProduct_{{ product.pk }}">Add to Cart</button></span>
+                        <button class="btn btn-outline-dark addToWishList" id="addToWishList_{{ product.pk }}"><i
+                                class="fa fa-heart"></i></button>
                     </div>
-                    <div class="mt-2"> <span class="font-weight-bold">Description</span>
-                        <p>{{ product.description }}</p>
 
-                    </div>
-                    <div class="mt-2"> <span class="font-weight-bold">Seller</span> </div>
-                    <div class="d-flex flex-row align-items-center"> <img src="https://i.imgur.com/N2fYgvD.png" class="rounded-circle store-image">
-                        <div class="d-flex flex-column ml-1 comment-profile"><span class="username">{{ product.seller.username}}</span>
+                    <hr>
+                    <div class="product-description">
+
+                        {% if not product.check_if_no_size %}
+                            {% if product.get_qtys %}
+                                <div><span class="font-weight-bold">Size :</span>
+                                <div class="my-size mt-2">
+                                    <select style="padding: 5px 10px" class="size_select">
+                                        <option value="SELECT_SIZE"> Select Size</option>
+                                        {% for things in product.get_qtys %}
+
+                                            {% if things.quantity > 0 %}
+                                                {% if things.size.size != prevSize %}
+                                                    <option value="{{ things.size.size | title }}">
+                                                        {{ things.size.size | title }}
+                                                    </option>
+                                                {% endif %}
+                                                {% define things.size.size as prevSize %}
+                                            {% endif %}
+
+                                            {#                                <span class="size_square" id="size_{{ product.pk }}" style="padding: 2px 10px;border: 1px solid black">{{ things.size.size | title }}</span>#}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endif %}
+
+                        {% endif %}
+
+
+                        {% if product.get_qtys %}
+
+
+                            <div style="display: none" id="filteredColor"><span class="font-weight-bold">Color:</span>
+                            </div>
+                            <div class="my-color">
+                                {% if product.check_if_no_size %}
+                                    {% for things in product.get_qtys %}
+                                        <p id="ProductCount_{{ product.pk }}_NO_SIZE_{{ things.color.color|removeHash }}"
+                                           style="display: none">{{ things.quantity }}</p>
+                                        <span class="dot" id="color_{{ product.pk }}"
+                                              style="background-color:{{ things.color.color }}"></span>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+
+                        </div>
+                        <div class="mt-2"><span class="font-weight-bold">Description</span>
+                            <p>{{ product.description }}</p>
+
+                        </div>
+                        <div class="mt-2"><span class="font-weight-bold">Seller</span></div>
+                        <div class="d-flex flex-row align-items-center"><img src="{% static 'images/vendor.jpg' %}"
+                                                                             class="rounded-circle store-image">
+                            <div class="d-flex flex-column ml-1 comment-profile"><span class="username"
+                                                                                       style="font-weight: bold;">{{ product.seller.fullname }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
+
     </div>
-
-</div>
- <div class="cart-drawer cart-drawer-right">
-            <span>Your Cart</span>
-            <div class="close-btn">
-                <i class="fas fa-times fa-2x"></i>
-            </div><!-- /.close-btn -->
-            <div>
-                <div id="cartProducts">
+    <div class="cart-drawer cart-drawer-right">
+        <span>Your Cart</span>
+        <div class="close-btn">
+            <i class="fas fa-times fa-2x"></i>
+        </div><!-- /.close-btn -->
+        <div>
+            <div id="cartProducts">
 
 
             </div>
-                <a href="{% url 'cart' %}" class="btn btn-dark mt-3">GO TO CART</a>
-            </div>
-        </div><!-- /.cart-drawer .cart-drawer-right -->
+            <a href="{% url 'cart' %}" class="btn btn-dark mt-3">GO TO CART</a>
+        </div>
+    </div><!-- /.cart-drawer .cart-drawer-right -->
 
 
 {% endblock %}
 
 {% block jsfiles %}
-<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
-<script src='https://sachinchoolur.github.io/lightslider/dist/js/lightslider.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>
+    <script src='https://sachinchoolur.github.io/lightslider/dist/js/lightslider.js'></script>
 
-<script>
+    <script>
 
-$(document).ready(function () {
-    var usedNames = {};
-    $(".size_select > option").each(function () {
-        if(usedNames[this.text]) {
-            $(this).remove();
-        } else {
-            usedNames[this.text] = this.value;
-        }
-    });
+        $(document).ready(function () {
+            var usedNames = {};
+            $(".size_select > option").each(function () {
+                if (usedNames[this.text]) {
+                    $(this).remove();
+                } else {
+                    usedNames[this.text] = this.value;
+                }
+            });
 
-    if($('.size_select option').length == 2 ){
-        $(".size_select option[value='SELECT_SIZE']").each(function() {
-            $(this).remove();
-        });
-        size = $(".size_select option:first").val()
-         $.get("/products/getColorBySize/"+size+"/{{ product.pk }}/", function(data, status){
-                    if(data.msg == 'success'){
+            if ($('.size_select option').length == 2) {
+                $(".size_select option[value='SELECT_SIZE']").each(function () {
+                    $(this).remove();
+                });
+                size = $(".size_select option:first").val()
+                $.get("/products/getColorBySize/" + size + "/{{ product.pk }}/", function (data, status) {
+                    if (data.msg == 'success') {
                         $(".my-color").empty()
-                        if(data.colors.length > 0){
-                             for(let i=0;i<data.colors.length;i++){
-                            if(data.colors[i].qty > 0){
-                                  $(".my-color").append(
-                            `
+                        if (data.colors.length > 0) {
+                            for (let i = 0; i < data.colors.length; i++) {
+                                if (data.colors[i].qty > 0) {
+                                    $(".my-color").append(
+                                        `
                             <p id="ProductCount_{{ product.pk }}_${size}_${data.colors[i].color}" style="display: none">${data.colors[i].qty}</p>
                             <span class="dot" id="color_{{ product.pk }}" style="background-color: #${data.colors[i].color}"   ></span>
                             `
-                            )
+                                    )
+                                }
+
                             }
 
+                            if ($(".my-color").find('span').length == 1) {
+                                $('span:first', '.my-color').addClass('active');
+                            }
+                        } else {
+                            $(".my-color").append('No Colors Available')
                         }
 
-                                if($(".my-color").find('span').length == 1){
-                                    $('span:first', '.my-color').addClass('active');
-                                }
-                        }
-                    else{
-                          $(".my-color").append('No Colors Available')
-                        }
-
-                    $("#filteredColor").css('display','block')
+                        $("#filteredColor").css('display', 'block')
                     }
-                  });
+                });
 
-    }
+            }
 
-     if($(".my-color").find('span').length == 1){
-         $('span:first', '.my-color').addClass('active');
-     }
-})
-    $('#lightSlider').lightSlider({
-        gallery: true,
-        item: 1,
-        loop: true,
-        slideMargin: 0,
-        thumbItem: 9
-    });
+            if ($(".my-color").find('span').length == 1) {
+                $('span:first', '.my-color').addClass('active');
+            }
+        })
+        $('#lightSlider').lightSlider({
+            gallery: true,
+            item: 1,
+            loop: true,
+            slideMargin: 0,
+            thumbItem: 9
+        });
 
-    $(".size_square").click(function (){
-        $(".size_square").removeClass('selected')
+        $(".size_square").click(function () {
+            $(".size_square").removeClass('selected')
 
-        $(this).toggleClass('selected')
-
-
-    })
-    $(document).on('click','.my-color .dot',function (){
+            $(this).toggleClass('selected')
 
 
-    $(this).parent().find('.dot').removeClass('active');
-    $(this).addClass('active');
+        })
+        $(document).on('click', '.my-color .dot', function () {
 
 
-});
-
-</script>
-        <script>
+            $(this).parent().find('.dot').removeClass('active');
+            $(this).addClass('active');
 
 
-        $(".size_select").change(function (){
+        });
+
+    </script>
+    <script>
+
+
+        $(".size_select").change(function () {
             var size = $(this).val()
 
-              $.get("/products/getColorBySize/"+$(this).val()+"/{{ product.pk }}/", function(data, status){
-                    if(data.msg == 'success'){
-                        $(".my-color").empty()
-                        if(data.colors.length > 0){
-                             for(let i=0;i<data.colors.length;i++){
-                            if(data.colors[i].qty > 0){
-                                  $(".my-color").append(
-                            `
+            $.get("/products/getColorBySize/" + $(this).val() + "/{{ product.pk }}/", function (data, status) {
+                if (data.msg == 'success') {
+                    $(".my-color").empty()
+                    if (data.colors.length > 0) {
+                        for (let i = 0; i < data.colors.length; i++) {
+                            if (data.colors[i].qty > 0) {
+                                $(".my-color").append(
+                                    `
                             <p id="ProductCount_{{ product.pk }}_${size}_${data.colors[i].color}" style="display: none">${data.colors[i].qty}</p>
                             <span class="dot" id="color_{{ product.pk }}" style="background-color: #${data.colors[i].color}"   ></span>
                             `
-                            )
+                                )
                             }
 
                         }
-                        }
-                    else{
-                          $(".my-color").append('No Colors Available')
-                        }
-
-                    $("#filteredColor").css('display','block')
+                    } else {
+                        $(".my-color").append('No Colors Available')
                     }
-                  });
+
+                    $("#filteredColor").css('display', 'block')
+                }
+            });
 
         })
 
 
-
         var hexDigits = new Array
-        ("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f");
+        ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f");
 
-//Function to convert rgb color to hex format
-function rgb2hex(rgb) {
- rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
- return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
-}
+        //Function to convert rgb color to hex format
+        function rgb2hex(rgb) {
+            rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+        }
 
-function hex(x) {
-  return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
- }
+        function hex(x) {
+            return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
+        }
 
+        var Mycart
         var MyitName = {};
-        if (localStorage.getItem('Mycart') == null) {
-            var Mycart = {};
-			console.log("Created")
+        if (localStorage.getItem('Mycart') === null) {
+            Mycart = {};
+            updateCart(Mycart);
         } else {
 
             Mycart = JSON.parse(localStorage.getItem('Mycart'));
-			console.log("Updated")
+            console.log("Updated")
             updateCart(Mycart);
         }
 
-        $(document).on('click','.addProduct',async function (){
+        $(document).on('click', '.addProduct', async function () {
             var id = $(this).attr('id').slice(11,)
             var color = "";
             var size = "";
-            console.log(color,size)
-            $('.my-color').children('.dot').each(function(i) {
-                if($(this).hasClass('active')){
+            console.log(color, size)
+            $('.my-color').children('.dot').each(function (i) {
+                if ($(this).hasClass('active')) {
                     color = $(this).css('background-color')
                 }
             });
-                        {% if product.check_if_no_size %}
-                            size = "NO_SIZE"
-                        {% else %}
-                            size = $(".size_select").val()
-
-                        {% endif %}
-
-
-            if(color === "" && $(".my-color").children().length > 0){
-
-                    }
-                    else if(size === "SELECT_SIZE" && $(".my-size").children().length > 0){
-
-                    }else if($(".my-color").children().length > 0){
-                         color = rgb2hex(color).slice(1,)
-                    }
-
-            {% if not product.check_if_no_size %}
-            var prodId = id.toString()+"_"+color.toString()+"_"+size.toString()
+            {% if product.check_if_no_size %}
+                size = "NO_SIZE"
             {% else %}
-            var prodId = id.toString()+"_"+color.toString()
+                size = $(".size_select").val()
+
             {% endif %}
-            if(Mycart[prodId]!= undefined){
-                Mycart[prodId][1] = Mycart[prodId][1] + 1;
+
+
+            if (color === "" && $(".my-color").children().length > 0) {
+
+            } else if (size === "SELECT_SIZE" && $(".my-size").children().length > 0) {
+
+            } else if ($(".my-color").children().length > 0) {
+                color = rgb2hex(color).slice(1,)
             }
 
-            else{
+            {% if not product.check_if_no_size %}
+                var prodId = id.toString() + "_" + color.toString() + "_" + size.toString()
+            {% else %}
+                var prodId = id.toString() + "_" + color.toString()
+            {% endif %}
+            if (Mycart[prodId] != undefined) {
+                Mycart[prodId][1] = Mycart[prodId][1] + 1;
+            } else {
 
-                    qty = 1;
-                    productName = $('#ProductName_'+id).html();
-                    productPrice = $('#ProductPrice_'+id).html().slice(1,);
-                    console.log('ProductCount_'+id+"_"+size+"_"+color)
-                    productCount = $('#ProductCount_'+id+"_"+size+"_"+color).html();
-                    img_url = $("#ProductImage_"+id).attr('src');
-                    img_url = img_url.replace('url(','').replace(')','').replace(/\"/gi, "");
+                qty = 1;
+                productName = $('#ProductName_' + id).html();
+                productPrice = $('#ProductPrice_' + id).html().slice(1,);
+                console.log('ProductCount_' + id + "_" + size + "_" + color)
+                productCount = $('#ProductCount_' + id + "_" + size + "_" + color).html();
+                img_url = $("#ProductImage_" + id).attr('src');
+                img_url = img_url.replace('url(', '').replace(')', '').replace(/\"/gi, "");
 
-                    if(color === "" &&  $(".my-color").children().length > 0){
-                        alert("Please Select Color of Product")
-                    }
-                    else if(size === "SELECT_SIZE" &&  $(".my-size").children().length > 0){
-                        alert("Please Select Size of Product")
-                    }
-                    else{
-                        {#Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,[{'color':color,'count':1}],[{'size':size,'count':1}]];#}
-                        Mycart[prodId] = [parseInt(id),qty, productName, parseInt(productPrice),productCount,img_url,color,size]
-                    }
+                if (color === "" && $(".my-color").children().length > 0) {
+                    alert("Please Select Color of Product")
+                } else if (size === "SELECT_SIZE" && $(".my-size").children().length > 0) {
+                    alert("Please Select Size of Product")
+                } else {
+                    {#Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,[{'color':color,'count':1}],[{'size':size,'count':1}]];#}
+                    Mycart[prodId] = [parseInt(id), qty, productName, parseInt(productPrice), productCount, img_url, color, size]
+                }
 
             }
             await updateCart(Mycart)
-             $("#cartProducts").empty()
-            	for (var item in Mycart) {
-             $("#cartProducts").append(
-          `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="cartproduct_${item}">
+            $("#cartProducts").empty()
+            for (var item in Mycart) {
+                $("#cartProducts").append(
+                    `<div class="d-sm-flex justify-content-between align-items-center border-bottom my-1" id="cartproduct_${item}">
                 <div class="d-block d-sm-flex align-items-center text-center text-sm-start"><a class="d-inline-block flex-shrink-0 mx-auto me-sm-4" href="/products/singleProduct/${Mycart[item][0]}"><img src="${Mycart[item][5]}" width="100" alt="Product"></a>
                   <div class="p-2  ml-4 text-center">
                     <h5 class="product-title fs-base mb-2" style="font-size: 1rem"><a href="shop-single-v1.html">${Mycart[item][2]}</a></h5>
-                    ${ Mycart[item][7] != "NO_SIZE" ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Size :</span><span id="size_${item[0]}" style="font-size: 0.9rem">${Mycart[item][7]}</span></div>`:``}
+                    ${Mycart[item][7] != "NO_SIZE" ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Size :</span><span id="size_${item[0]}" style="font-size: 0.9rem">${Mycart[item][7]}</span></div>` : ``}
 
-                    ${Mycart[item][6] ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Color:</span> <span class="small-dot" id="color_${item[0]}" style="background-color: #${Mycart[item][6]}"> </span></div>`:''}
+                    ${Mycart[item][6] ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Color:</span> <span class="small-dot" id="color_${item[0]}" style="background-color: #${Mycart[item][6]}"> </span></div>` : ''}
                      <a style="color: #337ab7;text-decoration: none" id="removefromcart_${item}" class="removefromcart"><i class="fas fa-trash"></i> Remove</a>
                   </div>
                 </div>
@@ -624,42 +700,46 @@ function hex(x) {
 
               </div>
           `
-        );}
-
+                );
+            }
 
 
             $(this).addClass('active');
-            if(!$("#cartProducts").is(':empty')) {
+            if (!$("#cartProducts").is(':empty')) {
+                $('.wishlist-drawer-push').removeClass('cart-drawer-pushtoleft');
+                $('.wishlist-drawer-right').removeClass('cart-drawer-open');
                 $('.cart-drawer-push').addClass('cart-drawer-pushtoleft');
-			$('.cart-drawer-right').addClass('cart-drawer-open');
+                $('.cart-drawer-right').addClass('cart-drawer-open');
             }
 
-          //  location.href="http://127.0.0.1:8000/orders/cart/"
+            //  location.href="http://127.0.0.1:8000/orders/cart/"
         })
 
         function updateCart(Mycart) {
             //console.log("Update Cart")
             //console.log(JSON.stringify(Mycart))
-            var item ={{ product.id }}
-            console.log(item)
+            var item = {{ product.id }}
+                console.log(Mycart)
 
-        localStorage.setItem('Mycart', JSON.stringify(Mycart))
+            localStorage.setItem('Mycart', JSON.stringify(Mycart))
             var Counter = 0;
-			for (count in Mycart) {
-				Counter += parseInt(Mycart[count][1]);
-			}
-		document.getElementById('CartCounter').innerHTML = Counter;
+            for (count in Mycart) {
+                Counter += parseInt(Mycart[count][1]);
+            }
+            document.getElementById('CartCounter').innerHTML = Counter;
 
- }
+        }
+
         function updatepopover(Mycart) {
 
             var popstr = "";
-            popstr= popstr + "<h5>Cart for your items in my shopping cart</h5><div class='mx-2 my-2' style='font-weight:bold;'>";
+            popstr = popstr + "<h5>Cart for your items in my shopping cart</h5><div class='mx-2 my-2' style='font-weight:bold;'>";
             var i = 1;
             for (var it in Mycart) {
                 console.log(it);
                 //console.log(document.getElementById("Name"+it));
-                if (Mycart[it][0] == 0) {} else {
+                if (Mycart[it][0] == 0) {
+                } else {
                     popstr = popstr + "<b>" + i + "</b>. ";
                     popstr = popstr + document.getElementById("ProductName_" + it).innerHTML + ".... Qty : " + Mycart[it][1] + "<br>";
                     i = i + 1;
@@ -670,20 +750,82 @@ function hex(x) {
 
             var $j = jQuery.noConflict();
 
-            $j(document).ready(function() {
+            $j(document).ready(function () {
                 $j('[data-toggle="popover"]').popover();
             });
             $('#popcart').show();
         }
- $(document).on('click','.removefromcart',function (){
-        var prod_id = this.id.slice(15,)
-        delete Mycart[prod_id];
-        localStorage.setItem('Mycart', JSON.stringify(Mycart));
-        $("#cartproduct_"+prod_id).remove()
-         if($("#cartProducts").children().length <=0 ){
-                         $("#cartProducts").append(`<h6 style="color: #337ab7">You dont have cart products<h6>`)
-                    }
-     updateCart(Mycart)
-    })
+
+        $(document).on('click', '.removefromcart', function () {
+            var prod_id = this.id.slice(15,)
+            delete Mycart[prod_id];
+            localStorage.setItem('Mycart', JSON.stringify(Mycart));
+            $("#cartproduct_" + prod_id).remove()
+            if ($("#cartProducts").children().length <= 0) {
+                $("#cartProducts").append(`<h6 style="color: #337ab7">You dont have cart products<h6>`)
+            }
+            updateCart(Mycart)
+        })
+
+        {#image#}
+        // Zoom images
+
+        // Add zoom-image class to the container of the image that you want to apply the zoom to.
+
+        jQuery(document).ready(function ($) {
+
+            $('.zoom-image img').click(function (event) {
+                var ix = $(this).offset().left;
+                var iy = $(this).offset().top;
+                console.log(ix + '-' + iy);
+
+                var mx = event.pageX;
+                var my = event.pageY;
+                console.log(mx + '-' + my);
+            })
+
+            $('.zoom-image img').hover(function () {
+
+                var img = $(this).attr('src');
+
+                $(this).after("<div class='hover-image' style='background-image: url(" + img + "); background-size: 900px;'></div>");
+
+                $(this).mousemove(function (event) {
+
+                    // Mouse Position
+                    var mx = event.pageX;
+                    var my = event.pageY;
+
+                    // Image Position
+                    var ix = $(this).offset().left;
+                    var iy = $(this).offset().top;
+
+                    // Mouse Position Relavtive to Image
+                    var x = mx - (ix);
+                    var y = my - (iy);
+
+                    // Image Height and Width
+                    var w = $(this).width();
+                    var h = $(this).height();
+
+                    // Mouse Position Relative to Image, in %
+                    var xp = (-x / w) * -100;
+                    var yp = (-y / h) * -100;
+
+                    $(this).parent().find('.hover-image').attr('style',
+
+                        "background-image: url(" + img + "); background-size: 900px; background-repeat: no-repeat; background-position: " + xp + "% " + yp + "%; top: " + y + "px; left: " + x + "px;");
+
+                });
+
+            }, function () {
+
+                $(this).parent().find('.hover-image').remove();
+
+            });
+
+        });
+
+
     </script>
 {% endblock jsfiles %}

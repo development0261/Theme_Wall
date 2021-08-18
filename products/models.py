@@ -63,12 +63,21 @@ class item(models.Model):
             else:
                 return False
 
+    def get_extra_images(self):
+        return Extra_Images.objects.filter(product=self)
+
+
+class Extra_Images(models.Model):
+    image = models.FileField(upload_to='items',default="",null=True,blank=True)
+    product = models.ForeignKey(item,on_delete=models.CASCADE)
+
+
 
 class item_size(models.Model):
     size_list = [
-        ('s','s'),
-        ('m','m'),
-        ('l','l'),
+        ('small','small'),
+        ('medium','medium'),
+        ('large','large'),
         ('No_Size','No_Size'),
     ]
     item = models.ForeignKey(item,on_delete=models.CASCADE)

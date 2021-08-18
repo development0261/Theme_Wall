@@ -201,8 +201,8 @@
                         <td>{{ order.status }}</td>
 
                         <td id="total_price_{{ order.pk }}">$ {{ order.totalPrice }}</td>
-                        <td><button class="btn btn-success displayProducts" id="displayProducts_{{ order.pk }}"><i class="fas fa-eye"></i></button></td>
-                        <td><a class="btn btn-dark " href="{% url 'invoice' order.pk %}?access=read"><i class="fas fa-file-invoice"></i></a></td>
+                        <td><button class="btn btn-success displayProducts" id="displayProducts_{{ order.pk }}" data-placement="bottom" title="Display Order Products"><i class="fas fa-eye"></i></button></td>
+                        <td><a class="btn btn-dark " href="{% url 'invoice' order.pk %}?access=read" data-placement="bottom" title="Get Invoice"><i class="fas fa-file-invoice"></i></a></td>
 
                        <td>{% if order.deliveredAt %}{{ order.deliveredAt }} {% else %} Not Delivered {% endif %}</td>
                      <td>{{  order.createdAt}}</td>
