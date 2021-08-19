@@ -180,6 +180,6 @@ if DEBUG:
     MY_DOMAIN = 'http://127.0.0.1:8000'
 else:
     MY_DOMAIN = "https://themes-wall.herokuapp.com/"
-STRIPE_PUBLIC_KEY='pk_test_BOoQL7wvEGMzyqkNptY1iu4I00iB5h1R9w'
-STRIPE_PRIVATE_KEY='sk_test_u5wdCQEZ7X9PPfeVZ7OeoC5R00odgYpEJD'
+STRIPE_PUBLIC_KEY='pk_test_51JKwEbKoFJGBw6J3m1AMEmqZ2jVymec4dq7dSXfP7T3UZUzVL8mIHpdo4fzmen9Ty5yp5BofMwai50eWHSq3veel00PR6OxzBA'
+STRIPE_PRIVATE_KEY='sk_test_51JKwEbKoFJGBw6J3mspY8S8d3xHUjwsrXayaWRnS3oflu2VInkpokZwenrAyoGZno4jRmgzJglPCq73Yzgt9UDrR00g0Xivm3R'
 STRIPE_ENDPOINT_SECRET = ''

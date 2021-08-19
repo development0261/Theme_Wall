@@ -33,21 +33,39 @@ def cart(request):
 def checkout(request):
     if request.user.is_authenticated:
         past_address = ShippingAddress.objects.filter(order__user = request.user).values_list('address','zip').distinct()
-        print(past_address)
-        return render(request,'products/checkout.html')
+        addresses = []
+        for add in past_address:
+            addresses.append(ShippingAddress.objects.filter(address=add[0],zip=add[1]).first())
+
+        return render(request,'products/checkout.html',{'addresses':addresses})
     else:
         return redirect('login')
 
 def placeOrder(request):
     if request.user.is_authenticated:
         if request.method == "POST":
+            addressID = request.POST['addressID']
+            print(addressID)
+            print(request.POST['address'].strip())
 
-            address1 = request.POST['address1']
-            address2 = request.POST['address2']
-            city = request.POST['city']
-            state = request.POST['state']
-            zip = request.POST['zip']
-            country = request.POST['country']
+            if addressID != '':
+                add = ShippingAddress.objects.get(pk=addressID)
+                address = add.address
+                city = add.city
+                state = add.state
+                zip = add.zip
+                country = add.country
+
+            elif request.POST['address'].strip() != '':
+                address = request.POST['address']
+                city = request.POST['city']
+                state = request.POST['state']
+                zip = request.POST['zip']
+                country = request.POST['country']
+            else:
+                messages.error(request, 'Please Enter or Select Complete Address')
+                return redirect('checkout')
+
             contact = request.POST['contact']
             payment_type = request.POST['payment_type']
             final_total = request.POST['final_total']
@@ -64,7 +82,7 @@ def placeOrder(request):
                           isPaid=False,status='Placed'
                           )
             order.save()
-            address = ShippingAddress(order= order,address=address1+" "+address2,city=city,state=state,country=country,zip=zip)
+            address = ShippingAddress(order= order,address=address,city=city,state=state,country=country,zip=zip)
             address.save()
             for it in range(0,len(list(prod_ids))):
                 product = item.objects.get(pk=prod_ids[it])
@@ -81,7 +99,7 @@ def placeOrder(request):
                 prod_qty.save()
 
             if not Address.objects.filter(user=request.user).exists():
-                user_address = Address(city=city,state=state,country=country,pincode=zip,user=request.user,address=address1+" "+address2)
+                user_address = Address(city=city,state=state,country=country,pincode=zip,user=request.user,address=address)
                 user_address.save()
 
             if payment_type == 'cod':
@@ -122,7 +140,7 @@ def placeOrder(request):
                             },
                             'unit_amount': int(order.totalPrice * 100),
                         },
-                        'quantity': order.get_order_item_count(),
+
                     }],
                     metadata={
                         "order_id": order.uuid

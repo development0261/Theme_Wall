@@ -85,10 +85,22 @@
     background-color: #3E83C5;
     color: #fff;
 }
+.addresses.active{
+     background-color: #3E83C5;
+    color: #fff;
+}
+.contact{
+    margin-left: 50px !important;
+    width: 250px !important;
+}
 </style>
+    <link rel="stylesheet" href="{% static 'css/intlTelInput.css' %}" />
+     <script src="{% static 'js/intlTelInput.min.js' %}" ></script>
+     <script src="{% static 'js/utils.js' %}" ></script>
 {% endblock %}
 
 {% block content %}
+
    <div class="container py-5">
        <a href="{% url 'cart' %}"><i class="fa fa-arrow-left"></i> Go back to Cart</a>
         <div class="row d-flex justify-content-center align-items-center">
@@ -122,10 +134,23 @@
                   </div>
                 </div>
                 <div class="col-xl-6">
+                    {% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3" role="alert">
+  <strong id="g_msg">Message : {{message}} </strong>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+
+{% endfor %}
+
+{% endif %}
                   <div class="card-body p-md-5 text-black">
                     <h3 class="mb-4 text-uppercase">Delivery Info</h3>
 
-                    <form action="{% url 'placeOrder' %}" method="post">{% csrf_token %}
+                    <form action="{% url 'placeOrder' %}" method="post" id="checkoutform">{% csrf_token %}
 
                         <div id="cartProducts" style="display: none">
 
@@ -146,48 +171,64 @@
 
                     </div>
 
-                    <div class="form-outline mb-4">
-                        <label class="" for="form3Example8">Address Line 1</label>
-                      <input type="text" name="address1" id="form3Example8" class="form-control form-control-lg" required/>
+                     <div class="form-outline mb-4">
+                     <input type="hidden" id="addressID" name="addressID" value="{{ addresses.0.pk }}">
+                     <h6>Select Address</h6>
+                     <div class="row">
+                         {% for address in addresses %}
+                            <div class="col-6" style="">
+                                <div class="addresses py-1 px-3 my-1 {% if forloop.counter == 1%} active {% endif %}" id="address_{{ address.pk }}" style="border: 2px solid #3E83C5;border-radius: 10px;cursor: pointer">
+                                     <p style="margin: 0px !important;">{{ address.zip }}</p>
+                                     <p style="margin: 0px !important;">{{ address.address }}</p>
+                                     <p style="margin: 0px !important;">{{ address.city }} , {{ address.state }} , {{ address.country }}</p>
+                                </div>
+                            </div>
+
+                         {% endfor %}
+                     </div>
+                     </div>
+                    <a id="addAddress" style="text-decoration: none;cursor: pointer" class="my-1"><i class="fas fa-plus"></i> Add New Address</a>
+                    <a id="removeAddress" style="text-decoration: none;cursor: pointer;display: none" class="my-1"><i class="fas fa-minus"></i> Remove New Address</a>
+                    <div style="display: none" id="NewAdress">
+                        <div class="form-outline mb-4">
+                        <label class="" for="form3Example8">Address</label>
+                            <textarea name="address" id="form3Example8" class="form-control form-control-lg" > </textarea>
 
                     </div>
-                    <div class="form-outline mb-4">
-                          <label class="" for="form3Example8">Address Line 2</label>
-                      <input type="text" name="address2" id="form3Example8" class="form-control form-control-lg" required/>
 
-                    </div>
-                    <div class="row">
-                      <div class="col-md-6 mb-4">
-                        <div class="form-outline">
-                             <label class="" for="City">City</label>
-                       <input type="text" id="City" name="city" class="form-control form-control-lg" required/>
+                            <div class="row">
+                              <div class="col-md-6 mb-4">
+                                <div class="form-outline">
+                                     <label class="" for="City">City</label>
+                               <input type="text" id="City" name="city" class="form-control form-control-lg" />
 
-                      </div>
-                      </div>
-                      <div class="col-md-6 mb-4">
-                        <div class="form-outline">
-                            <label for="State">State</label>
-                        <input type="text" id="State" name="state" class="form-control form-control-lg" required/>
+                              </div>
+                              </div>
+                              <div class="col-md-6 mb-4">
+                                <div class="form-outline">
+                                    <label for="State">State</label>
+                                <input type="text" id="State" name="state" class="form-control form-control-lg" />
 
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                          <div class="col-md-6 mb-4 ">
-                              <div class="form-outline">
-                                   <label class="" for="Zip">Zip</label>
-                      <input type="text" id="Zip" name="zip" class="form-control form-control-lg" required/>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="row">
+                                  <div class="col-md-6 mb-4 ">
+                                      <div class="form-outline">
+                                           <label class="" for="Zip">Zip</label>
+                              <input type="text" id="Zip" name="zip" class="form-control form-control-lg"/>
 
-                    </div>
-                          </div>
-                      <div class="col-md-6 mb-4">
-                          <div class="form-outline ">
-                              <label class="" for="">Country</label>
-                      <input type="text" id="Country" name="country" class="form-control form-control-lg" required/>
+                            </div>
+                                  </div>
+                              <div class="col-md-6 mb-4">
+                                  <div class="form-outline ">
+                                      <label class="" for="">Country</label>
+                              <input type="text" id="Country" name="country" class="form-control form-control-lg"/>
 
-                          </div>
-                    </div>
+                                  </div>
+                            </div>
 
+                            </div>
                     </div>
 
                     <div class="form-outline mb-4">
@@ -239,6 +280,7 @@
 {% endblock %}
 
 {% block jsfiles %}
+
  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"
         integrity="sha512-DNeDhsl+FWnx5B1EQzsayHMyP6Xl/Mg+vcnFPXGNjUZrW28hQaa1+A4qL9M+AiOMmkAhKAWYHh1a+t6qxthzUw=="
         crossorigin="anonymous"></script>
@@ -265,12 +307,7 @@
                 <input type="hidden" name="size[]" value="${Mycart[item][7]}" />
             `
         );
-
-
-    }
-
-
-         })
+    }})
         var Counter = 0;
                 for (count in Mycart) {
                     Counter += parseInt(Mycart[count][1]);
@@ -308,11 +345,9 @@
             selectedCountryData
         ) {
 
-            return "e.g. " + selectedCountryPlaceholder;
+            return selectedCountryPlaceholder;
         },
     });
-
-
     function validateFrom(){
         if($(".payment_type").hasClass('active')){
             alert('Please select any one payment type')
@@ -321,5 +356,29 @@
 
         }
     }
+
+    $("#addAddress").click(function (){
+        $("#NewAdress").css('display','block');
+        $("#removeAddress").css('display','block')
+        $(".addresses").removeClass('active')
+        $(this).css('display','none')
+         $("#addressID").val('')
+
+    })
+     $("#removeAddress").click(function (){
+        $("#NewAdress").css('display','none');
+        $("#addAddress").css('display','block')
+        $(this).css('display','none')
+
+    })
+
+    $(".addresses").click(function () {
+         $(".addresses").removeClass('active')
+
+        $(this).toggleClass('active')
+        $("#addressID").val($(this).attr('id').slice(8,))
+    })
 </script>
+
+
 {% endblock jsfiles %}

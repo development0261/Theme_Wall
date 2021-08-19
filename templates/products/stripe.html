@@ -10,7 +10,7 @@
      <script src="https://js.stripe.com/v3/"></script>
 <script>
 $(document).ready(function (){
-        var stripe = Stripe('pk_test_BOoQL7wvEGMzyqkNptY1iu4I00iB5h1R9w');
+        var stripe = Stripe('pk_test_51JKwEbKoFJGBw6J3m1AMEmqZ2jVymec4dq7dSXfP7T3UZUzVL8mIHpdo4fzmen9Ty5yp5BofMwai50eWHSq3veel00PR6OxzBA');
         var stripeStatus = stripe.redirectToCheckout({ sessionId: $("#sessionId").val() });
         console.log(stripeStatus)
 })
