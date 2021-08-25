@@ -14,19 +14,21 @@ class colorInliner(admin.TabularInline):
     extra = 0
 
 class SizeAdmin(admin.ModelAdmin):
-    list_display = ['size','item']
+    list_display = ['id','size','item']
 
 admin.site.register(item_size,SizeAdmin)
 
 
 class ColorAdmin(admin.ModelAdmin):
-    list_display = ['color','item']
+    list_display = ['id','color','item']
 
 admin.site.register(item_color,ColorAdmin)
 
 class QtyAdmin(admin.ModelAdmin):
+    def thumbnail(self, object):
+        return format_html('<img src="{}" width="40" style="border-radius:50px">'.format(object.image.image.url))
     list_display = [
-      'product','quantity','size','color'
+      'product','quantity','size','color','thumbnail'
     ]
     list_editable = ['quantity']
 admin.site.register(item_qty,QtyAdmin)
@@ -34,12 +36,12 @@ admin.site.register(item_qty,QtyAdmin)
 class extraImageAdmin(admin.ModelAdmin):
     def thumbnail(self,object):
         return format_html('<img src="{}" width="40" style="border-radius:50px">'.format(object.image.url))
-    list_display = ['product','thumbnail']
+    list_display = ['id','product','size','color','thumbnail']
 
-admin.site.register(Extra_Images,extraImageAdmin)
+admin.site.register(Images,extraImageAdmin)
 
 class extraImageInline(admin.TabularInline):
-    model = Extra_Images
+    model = Images
     readonly_fields = ('image_preview',)
 
     def image_preview(self, obj):

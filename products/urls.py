@@ -18,4 +18,5 @@ urlpatterns = [
     path("getExtraImages/<int:id>/",getExtraImages,name="getExtraImages"),
     path("removeExtraImage/<int:id>/",removeExtraImage,name="removeExtraImage"),
     path("getColorBySize/<str:size>/<int:id>/",getColorBySize,name="getColorBySize"),
+    path("getImageBySizeandColor/<int:id>/<str:size>/<str:color>/",getImageBySizeandColor,name="getImageBySizeandColor")
 ]

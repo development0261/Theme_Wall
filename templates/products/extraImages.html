@@ -43,11 +43,67 @@ li {
     position: absolute;
     z-index: -1;
 }
+
+.colorBox{
+    width: 25px;
+    height: 25px;
+    content: "";
+    border:1px solid black;
+    border-radius: 0px;
+    padding: 2px 30px;
+    margin: 3px 5px;
+}
+.colorBoxParent.active{
+      padding: 6px 2px;
+    margin: 0px 5px;
+    border-radius: 0px;
+    border: 1px solid #000;
+}
+
     </style>
 {% endblock %}
 {% block content %}
+    {% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3" role="alert">
+  <strong id="g_msg">Message : {{message}} </strong>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+
+{% endfor %}
+
+{% endif %}
     <div class="container">
         <h4 class="text-center my-2" style="color: #3E83C5">Add More Images for Product {{ product.name }}</h4>
+        <div class="row d-flex justify-content-center my-2">
+            <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6 d-flex justify-content-center">
+            {% if not No_Size %}
+                <select class="form-group px-3 py-2" id="size_list">
+                    <option value="Select Size">Select Size</option>
+                    {% for size in sizes %}
+                        <option value="{{ size.size__size }}__{{ size.size__pk }}">{{ size.size__size | title}}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+            </div>
+
+        </div>
+
+    <div class="row d-flex justify-content-center my-2">
+      <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6 d-flex justify-content-center" >
+                <h6 style="font-weight:bold;padding: 10px 0px;display:  {% if No_Size %} block {% else %} none {% endif %}" id="colorDiv">Select Color</h6>
+                <div id="color_list" class="form-group px-3 py-2">
+                    {% if No_Size %}
+                        {% for color in colors %}
+                          <span class="colorBoxParent" id="color_{{color.color__pk}}"> <span class="colorBox active" style="background-color: {{color.color__color}};">        </span></span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+    </div>
         <div class="row">
             <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12 p-1">
                 <div style="border-radius: 5px" class="p-1">
@@ -59,7 +115,7 @@ li {
                 </div>
 
                     <h6 class="my-2 font-weight-bold">Serial No : {{ product.serial_no }}</h6>
-                    <h6 class="my-2 font-weight-bold">Name : {{ product.name }}</h6>
+                    <h6 class="my-2 font-weight-bold">Product Name : {{ product.name }}</h6>
                         </div>
                 </div>
             </div>
@@ -67,6 +123,8 @@ li {
                  <div style="border-radius: 5px" class="p-1">
                  <div class="card">
                      <form method="post" enctype="multipart/form-data"> {% csrf_token %}
+                         <input type="hidden" name="colorId" id="colorId" >
+                         <input type="hidden" name="size" id="size" value="{% if No_Size %}{{ sizes.0.size__pk }}{% endif %}">
                         <div class="image_list">
                              <div class="row imageBlock">
                     <div class="col-8 ">
@@ -112,7 +170,43 @@ li {
 {% endblock %}
 
 {% block jsfiles %}
+    <script>
+    $(document).on('change','#size_list',function (){
+
+        var size_name = $(this).val().split('__')[0]
+        var size_id = $(this).val().split('__')[1]
+
+
+      $.ajax({
+          url: "/products/getColorBySize/"+size_name+"/"+{{ product.pk }},
+
+          success: function(data) {
+              console.log(data)
+             if(data.msg = 'success'){
+                $("#color_list").empty()
+                $("#size").val(size_id)
+               if(data.colors.length > 0){
+                   for(let i = 0; i<data.colors.length;i++){
+                    $("#color_list").append(`
+                        <span class="colorBoxParent" id="color_${data.colors[i].pk}"> <span class="colorBox active" style="background-color: #${data.colors[i].color};">        </span></span>
+                       `)
+                        $("#colorDiv").css('display','block')
+               }
+               }
+               else{
+                   $("#color_list").append(`<span>No Colors Available for Selected Size. Please Select Valid Size</span>`);
+                    $("#colorDiv").css('display','none')
+               }
+
+
+             }},
+          error: function (){
+          }
+      });
+  })
+    </script>
 <script>
+
   (function() {
 
     'use strict';
@@ -200,5 +294,14 @@ li {
         $('#prodExtraImage_'+id).css('display','block')
     }
   })
+
+ $(document).on('click', '.colorBoxParent', function () {
+
+
+            $(this).parent().find('.colorBoxParent').removeClass('active');
+            $(this).addClass('active');
+            $("#colorId").val($(this).attr('id').slice(6,))
+
+        });
 </script>
 {% endblock %}

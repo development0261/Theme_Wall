@@ -61,12 +61,12 @@ td.sorting_1 {
   border: none;
 }
 .colorBoxSmall{
-    width: 75px;
+    width: 25px;
     height: 25px;
     content: "";
     border:1px solid black;
-    border-radius: 5px;
-    padding: 1px 20px;
+    border-radius: 0px;
+    padding: 0px 10px;
     margin: 3px 5px;
 }
 .color-picker {
@@ -122,13 +122,13 @@ td.sorting_1 {
         <td>{{  item.price }} $</td>
         <td>{% if item.offer_price > 0 %} {{  item.offer_price }}$ {% else %} No Offer {% endif %}</td>
         <td>{% for thing in item.get_qtys %}
-            <span class="colorBoxSmall" style="background-color: {{ thing.color.color }};margin-left: 5px"></span> -
-            <span style="margin-left: 5px"> {{ thing.size.size | title }}</span> -
+            <span class="colorBoxSmall" style="background-color: {{ thing.color.color }};margin-left: 5px"></span> {% if thing.size.size != 'No_Size' %}-
+            <span style="margin-left: 5px"> {{ thing.size.size | title }}</span>{% endif %} -
             <span style="margin-left: 5px"> {{ thing.quantity }}</span>
             <br/>
         {% endfor %}</td>
         <td>{{  item.item_category }}</td>
-        <td><img src="{{ item.image.url }}" width="60" /></td>
+        <td><img src="{{ item.get_extra_images.0.image.url }}" width="60" /></td>
         <td><a class="btn btn-success" href="{% url 'addExtraImage' item.pk %}" style="padding: 2px 10px;margin: 0px 10px" data-placement="bottom" title="Add Addtional Images"><i class="fas fa-plus"></i></a>  {% if item.get_extra_images|length > 0 %}<button class="btn btn-dark displayImages" id="displayImages_{{ item.pk }}" style="padding: 2px 10px" data-placement="bottom" title="Show Additional Images"><i class="fas fa-image"></i></button>{% endif %}</td>
         <td>
               <a class="btn btn-warning editProduct" id="editproduct_{{ item.pk }}" style="padding: 2px 10px;margin: 0px 10px" data-placement="bottom" title="Edit Product"><i class="fa fa-edit" > </i></a>
@@ -292,7 +292,7 @@ td.sorting_1 {
                    <div class="col-1">
                        <div class="form-group my-2" style="padding: 25px 0px">
                         <div class="add__button">
-                                    <button type="button" class="btn btn-success btn-sm btn-add-things"><span class="fa fa-plus"></span>
+                                    <button type="button" class="btn btn-success btn-sm btn-add-things" id="new"><span class="fa fa-plus"></span>
                                       </button>
                                   </div>
                        </div>
@@ -301,21 +301,29 @@ td.sorting_1 {
 {#                            <a  href="#" type="button" class="btn-sm btn-add-things" style="color: #337ab7"><span class="fa fa-plus"> Add Another</span>#}
 {#                              </a>#}
 {#                    </div>#}
-                </div>
-                </div>
 
-
-
-                <div class="col-12 browser__img" >
+                         <div class="col-8 browser__img" >
+                     <h6>Upload Image Here</h6>
                   <div class="form-group">
-                    <input type="file" id="file" class="input-file" name="image" required>
-                    <label for="file" class="btn btn-tertiary js-labelFile">
-                      <i class="icon fa fa-check"></i>
-                      <span class="js-fileName">Choose a file (Please Prefer JPG or JPEG Image to Upload)</span>
+
+                    <input type="file" id="file_0" class="input-file" name="image[]" required>
+                    <label for="file_0" class="btn btn-tertiary js-labelFile">
+                            <img src="{% static 'images/upload.png' %}" width="60" />
+
                     </label>
                   </div>
-                  
+
+
                 </div>
+                         <div class="col-4 p-1">
+                                     <img src="" style="display: none" id="prodExtraImage_0" width="150" height="150"/>
+                             </div>
+                </div>
+                </div>
+
+
+
+
                 <div class="col-12 d-flex justify-content-center">
                   <button type="submit" class="btn btn-primary " style="width: 40%;">Save Product</button>
                 </div>
@@ -402,7 +410,7 @@ td.sorting_1 {
       <div class="modal-body">
           <div id="">
                 <div class="container">
-                    <div class="row" id="productImages">
+                    <div class="" id="productImages">
 
                     </div>
                 </div>
@@ -419,7 +427,7 @@ td.sorting_1 {
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header" style="border-bottom: none">
-        <h5 class="modal-title" id="productNameModal">Modal title</h5>
+        <h5 class="modal-title" id="productNameModal">Delete Product</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -461,6 +469,7 @@ td.sorting_1 {
     $(".deleteProduct").click(function (){
         var id = $(this).attr('id').slice(14,)
         var productName = $("#productName_"+id).html()
+        $("#deleteVerification").empty()
         $("#deleteVerification").append(`
             <h5> Are you sure to delete product ${productName} </h5>
             <a class="my-2 btn btn-danger" href="/products/deleteProduct/${id}">Delete Product</a>
@@ -473,25 +482,69 @@ td.sorting_1 {
           url: "/products/getExtraImages/"+id,
 
           success: function(data) {
+
+
               if(data.msg == 'success'){
-                  images = JSON.parse(data.images)
+                  images = data.grouped_things
                   console.log(images)
+
                   if(images.length > 0){
                       $("#productNameModal").html('Images of '+$("#productName_"+id).html())
                       $("#productImages").empty()
-                      for(let i=0;i<images.length;i++){
+                      images.forEach(function (arrayItem) {
 
-                            $("#productImages").append(`
-                         <div class="col-4" id="image_${images[i].pk}" class="fetchedExtra">
-                        <div>
-                            <div>
-                            <img src="/media/${images[i].fields.image}" width="150" height="130"/>
+                            var size = Object.keys(arrayItem)[0].split('__')[0]
+                            var color = Object.keys(arrayItem)[0].split('__')[1]
+                             $("#productImages").append(`
+                            <div class="my-2">
+                                    <h6>${size != 'No_Size' ?`${size}` :' '} Color : <span class="colorBoxSmall" style="background-color: ${color}"></span></h6>
+
+                                         <div class="row my-2">
+                                    ${Object.values(arrayItem).map((item,index)=>{
+                                        return(
+                                            item.map((val,index)=>{
+                                            console.log(val)
+                                             return(`
+                                           <div class="col-4" id="image_${val[1]}">
+                                               <img src="/media/${val[0]}" width="150" />
+                                               <a style="cursor: pointer;color: red" class="removeModalImage" id="removeModalImage_${val[1]}"><i class="fa fa-minus-circle"></i> Delete</a>
+                                           </div>
+                                         `)
+                                        }).join('')
+                                        )
+                                     }).join('')}
+                               </div>
                             </div>
-                            <a style="text-decoration: none;cursor: pointer;color: red" class="mt-1 removeModalImage" id="removeModalImage_${images[i].pk}"><i class="fas fa-minus-circle"></i> Delete</a>
-                        </div>
-                        </div>
-                      `)
+
+
+                            `)
+                        });
+                     /* for(var j in images){
+                          console.log(`Img:${images[j]}`)
+                          $("#productImages").append(`
+                            <div class="my-2">
+                                    <h6>Size : ${j.toString().split('__')[0]}  Color : <span class="colorBoxSmall" style="background-color: ${j.toString().split('__')[1]}"></span></h6>
+
+                                         <div class="row">
+                                    ${images[j].map((item,index)=>{
+                                         return(`
+                                           <div class="col-4" id=${index}>
+                                               <img src=" ${item.image}" width="120" />
+                                           </div>
+                                         `)
+                                     }).join('')}
+                               </div>
+                            </div>
+
+
+                            `)
+
+                          for(var t in images[j]){
+
+                              console.log(images[j][t])
+                          }
                       }
+            */
 
                       $("#imagesModal").modal('show')
                   }
@@ -526,6 +579,11 @@ td.sorting_1 {
           }})
     })
 
+     var imageCounter = 1
+
+
+
+
   $(document).on('click','.editProduct',function (){
       var id = $(this).attr('id').slice(12,)
 
@@ -539,7 +597,7 @@ td.sorting_1 {
 
                 $("#edit-form").empty()
                 categories = JSON.parse(data.categories)
-
+                console.log(data.things_list)
                  $("#edit-form").append(
                      `
                       <form  method="post" action="/products/updateProduct/${id}/" enctype="multipart/form-data" class="product__form">
@@ -625,7 +683,7 @@ td.sorting_1 {
                     </select>
                   </div>
                 </div>
-                <div class="col-12 product_things_list ">
+                <div class="col-12 product_things_list_edit " >
                  ${
                         data.things_list.length == 0 ? `
 
@@ -694,7 +752,7 @@ td.sorting_1 {
                    <div class="col-1">
                        <div class="form-group my-2" style="padding: 25px 0px">
                         <div class="add__button">
-                                    <button type="button" class="btn btn-success btn-sm btn-add-things"><span class="fa fa-plus"></span>
+                                    <button type="button" class="btn btn-success btn-sm btn-add-things" id="edit"><span class="fa fa-plus"></span>
                                       </button>
                                   </div>
                        </div>
@@ -752,7 +810,7 @@ td.sorting_1 {
 
 
                           </div>
-    </div>
+                            </div>
 
 
                       </div>
@@ -779,11 +837,11 @@ td.sorting_1 {
                             </div>
                           </div>
                         </div>
-
+                    <input type="hidden" name="images[]" value="${item.image}">
                    <div class="col-1">
                     ${index == 0 ? ` <div class="form-group my-2" style="padding: 25px 0px">
                         <div class="add__button">
-                                    <button type="button" class="btn btn-success btn-sm btn-add-things"><span class="fa fa-plus"></span>
+                                    <button type="button" class="btn btn-success btn-sm btn-add-things" id="edit"><span class="fa fa-plus"></span>
                                       </button>
                                   </div>
                        </div>`:`<div class="form-group my-2">
@@ -838,6 +896,7 @@ td.sorting_1 {
                  )
              $("#editProductDiv").modal('toggle')
             }
+              imageCounter = data.last_index+1;
           },
           error: function(data)
           {
@@ -894,8 +953,11 @@ td.sorting_1 {
 
 
 
+
     $(document).on('click','.btn-add-things',function (){
-        $('.product_things_list').append(`
+
+        if($(this).attr('id') == 'edit'){
+            $('.product_things_list_edit').append(`
         <div class="row container things-input">
                     <div class="col-4">
                   <div class="form-group my-2">
@@ -972,9 +1034,125 @@ td.sorting_1 {
 {#                            <a  href="#" type="button" class="btn-sm btn-add-things" style="color: #337ab7"><span class="fa fa-plus"> Add Another</span>#}
 {#                              </a>#}
 {#                    </div>#}
+                <div class="col-8 browser__img" >
+                     <h6>Upload Image Here</h6>
+                  <div class="form-group">
+
+                    <input type="file" id="file_${imageCounter+1}" class="input-file" name="image[]" required>
+                    <label for="file_${imageCounter+1}" class="btn btn-tertiary js-labelFile">
+                            <img src="{% static 'images/upload.png' %}" width="60" />
+
+                    </label>
+                  </div>
+
+
+                </div>
+                         <div class="col-4 p-1">
+                                     <img src="" style="display: none" id="prodExtraImage_${imageCounter+1}" width="150" height="150"/>
+                             </div>
                 </div>
         `
         )
+        }
+        else{
+             $('.product_things_list').append(`
+        <div class="row container things-input">
+                    <div class="col-4">
+                  <div class="form-group my-2">
+
+                    <div class="d-flex align-items-center">
+                      <div class="size-list w-100">
+                        <div class="d-flex">
+                          <select name="size[]" class="form-control mb-2" required>
+
+                            <option value="small" selected>Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                              <option value="No_Size">No Size</option>
+                          </select>
+                          {#<div class="add__button">#}
+                          {#  <button type="button" class="btn btn-success btn-sm btn-add-size"><span class="fa fa-plus"></span>#}
+                          {#    </button>#}
+                          {#</div>#}
+                        </div>
+                      </div>
+
+
+                    </div>
+                  </div>
+                </div>
+                    <div class="col-3">
+                          <div class="form-group my-2">
+
+                            <div class="d-flex align-items-center">
+                              <div class="color-list w-100">
+                                <div class="d-flex ">
+
+        <span class="color-picker"><input type="color" name="color[]" class="form-control colorPicker"  id="my_color_picker" />
+        </span>
+                                  {#<div class="add__button">#}
+                                  {#  <button type="button" class="btn btn-success btn-sm btn-add-color"><span class="fa fa-plus"></span>#}
+                                  {#    </button>#}
+                                  {#</div>#}
+                                </div>
+                              </div>
+
+
+                            </div>
+                          </div>
+                        </div>
+                    <div class="col-4">
+                          <div class="form-group my-2">
+
+                            <div class="d-flex align-items-center">
+                              <div class="qty-list w-100">
+                                <div class="d-flex ">
+
+                                    <input type="number" name="qty[]" class="form-control colorPicker"  id="qty" required/>
+
+
+                                </div>
+                              </div>
+
+
+                            </div>
+                          </div>
+
+                    </div>
+
+                        <div class="col-1" >
+                        <div class="form-group my-2">
+                         <div class="add__button close__button" >
+                  <button type="button" class="btn btn-danger btn-remove-things" ><span class="fas fa-minus"></span></span>
+                    </button>
+                </div>
+                         </div>
+                        </div>
+{#                    <div class="">#}
+{#                            <a  href="#" type="button" class="btn-sm btn-add-things" style="color: #337ab7"><span class="fa fa-plus"> Add Another</span>#}
+{#                              </a>#}
+{#                    </div>#}
+                <div class="col-8 browser__img" >
+                     <h6>Upload Image Here</h6>
+                  <div class="form-group">
+
+                    <input type="file" id="file_${imageCounter+1}" class="input-file" name="image[]" required>
+                    <label for="file_${imageCounter+1}" class="btn btn-tertiary js-labelFile">
+                            <img src="{% static 'images/upload.png' %}" width="60" />
+
+                    </label>
+                  </div>
+
+
+                </div>
+                         <div class="col-4 p-1">
+                                     <img src="" style="display: none" id="prodExtraImage_${imageCounter+1}" width="150" height="150"/>
+                             </div>
+                </div>
+        `
+        )
+        }
+        imageCounter = imageCounter + 1;
     })
 
     $(document).on('click','.btn-add-size',function (){
@@ -1020,23 +1198,7 @@ td.sorting_1 {
     });
   });
 
-  (function() {
-  
-    'use strict';
-  
-    $('.input-file').each(function() {
-      var $input = $(this),
-          $label = $input.next('.js-labelFile'),
-          labelVal = $label.html();
-      
-     $input.on('change', function(element) {
-        var fileName = '';
-        if (element.target.value) fileName = element.target.value.split('\\').pop();
-        fileName ? $label.addClass('has-file').find('.js-fileName').html(fileName) : $label.removeClass('has-file').html(labelVal);
-     });
-    });
-  
-  })();
+
  function readURL(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
@@ -1076,5 +1238,23 @@ td.sorting_1 {
     this.value = newVal
     console.log(this.value)
 })
+
+      $(document).on('change','.input-file', function (){
+
+        var id = $(this).attr('id').slice(5,)
+
+      if (this.files && this.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#prodExtraImage_'+id).attr('src', e.target.result);
+            $('#prodExtraImage_'+id).css('margin','10px')
+
+        }
+
+        reader.readAsDataURL(this.files[0]);
+        $('#prodExtraImage_'+id).css('display','block')
+    }
+  })
 </script>
 {% endblock jsfiles %}

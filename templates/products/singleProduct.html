@@ -522,9 +522,9 @@
                                 if (data.colors[i].qty > 0) {
                                     $(".my-color").append(
                                         `
-                            <p id="ProductCount_{{ product.pk }}_${size}_${data.colors[i].color}" style="display: none">${data.colors[i].qty}</p>
-                            <span class="dot" id="color_{{ product.pk }}" style="background-color: #${data.colors[i].color}"   ></span>
-                            `
+                                        <p id="ProductCount_{{ product.pk }}_${size}_${data.colors[i].color}" style="display: none">${data.colors[i].qty}</p>
+                                        <span class="dot" id="color_{{ product.pk }}" style="background-color: #${data.colors[i].color}"   ></span>
+                                        `
                                     )
                                 }
 
@@ -582,6 +582,7 @@
                 if (data.msg == 'success') {
                     $(".my-color").empty()
                     if (data.colors.length > 0) {
+                        console.log(data.colors)
                         for (let i = 0; i < data.colors.length; i++) {
                             if (data.colors[i].qty > 0) {
                                 $(".my-color").append(
@@ -619,16 +620,21 @@
 
         var Mycart
         var MyitName = {};
-        if (localStorage.getItem('Mycart') === null) {
-            Mycart = {};
-            updateCart(Mycart);
-        } else {
+        try {
+            if (localStorage.getItem('Mycart') === null) {
+                Mycart = {};
+                updateCart(Mycart);
+            } else {
 
-            Mycart = JSON.parse(localStorage.getItem('Mycart'));
-            console.log("Updated")
-            updateCart(Mycart);
+                Mycart = JSON.parse(localStorage.getItem('Mycart'));
+                console.log("Updated")
+                updateCart(Mycart);
+            }
         }
-
+        catch (e) {
+             Mycart = {};
+                updateCart(Mycart);
+        }
         $(document).on('click', '.addProduct', async function () {
             var id = $(this).attr('id').slice(11,)
             var color = "";
@@ -663,15 +669,14 @@
             if (Mycart[prodId] != undefined) {
                 Mycart[prodId][1] = Mycart[prodId][1] + 1;
             } else {
-
                 qty = 1;
                 productName = $('#ProductName_' + id).html();
-                productPrice = $('#ProductPrice_' + id).html().slice(1,);
-                console.log('ProductCount_' + id + "_" + size + "_" + color)
-                productCount = $('#ProductCount_' + id + "_" + size + "_" + color).html();
-                img_url = $("#ProductImage_" + id).attr('src');
-                img_url = img_url.replace('url(', '').replace(')', '').replace(/\"/gi, "");
+                productPrice = $('#ProductPrice_' + id).html().trim().slice(2,);
 
+                productCount = $('#ProductCount_' + id + "_" + size + "_" + color).html();
+
+                img_url = await $.ajax({url: `/products/getImageBySizeandColor/${parseInt(id)}/${size}/${color}`});
+                img_url = img_url.image
                 if (color === "" && $(".my-color").children().length > 0) {
                     alert("Please Select Color of Product")
                 } else if (size === "SELECT_SIZE" && $(".my-size").children().length > 0) {
@@ -680,7 +685,6 @@
                     {#Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,[{'color':color,'count':1}],[{'size':size,'count':1}]];#}
                     Mycart[prodId] = [parseInt(id), qty, productName, parseInt(productPrice), productCount, img_url, color, size]
                 }
-
             }
             await updateCart(Mycart)
             $("#cartProducts").empty()
@@ -693,7 +697,7 @@
                     ${Mycart[item][7] != "NO_SIZE" ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Size :</span><span id="size_${item[0]}" style="font-size: 0.9rem">${Mycart[item][7]}</span></div>` : ``}
 
                     ${Mycart[item][6] ? `<div class="fs-sm"><span class="text-muted me-2" style="font-size: 0.9rem">Color:</span> <span class="small-dot" id="color_${item[0]}" style="background-color: #${Mycart[item][6]}"> </span></div>` : ''}
-                     <a style="color: #337ab7;text-decoration: none" id="removefromcart_${item}" class="removefromcart"><i class="fas fa-trash"></i> Remove</a>
+                     <a style="color: #337ab7;text-decoration: none;cursor: pointer" id="removefromcart_${item}" class="removefromcart"><i class="fas fa-trash"></i> Remove</a>
                   </div>
                 </div>
 
@@ -727,11 +731,8 @@
                 Counter += parseInt(Mycart[count][1]);
             }
             document.getElementById('CartCounter').innerHTML = Counter;
-
         }
-
         function updatepopover(Mycart) {
-
             var popstr = "";
             popstr = popstr + "<h5>Cart for your items in my shopping cart</h5><div class='mx-2 my-2' style='font-weight:bold;'>";
             var i = 1;
@@ -747,9 +748,7 @@
             }
             popstr = popstr + "</div>";
             document.getElementById("popcart").setAttribute('data-content', popstr);
-
             var $j = jQuery.noConflict();
-
             $j(document).ready(function () {
                 $j('[data-toggle="popover"]').popover();
             });

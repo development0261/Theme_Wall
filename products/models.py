@@ -20,7 +20,7 @@ class item(models.Model):
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=50,decimal_places=2)
     offer_price = models.DecimalField(max_digits=50,decimal_places=2,default=0)
-    image = models.FileField(upload_to='items',default="",null=True,blank=True)
+    image = models.FileField(upload_to='items',default="noImage.png",null=True,blank=True)
     item_category = models.ForeignKey(category,on_delete=models.CASCADE)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -64,14 +64,7 @@ class item(models.Model):
                 return False
 
     def get_extra_images(self):
-        return Extra_Images.objects.filter(product=self)
-
-
-class Extra_Images(models.Model):
-    image = models.FileField(upload_to='items',default="",null=True,blank=True)
-    product = models.ForeignKey(item,on_delete=models.CASCADE)
-
-
+        return Images.objects.filter(product=self)
 
 class item_size(models.Model):
     size_list = [
@@ -94,11 +87,21 @@ class item_color(models.Model):
     def __str__(self):
         return "Color : {} for item : {}".format(self.color,self.item)
 
+class Images(models.Model):
+    image = models.FileField(upload_to='items',default="noImage.png",null=True,blank=True)
+    size = models.ForeignKey(item_size, on_delete=models.CASCADE, related_name='size_image_qty',null=True,blank=True)
+    color = models.ForeignKey(item_color, on_delete=models.CASCADE, related_name='color_image_qty',null=True,blank=True)
+    product = models.ForeignKey(item,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.image.url
 
 class item_qty(models.Model):
     product = models.ForeignKey(item,on_delete=models.CASCADE)
     size = models.ForeignKey(item_size,on_delete=models.CASCADE,related_name='size_qty')
     color = models.ForeignKey(item_color,on_delete=models.CASCADE,related_name='color_qty')
+    image = models.ForeignKey(Images,on_delete=models.CASCADE,related_name='color_qty',null=True
+                              ,blank=True)
     quantity = models.IntegerField()
 
     def __str__(self):

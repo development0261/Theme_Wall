@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Order,ShippingAddress,OrderItem,wishlist
-from products.models import item, item_qty
+from products.models import item, item_qty, Images
 from users.models import Address, CustomeUser
 import stripe
 from email.mime.image import MIMEImage
@@ -318,6 +318,7 @@ def addToWishList(request):
                 for wish in wishes:
 
                     products_list.append(wish.product)
+
                 return JsonResponse({'msg':'success','products':serializers.serialize('json',products_list,ensure_ascii=False),'count':len(products_list)})
 
     else:

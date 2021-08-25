@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from users.models import Address
-from .models import category,item,item_size,item_color,item_qty,Extra_Images
+from .models import category,item,item_size,item_color,item_qty,Images
 from django.contrib import messages
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
@@ -60,8 +60,7 @@ def addProduct(request):
                 it_category = request.POST['category']
                 qtys = request.POST.getlist('qty[]')
                 image = ''
-                if 'image' in request.FILES:
-                    image = request.FILES['image']
+
                 serial_no = request.POST['serial_no']
                 rating = request.POST['rating']
                 description = request.POST['description']
@@ -72,8 +71,11 @@ def addProduct(request):
 
                 prod = item(serial_no=serial_no,name=name, price=price, offer_price=offer,
                             item_category=category.objects.get(id=it_category),
-                            image=image, description=description, seller=request.user,rating=rating)
+                             description=description, seller=request.user,rating=rating)
                 prod.save()
+
+                print(sizes)
+                print(colors)
 
                 added_sizes = []
                 added_colors = []
@@ -95,17 +97,36 @@ def addProduct(request):
                             added_sizes.append(it_size)
 
                 if colors[0] != '':
-                    colors = set(colors)
+
                     for color in colors:
                         it_color = item_color(color=str(color).lower(), item=prod)
                         it_color.save()
                         added_colors.append(it_color)
 
+                added_image = []
+                if 'image[]' in request.FILES:
+                    images = request.FILES.getlist('image[]')
+                    prod.image = images[0]
+                    prod.save()
+
+                    for image in images:
+                        if image != '':
+                            ex_image = Images(image=image,product=prod)
+                            ex_image.save()
+                        else:
+                            ex_image = Images(product=prod)
+                            ex_image.save()
+                        added_image.append(ex_image)
+
                 if qtys[0] != '':
                     for i in range(0,len(qtys)):
                         if not item_qty.objects.filter(product= prod,size=added_sizes[i],color=added_colors[i]).exists():
-                            prod_qty =  item_qty(quantity=qtys[i],product= prod,size=added_sizes[i],color=added_colors[i])
+                            prod_qty =  item_qty(quantity=qtys[i],product= prod,size=added_sizes[i],color=added_colors[i],image=added_image[i])
                             prod_qty.save()
+                        added_image[i].color = added_colors[i]
+                        added_image[i].size = added_sizes[i]
+                        added_image[i].save()
+
                 messages.success(request, "Your Product is added successfully")
 
                 # messages.error(request, "Something Went Wrong")
@@ -156,10 +177,14 @@ def getProduct(request,id):
             things_list.append({
                 'color': thing.color.color,
                 'size': thing.size.size,
-                'qty': thing.quantity
+                'qty': thing.quantity,
+                'image':thing.image.image.url
             })
         categories_serialized = serializers.serialize('json', list(categories), fields=('name', 'id'))
-        return JsonResponse({'msg':'success','item':serialized_product,'sizes':sizes,'colors':colors,'categories':categories_serialized,'things_list':things_list})
+        last_index = Images.objects.filter(product=product).order_by('id').values_list('id',flat=True)[0]
+        print(last_index)
+
+        return JsonResponse({'msg':'success','item':serialized_product,'sizes':sizes,'colors':colors,'categories':categories_serialized,'things_list':things_list,'last_index':last_index})
     except:
         return JsonResponse({'msg':'error'})
 
@@ -167,7 +192,6 @@ def updateProduct(request,id):
     if request.user.is_authenticated:
         if request.user.role == "seller":
             if item.objects.get(id=id).seller == request.user:
-
                     name = request.POST['name']
                     price = request.POST['price']
                     offer = request.POST['offer']
@@ -176,11 +200,9 @@ def updateProduct(request,id):
                     it_category = request.POST['category']
                     qtys = request.POST.getlist('qty[]')
                     serial_no = request.POST['serial_no']
-
                     description = request.POST['description']
                     sizes = request.POST.getlist('size[]')
                     colors = request.POST.getlist('color[]')
-
                     prod = get_object_or_404(item,id=id)
                     if prod:
                         prod.name = name
@@ -188,7 +210,6 @@ def updateProduct(request,id):
                         prod.price = price
                         prod.offer_price = offer
                         prod.item_category= category.objects.get(id=it_category)
-
                         prod.description = description
 
                         try:
@@ -222,19 +243,57 @@ def updateProduct(request,id):
                                     added_sizes.append(it_size)
 
                     if colors[0] != '':
-                        colors = set(colors)
+
                         item_color.objects.filter(item=prod).delete()
                         for color in colors:
                             it_color = item_color(color=str(color).lower(), item=prod)
                             it_color.save()
                             added_colors.append(it_color)
+
+                    added_image = []
+                    if 'images[]' in request.POST:
+                        Images.objects.filter(product=prod).delete()
+                        images = request.POST.getlist('images[]')
+                        prod.image = images[0].split('/media/')[1]
+                        prod.save()
+                        for image in images:
+                            if image != '':
+                                image = str(image).split('/media/')[1]
+                                print(image)
+                                ex_image = Images(image=image, product=prod)
+                                ex_image.save()
+                            else:
+                                ex_image = Images(product=prod)
+                                ex_image.save()
+                            added_image.append(ex_image)
+
+                    if 'image[]' in request.FILES:
+                        images = request.FILES.getlist('image[]')
+                        if 'images[]' not in request.POST:
+                            Images.objects.filter(product=prod).delete()
+
+
+                            prod.image = images[0]
+                            prod.save()
+                        for image in images:
+                            if image != '':
+                                ex_image = Images(image=image, product=prod)
+                                ex_image.save()
+                            else:
+                                ex_image = Images(product=prod)
+                                ex_image.save()
+                            added_image.append(ex_image)
+
                     if qtys[0] != '':
                         for i in range(0, len(qtys)):
                             if not item_qty.objects.filter(product=prod, size=added_sizes[i],
                                                            color=added_colors[i]).exists():
                                 prod_qty = item_qty(quantity=qtys[i], product=prod, size=added_sizes[i],
-                                                    color=added_colors[i])
+                                                    color=added_colors[i],image=added_image[i])
                                 prod_qty.save()
+                            added_image[i].color = added_colors[i]
+                            added_image[i].size = added_sizes[i]
+                            added_image[i].save()
                     messages.success(request, "Your Product is Updated successfully")
 
             else:
@@ -266,7 +325,8 @@ def buyproducts(request):
             all_items = all_items.order_by('price')
 
     if 'color' in request.GET:
-        all_items = all_items.filter(color__color="#"+request.GET['color'])
+        all_items = all_items.filter(color__color="#"+request.GET['color']).distinct()
+
 
     searched = None
     if request.method == "POST":
@@ -365,8 +425,10 @@ def getColorBySize(request,size,id):
         for thing in things:
             colors.append({
                 'color':thing.color.color[1:],
+                'pk':thing.color.pk,
                 'qty':thing.quantity
             })
+        print(colors)
         return JsonResponse({'msg':'success','colors':colors})
     except:
         return JsonResponse({'msg':'error'})
@@ -377,17 +439,30 @@ def addExtraImage(request,id):
         if request.user.role == 'seller':
             product = item.objects.get(pk=id)
             if request.method == "POST":
+                if request.POST['size'] == '' or request.POST['colorId'] == '':
+                    messages.error(request,'Please Select Size and Color Of Product')
+                    return redirect('/products/addExtraImage/'+str(id))
+                size = item_size.objects.get(pk=request.POST['size'])
+
+                color = item_color.objects.get(pk=request.POST['colorId'])
+
                 if 'image[]' in request.FILES:
                     images = request.FILES.getlist('image[]')
                     for image in images:
-                        extra_image = Extra_Images(image=image,product=product)
+                        extra_image = Images(image=image,product=product,size=size,color=color)
                         extra_image.save()
 
                     messages.success(request,'Your Images for {} are added successfully'.format(product.name))
                     return redirect('sellerDash')
 
-
-            return render(request,'products/extraImages.html',{'product':product})
+            sizes = item_qty.objects.filter(product=product).values('size__size','size__pk').distinct()
+            print(sizes)
+            colors = None
+            No_Size = False
+            if sizes[0]['size__size'] == 'No_Size':
+                colors = item_qty.objects.filter(product=product).values('color__color','color__pk').distinct()
+                No_Size = True
+            return render(request,'products/extraImages.html',{'product':product,'sizes':sizes,'colors':colors,'No_Size':No_Size})
         else:
             return redirect('home')
     else:
@@ -397,19 +472,35 @@ def addExtraImage(request,id):
 def getExtraImages(request,id):
     if request.user.role == 'seller':
         product = item.objects.get(pk=id)
-        images = Extra_Images.objects.filter(product=product)
-        serialized_images = serializers.serialize('json',images,ensure_ascii=False)
-        return JsonResponse({'msg':'success','images':serialized_images})
+        things = item_qty.objects.filter(product=product)
+
+
+        images = []
+        for th in things:
+            grouped_things = {}
+            images1 = list(Images.objects.filter(product=product,size=th.size,color=th.color).values_list('image','pk'))
+
+            grouped_things[str(th.size.size) + "__" + str(th.color.color)] = images1
+            images.append(grouped_things)
+        print(images)
+
+        return JsonResponse({'msg': 'success', 'grouped_things': images})
+
     else:
         return JsonResponse({'msg':'error'})
 
 def removeExtraImage(request,id):
     if request.user.role == 'seller':
         try:
-            image = Extra_Images.objects.get(pk=id)
+            image = Images.objects.get(pk=id)
             image.delete()
             return JsonResponse({'msg':'success'})
         except:
             return JsonResponse({'msg':'error'})
     else:
         return JsonResponse({'msg':'error'})
+
+def getImageBySizeandColor(request,id,size,color):
+    product = item.objects.get(pk=id)
+    image = Images.objects.filter(product=product,size__size__iexact=size,color__color__iexact="#"+str(color)).order_by('id')[0]
+    return JsonResponse({'image':image.image.url})
