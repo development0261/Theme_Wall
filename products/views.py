@@ -494,13 +494,19 @@ def removeExtraImage(request,id):
         try:
             image = Images.objects.get(pk=id)
             image.delete()
-            return JsonResponse({'msg':'success'})
+            messages.success(request,'Image Deleted Successfully')
         except:
-            return JsonResponse({'msg':'error'})
+            messages.error(request,'Something Went Wrong')
+        return redirect('sellerDash')
     else:
-        return JsonResponse({'msg':'error'})
+        return redirect('home')
 
 def getImageBySizeandColor(request,id,size,color):
     product = item.objects.get(pk=id)
     image = Images.objects.filter(product=product,size__size__iexact=size,color__color__iexact="#"+str(color)).order_by('id')[0]
+    return JsonResponse({'image':image.image.url})
+
+
+def getImageById(request,id):
+    image = Images.objects.get(pk=id)
     return JsonResponse({'image':image.image.url})

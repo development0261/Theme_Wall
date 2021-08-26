@@ -250,7 +250,7 @@ def sendActivation(request):
     if request.method == "POST" and request.user.is_authenticated:
         proof = request.FILES['proof']
         contact = request.POST['contact']
-        fullname= request.POST['fullname']
+        fullname = request.POST['fullname']
         if not 'ImageName' in request.POST or not 'proof' in request.FILES:
             messages.error(request,'Please fill all details of form')
             return redirect('home')
@@ -286,14 +286,17 @@ def sendActivation(request):
         captured_face = settings.MEDIA_ROOT + '/proofs/'+str(request.user.username)+'_captureFace.jpg'
         verify_with = act_msg.proof.path
         results = []
-        cap = face_recognition.load_image_file(captured_face)
-        ids = face_recognition.load_image_file(verify_with)
+
         try:
+            cap = face_recognition.load_image_file(captured_face)
+            ids = face_recognition.load_image_file(verify_with)
             cap_encoding = face_recognition.face_encodings(cap)[0]
             id_encoding = face_recognition.face_encodings(ids)[0]
 
-            results = face_recognition.compare_faces([cap_encoding], id_encoding)
-
+            results = face_recognition.face_distance([cap_encoding], id_encoding)
+            results1 = face_recognition.compare_faces([cap_encoding], id_encoding)
+            print(results)
+            print(results1)
             request.user.fullname = fullname
             request.user.contact_no = contact
             request.user.save()
@@ -308,9 +311,9 @@ def sendActivation(request):
             sellerAddress.save()
 
         except:
-            results[0] = False
-        print(results)
-        if results[0] == True:
+            results[0] = 1
+
+        if results[0] < 0.60:
             messages.success(request,'Your Account Accepted as Seller Account')
             request.user.role = 'seller'
             request.user.save()

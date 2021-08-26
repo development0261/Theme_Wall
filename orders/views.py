@@ -140,7 +140,7 @@ def placeOrder(request):
                             },
                             'unit_amount': int(order.totalPrice * 100),
                         },
-
+                        'quantity': 1,
                     }],
                     metadata={
                         "order_id": order.uuid

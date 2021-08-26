@@ -120,7 +120,7 @@ td.sorting_1 {
 
         <td id="productName_{{ item.pk }}">{{ item.name }}</td>
         <td>{{  item.price }} $</td>
-        <td>{% if item.offer_price > 0 %} {{  item.offer_price }}$ {% else %} No Offer {% endif %}</td>
+        <td>{% if item.offer_price > 0 %} {{  item.offer_price }} $ {% else %} No Offer {% endif %}</td>
         <td>{% for thing in item.get_qtys %}
             <span class="colorBoxSmall" style="background-color: {{ thing.color.color }};margin-left: 5px"></span> {% if thing.size.size != 'No_Size' %}-
             <span style="margin-left: 5px"> {{ thing.size.size | title }}</span>{% endif %} -
@@ -128,7 +128,7 @@ td.sorting_1 {
             <br/>
         {% endfor %}</td>
         <td>{{  item.item_category }}</td>
-        <td><img src="{{ item.get_extra_images.0.image.url }}" width="60" /></td>
+        <td><img src="{{ item.image.url }}" width="60" /></td>
         <td><a class="btn btn-success" href="{% url 'addExtraImage' item.pk %}" style="padding: 2px 10px;margin: 0px 10px" data-placement="bottom" title="Add Addtional Images"><i class="fas fa-plus"></i></a>  {% if item.get_extra_images|length > 0 %}<button class="btn btn-dark displayImages" id="displayImages_{{ item.pk }}" style="padding: 2px 10px" data-placement="bottom" title="Show Additional Images"><i class="fas fa-image"></i></button>{% endif %}</td>
         <td>
               <a class="btn btn-warning editProduct" id="editproduct_{{ item.pk }}" style="padding: 2px 10px;margin: 0px 10px" data-placement="bottom" title="Edit Product"><i class="fa fa-edit" > </i></a>
@@ -303,7 +303,7 @@ td.sorting_1 {
 {#                    </div>#}
 
                          <div class="col-8 browser__img" >
-                     <h6>Upload Image Here</h6>
+                     <h6>Upload Image Here <span style="font-size: 0.75rem">(Prefer PNG Images for Better Quality) *</span></h6>
                   <div class="form-group">
 
                     <input type="file" id="file_0" class="input-file" name="image[]" required>
@@ -311,6 +311,7 @@ td.sorting_1 {
                             <img src="{% static 'images/upload.png' %}" width="60" />
 
                     </label>
+
                   </div>
 
 
@@ -448,6 +449,34 @@ td.sorting_1 {
     </div>
   </div>
 </div>
+
+
+
+  <div class="modal fade" id="deleteExtraImage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: none">
+        <h5 class="modal-title" id="productNameModal">Delete Image</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div id="">
+                <div class="container">
+                    <div id="deleteImageVerification">
+
+                    </div>
+
+                </div>
+          </div>
+      </div>
+      <div class="modal-footer" style="border-top: none">
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}
 {% block jsfiles %}
 
@@ -497,17 +526,17 @@ td.sorting_1 {
                             var color = Object.keys(arrayItem)[0].split('__')[1]
                              $("#productImages").append(`
                             <div class="my-2">
-                                    <h6>${size != 'No_Size' ?`${size}` :' '} Color : <span class="colorBoxSmall" style="background-color: ${color}"></span></h6>
+                                    <h6>${size != 'No_Size' ?`Size : ${size.toString().toUpperCase()}` :' '} Color : <span class="colorBoxSmall" style="background-color: ${color}"></span></h6>
 
                                          <div class="row my-2">
                                     ${Object.values(arrayItem).map((item,index)=>{
                                         return(
                                             item.map((val,index)=>{
-                                            console.log(val)
+                                            console.log(item.length)
                                              return(`
                                            <div class="col-4" id="image_${val[1]}">
                                                <img src="/media/${val[0]}" width="150" />
-                                               <a style="cursor: pointer;color: red" class="removeModalImage" id="removeModalImage_${val[1]}"><i class="fa fa-minus-circle"></i> Delete</a>
+                                               ${item.length > 1 ? `<a style="cursor: pointer;color: red" class="removeModalImage" id="removeModalImage_${val[1]}"><i class="fa fa-minus-circle"></i> Delete</a>` :''}
                                            </div>
                                          `)
                                         }).join('')
@@ -560,23 +589,23 @@ td.sorting_1 {
 
     })
 
-    $(document).on('click','.removeModalImage',function (){
+    $(document).on('click','.removeModalImage',async function (){
         var id = $(this).attr('id').slice(17,)
-        $.ajax({
-          url: "/products/removeExtraImage/"+id,
 
-          success: function(data) {
-              if(data.msg == 'success'){
-                    $("#image_"+id).remove()
 
-                  if($("#productImages").children().length == 0){
-                     $("#imagesModal").modal('hide')
-                  }
-              }
-              else {
-                  alert('something went wrong')
-              }
-          }})
+        img_url = await $.ajax({url: `/products/getImageById/${parseInt(id)}`});
+
+        $("#deleteImageVerification").append(`
+            <h5> Are you sure to Delete Images Displayed Below ? </h5>
+            <div class="row">
+                    <div class="col-6">
+                     <img src="${img_url.image}" width="200"/>
+            <a class="my-2 btn btn-danger" href="/products/removeExtraImage/${id}">Confirm Delete Image</a>
+                    </div>
+            </div>
+        `)
+        $("#imagesModal").modal('hide')
+        $("#deleteExtraImage").modal('show')
     })
 
      var imageCounter = 1
@@ -1035,7 +1064,7 @@ td.sorting_1 {
 {#                              </a>#}
 {#                    </div>#}
                 <div class="col-8 browser__img" >
-                     <h6>Upload Image Here</h6>
+                     <h6>Upload Image Here <span style="font-size: 0.75rem">(Prefer PNG Images for Better Quality) *</span></h6>
                   <div class="form-group">
 
                     <input type="file" id="file_${imageCounter+1}" class="input-file" name="image[]" required>

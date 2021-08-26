@@ -12,7 +12,7 @@ class CustomeUser(AbstractUser):
 		('seller', 'seller')
 	]
 	role = models.CharField(max_length=10, choices=role_list,null=True,blank=True,default='buyer')
-	contact_no = models.BigIntegerField(null=True,blank=True)
+	contact_no = models.CharField(null=True,blank=True,max_length=20,default="")
 	fullname = models.CharField(max_length=100,default="",null=True,blank=True)
 
 
