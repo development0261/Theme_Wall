@@ -349,7 +349,9 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, .5);
 
         }
-
+        .hover-image {
+    background-color: #fff !important;
+}
 
     </style>
 
@@ -371,10 +373,10 @@
                     <div class="demo">
                         <ul id="lightSlider">
                             <li data-thumb="{{ product.image.url }}" class="zoom-image"><img
-                                    src="{{ product.image.url }}" id="ProductImage_{{ product.pk }}"/></li>
+                                    src="{{ product.image.url }}" id="ProductImage_{{ product.pk }}" style="background-color: #fff"/></li>
                             {% if product.get_extra_images|length > 0 %}
                                 {% for image in product.get_extra_images %}
-                                    <li data-thumb="{{ image.image.url }}" class="zoom-image"><img src="{{ image.image.url }}"/></li>
+                                    <li data-thumb="{{ image.image.url }}" class="zoom-image"><img src="{{ image.image.url }}" style="background-color: #fff"/></li>
                                 {% endfor %}
                             {% endif %}
                         </ul>
