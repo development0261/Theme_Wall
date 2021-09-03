@@ -308,7 +308,8 @@ def updateProduct(request,id):
 
 
 def buyproducts(request):
-    all_items = item.objects.filter(is_available= True)
+    all_items = item.objects.all()
+    print(list(all_items))
     colors = item_color.objects.all().values_list('color', flat=True).distinct()
     if 'cat_id' in request.GET:
         id = request.GET['cat_id']
