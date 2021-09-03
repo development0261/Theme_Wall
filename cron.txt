@@ -1,0 +1,2 @@
+1 * * * * root source python ~/themenswall/products/crons.py
+1 * * * * themenswall source python ~/themenswall/products/crons.py
