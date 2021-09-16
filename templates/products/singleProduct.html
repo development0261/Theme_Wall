@@ -693,13 +693,13 @@
 
                 productCount = $('#ProductCount_' + id + "_" + size + "_" + color).html();
 
-                img_url = await $.ajax({url: `/products/getImageBySizeandColor/${parseInt(id)}/${size}/${color}`});
-                img_url = img_url.image
+
                 if (color === "" && $(".my-color").children().length > 0) {
                     alert("Please Select Color of Product")
                 } else if (size === "SELECT_SIZE" && $(".my-size").children().length > 0) {
                     alert("Please Select Size of Product")
                 } else {
+
                     {#Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,[{'color':color,'count':1}],[{'size':size,'count':1}]];#}
                     Mycart[prodId] = [parseInt(id), qty, productName, parseInt(productPrice), productCount, img_url, color, size]
                 }

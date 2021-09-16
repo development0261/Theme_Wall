@@ -163,48 +163,45 @@ def stripecheckout(request,session_id):
 
 def invoice(request,id):
    if request.user.is_authenticated:
-       try:
-           order = Order.objects.get(pk=int(id))
-           if 'access' in request.GET:
-               print('access')
-               pass
-           else:
+       order = Order.objects.get(pk=int(id))
+       if 'access' in request.GET:
+           print('access')
+           pass
+       else:
 
-               if order.paymentMethod == 'stripe':
-                   order.isPaid = True
-                   order.paidAt = datetime.datetime.now()
-                   order.save()
-                   context = {'order': order}
-                   html_content = render_to_string('products/email.html', context=context).strip()
-                   msg = EmailMultiAlternatives("Your Order has been Placed with The Men's Wall", html_content,
-                                                settings.EMAIL_HOST_USER, [order.user.email]
+           if order.paymentMethod == 'stripe':
+               order.isPaid = True
+               order.paidAt = datetime.datetime.now()
+               order.save()
+               context = {'order': order}
+               html_content = render_to_string('products/email.html', context=context).strip()
+               msg = EmailMultiAlternatives("Your Order has been Placed with The Men's Wall", html_content,
+                                            settings.EMAIL_HOST_USER, [order.user.email]
+                                            )
+               msg.content_subtype = 'html'  # Main content is text/html
+               msg.mixed_subtype = 'related'
+               msg.send()
+
+               order_products = order.get_order_items()
+               orders_sellers = order_products.values_list('product__seller', flat=True).distinct()
+               products_of_same_seller = {}
+
+               for seller in orders_sellers:
+                   products_of_same_seller[seller] = order_products.filter(product__seller=seller)
+
+               for seller, products in products_of_same_seller.items():
+                   context = {'order': order, 'products': products, 'YOUR_DOMAIN': YOUR_DOMAIN}
+                   html_content = render_to_string('products/emailProducts.html', context=context).strip()
+                   msg = EmailMultiAlternatives("You have received orders for your products on men's wall",
+                                                html_content,
+                                                settings.EMAIL_HOST_USER, [CustomeUser.objects.get(pk=seller).email]
                                                 )
                    msg.content_subtype = 'html'  # Main content is text/html
                    msg.mixed_subtype = 'related'
                    msg.send()
 
-                   order_products = order.get_order_items()
-                   orders_sellers = order_products.values_list('product__seller', flat=True).distinct()
-                   products_of_same_seller = {}
-
-                   for seller in orders_sellers:
-                       products_of_same_seller[seller] = order_products.filter(product__seller=seller)
-
-                   for seller, products in products_of_same_seller.items():
-                       context = {'order': order, 'products': products, 'YOUR_DOMAIN': YOUR_DOMAIN}
-                       html_content = render_to_string('products/emailProducts.html', context=context).strip()
-                       msg = EmailMultiAlternatives("You have received orders for your products on men's wall",
-                                                    html_content,
-                                                    settings.EMAIL_HOST_USER, [CustomeUser.objects.get(pk=seller).email]
-                                                    )
-                       msg.content_subtype = 'html'  # Main content is text/html
-                       msg.mixed_subtype = 'related'
-                       msg.send()
-
-           address = ShippingAddress.objects.get(order=order)
-           return render(request, 'products/invoice.html', {'order': order, 'address': address})
-       except:
-           return redirect('myOrders')
+       address = ShippingAddress.objects.get(order=order)
+       return render(request, 'products/invoice.html', {'order': order, 'address': address})
    else:
         return redirect('login')
 
