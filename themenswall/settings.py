@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'stdimage',
     'products',
-    'orders'
+    'orders',
+    'sslserver'
 ]
 
 MIDDLEWARE = [
