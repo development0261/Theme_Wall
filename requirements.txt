@@ -42,3 +42,4 @@ face-recognition
 gunicorn==20.1.0
 stripe==2.60.0
 APScheduler==3.7.0
+django-sslserver
