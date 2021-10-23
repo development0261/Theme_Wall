@@ -352,6 +352,113 @@
         .hover-image {
     background-color: #fff !important;
 }
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: start
+}
+
+.rating>input {
+    display: none
+}
+
+.rating>label {
+    position: relative;
+    width: 1em;
+    font-size: 3vw;
+    color: #FFD600;
+    cursor: pointer
+}
+
+.rating>label::before {
+    content: "\2605";
+    position: absolute;
+    opacity: 0
+}
+
+.rating>label:hover:before,
+.rating>label:hover~label:before {
+    opacity: 1 !important
+}
+
+.rating>input:checked~label:before {
+    opacity: 1
+}
+
+.rating:hover>input:checked~label:before {
+    opacity: 0.4
+}
+.reviews{
+  padding: 15px;
+  max-width: 768px;
+  margin: 0 auto;
+}
+
+.review-item{
+  background-color: white;
+  padding: 15px;
+  margin-bottom: 5px;
+
+}
+
+.review-item .review-date{
+  color: #cecece;
+}
+.review-item .review-text{
+  font-size: 16px;
+  font-weight: normal;
+  margin-top: 5px;
+  color: #343a40;
+}
+
+.review-item .reviewer{
+  width: 80px;
+  height: 80px;
+ 
+}
+
+/****Rating Stars***/
+.raterater-bg-layer {
+    color: rgba( 0, 0, 0, 0.25 );
+}
+.raterater-hover-layer {
+    color: rgba( 255, 255, 0, 0.75 );
+}
+.raterater-hover-layer.rated { /* after the user selects a rating */
+    color: rgba( 255, 255, 0, 1 );
+}
+.raterater-rating-layer {
+    color: rgba( 255, 155, 0, 0.75 );
+}
+.raterater-outline-layer {
+    color: rgba( 0, 0, 0, 0.25 );
+}
+
+/* don't change these - you might break something.. */
+.raterater-wrapper {
+    overflow:visible;
+}
+
+.software .raterater-wrapper {
+    margin-top: 4px;
+}
+
+.raterater-layer,
+.raterater-layer i {
+    display: block;
+    position: absolute;
+    overflow: visible;
+    top: 0px;
+    left: 0px;
+}
+.raterater-hover-layer {
+    display: none;
+}
+.raterater-hover-layer i,
+.raterater-rating-layer i {
+    width: 0px;
+    overflow: hidden;
+}
 
     </style>
 
@@ -389,9 +496,9 @@
                     <div class="d-flex flex-row align-items-center">
                         <div class="p-ratings">
 
-                            {% with ''|center:product.rating as range %}
+                            {% with ''|center:product_star_rating as range %}
                                 {% for _ in range %}
-                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star" style="color:#3E83C5 "></i>
                                 {% endfor %}
                             {% endwith %}
 
@@ -467,11 +574,24 @@
                             <p>{{ product.description }}</p>
 
                         </div>
-                        <div class="mt-2"><span class="font-weight-bold">Seller</span></div>
+                       
                         <div class="d-flex flex-row align-items-center"><img src="{% static 'images/vendor.jpg' %}"
                                                                              class="rounded-circle store-image">
-                            <div class="d-flex flex-column ml-1 comment-profile"><span class="username"
-                                                                                       style="font-weight: bold;">{{ product.seller.fullname }}</span>
+                            <div class="d-flex flex-column ml-1 comment-profile">
+                            <span class="username " style="font-weight: bold;font-size:16px">{{ product.seller.fullname }}</span>
+                            <div class="star-rating">
+                                {% if star_rating %}
+                                {% with ''|center:star_rating as range %}
+									 {% for _ in range %}
+									 <i class="fas fa-star mr-1" style="color: #c8102e;font-size:12px"></i>
+								     {% endfor %}
+									 {% endwith %}
+                                
+                                {% endif %}
+                                
+                               
+                            </div>
+                            
                             </div>
                         </div>
                     </div>
@@ -494,6 +614,167 @@
             <a href="{% url 'cart' %}" class="btn btn-dark mt-3">GO TO CART</a>
         </div>
     </div><!-- /.cart-drawer .cart-drawer-right -->
+
+<div class="container">
+    {% if messages %}
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show mt-3" role="alert">
+  <strong id="g_msg">Message : {{message}} </strong>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+
+{% endfor %}
+
+{% endif %}
+ <div class="p-5 bg-white rounded shadow mb-5">
+    <!-- Rounded tabs -->
+    <ul id="myTab" role="tablist" class="nav nav-tabs nav-pills flex-column flex-sm-row text-center bg-light border-0 rounded-nav">
+      <li class="nav-item flex-sm-fill">
+        <a id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true" class="nav-link border-0 text-uppercase font-weight-bold active"><i class="far fa-smile mr-1"></i> Seller Reviews</a>
+      </li>
+      <li class="nav-item flex-sm-fill">
+        <a id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" class="nav-link border-0 text-uppercase font-weight-bold"><i class="far fa-star mr-1"></i> Product Reviews</a>
+      </li>
+      
+    </ul>
+    <div id="myTabContent" class="tab-content">
+      <div id="home" role="tabpanel" aria-labelledby="home-tab" class="tab-pane fade px-4 py-5 show active">
+        <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12 p-2">
+                <form method="post"  onsubmit="return checkStar()" action="{% url 'submitReviewSeller' product.pk %}">{% csrf_token %}
+                <input type="hidden" name="stars" id="starsInput" />
+                        <div class="rating px-2"><input type="radio" name="rating" class="star" value="10" id="10"><label for="10">☆</label><input type="radio" name="rating" class="star" value="9" id="9"><label for="9">☆</label><input type="radio" name="rating" class="star" value="8" id="8"><label for="8">☆</label><input type="radio" name="rating" class="star" value="7" id="7"><label for="7">☆</label> <input type="radio" name="rating" class="star" value="6" id="6"><label for="6">☆</label> <input type="radio" name="rating" class="star" value="5" id="5"><label for="5">☆</label> <input type="radio" class="star" name="rating" value="4" id="4"><label for="4">☆</label> <input type="radio" class="star" name="rating" value="3" id="3"><label for="3">☆</label> <input type="radio" class="star" name="rating" value="2" id="2"><label for="2">☆</label> <input type="radio" name="rating" value="1" class="star" id="1"><label for="1">☆</label>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Review Title </label>
+                                <input type="text" class="form-control" name="title">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Review Description</label>
+                                <textarea rows="5" cols="15" class="form-control" name="comment" ></textarea>
+                            </div>
+                        </div>     
+                        <div class="col-12">
+                            <div class="form-group">
+                            <button class="btn btn-primary" type="submit"> Submit Review </button>
+                            </div>
+                        </div>  
+                </form>
+                </div >
+                <div  class="col-md-6 col-sm-12 col-xs-12 ">
+                    {% for review in all_rattings%}
+                    <div class="reviews" style="padding:0px">
+                        <div class="row blockquote review-item">
+                            <div class="col-md-3 text-center">
+                            <img class="rounded-circle reviewer" src="{% static 'images/feedback.png' %}">
+                            <div class="caption">
+                                <small>by <a href="#joe">{{review.user.username}}</a></small>
+                            </div>
+                        
+                            </div>
+                            <div class="col-md-9">
+                                <h6>{{review.title}}</h6>
+                                <div class="star-rating">
+                                    {% if review.stars %}
+                                    {% with ''|center:review.stars as range %}
+                                        {% for _ in range %}
+                                        <i class="fas fa-star mr-1" style="color: #3E83C5;font-size:12px"></i>
+                                        {% endfor %}
+                                        {% endwith %}
+                                    
+                                    {% endif %}
+                                </div>
+                                <small class="review-date" style="margin:0px;padding:0px">{{review.createdAt|date:'M d Y'}}</small>
+                                
+                                <div class="ratebox text-center" data-id="0" data-rating="5"></div>
+                                <p class="review-text" style="font-size: 12px;">{{review.comment}}</p>
+                            
+                                
+                            </div>                          
+                        </div>  
+                    </div>
+                    {% endfor %}
+                </div>
+        </div>
+      
+      </div>
+      <div id="profile" role="tabpanel" aria-labelledby="profile-tab" class="tab-pane fade px-4 py-5">
+         <div class="row">
+                <div class="col-md-6 col-sm-12 col-xs-12 p-2">
+                <form method="post"  onsubmit="return ProductcheckStar()" action="{% url 'submitReviewProduct' product.pk %}">{% csrf_token %}
+                <input type="hidden" name="stars" id="ProductstarsInput" />
+                        <div class="rating px-2"><input type="radio" name="productrating" class="productstar" value="10" id="Product10"><label for="Product10">☆</label><input type="radio" name="productrating" class="productstar" value="9" id="Product9"><label for="Product9">☆</label><input type="radio" name="productrating" class="productstar" value="8" id="Product8"><label for="Product8">☆</label><input type="radio" name="productrating" class="productstar" value="7" id="Product7"><label for="Product7">☆</label> <input type="radio" name="productrating" class="productstar" value="6" id="Product6"><label for="Product6">☆</label> <input type="radio" name="productrating" class="productstar" value="5" id="Product5"><label for="Product5">☆</label> <input type="radio" class="productstar" name="productrating" value="4" id="Product4"><label for="Product4">☆</label> <input type="radio" class="productstar" name="productrating" value="3" id="Product3"><label for="Product3">☆</label> <input type="radio" class="productstar" name="productrating" value="2" id="Product2"><label for="Product2">☆</label> <input type="radio" name="productrating" value="1" class="productstar" id="Product1"><label for="Product1">☆</label>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Product Review Title </label>
+                                <input type="text" class="form-control" name="producttitle">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Product Review Description</label>
+                                <textarea rows="5" cols="15" class="form-control" name="productcomment" ></textarea>
+                            </div>
+                        </div>     
+                        <div class="col-12">
+                            <div class="form-group">
+                            <button class="btn btn-primary" type="submit"> Submit Review </button>
+                            </div>
+                        </div>  
+                </form>
+                </div >
+                <div  class="col-md-6 col-sm-12 col-xs-12 ">
+                    {% for review in product_all_rattings%}
+                    <div class="reviews" style="padding:0px">
+                        <div class="row blockquote review-item">
+                            <div class="col-md-3 text-center">
+                            <img class="rounded-circle reviewer" src="{% static 'images/feedback.png' %}">
+                            <div class="caption">
+                                <small>by <a href="#joe">{{review.user.username}}</a></small>
+                            </div>
+                        
+                            </div>
+                            <div class="col-md-9">
+                                <h6>{{review.title}}</h6>
+                                <div class="star-rating">
+                                    {% if review.stars %}
+                                    {% with ''|center:review.stars as range %}
+                                        {% for _ in range %}
+                                        <i class="fas fa-star mr-1" style="color: #3E83C5 ;font-size:12px"></i>
+                                        {% endfor %}
+                                        {% endwith %}
+                                    
+                                    {% endif %}
+                                </div>
+                                <small class="review-date" style="margin:0px;padding:0px">{{review.createdAt|date:'M d Y'}}</small>
+                                <div class="ratebox text-center" data-id="0" data-rating="5"></div>
+                                <p class="review-text" style="font-size: 12px;">{{review.comment}}</p>
+                            
+                                
+                            </div>                          
+                        </div>  
+                    </div>
+                    {% endfor %}
+                </div>
+        </div>
+      </div>
+    
+    </div>
+    <!-- End rounded tabs -->
+  </div>
+
+
+ 
+
+</div>
+
 
 
 {% endblock %}
@@ -694,12 +975,16 @@
                 productCount = $('#ProductCount_' + id + "_" + size + "_" + color).html();
 
 
+
                 if (color === "" && $(".my-color").children().length > 0) {
                     alert("Please Select Color of Product")
                 } else if (size === "SELECT_SIZE" && $(".my-size").children().length > 0) {
                     alert("Please Select Size of Product")
                 } else {
- img_url = await $.ajax({url: `/products/getImageBySizeandColor/${parseInt(id)}/${size}/${color}`});
+
+
+                     img_url = await $.ajax({url: `/products/getImageBySizeandColor/${parseInt(id)}/${size}/${color}`});
+
                 img_url = img_url.image
                     {#Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url,[{'color':color,'count':1}],[{'size':size,'count':1}]];#}
                     Mycart[prodId] = [parseInt(id), qty, productName, parseInt(productPrice), productCount, img_url, color, size]
@@ -844,6 +1129,24 @@
 
         });
 
+        $(".star").click(function(){
+            var star = $(this).val()
+            $('#starsInput').val(star)
+        })
 
+         $(".productstar").click(function(){
+            var star = $(this).val()
+           
+            $('#ProductstarsInput').val(star)
+        })
+
+
+        function ProductcheckStar(){
+              if($("#ProductstarsInput").val() == ""){
+            alert("Please Submit Valid Review ! Select Atleast One Star")
+            return false
+        }
+        return true
+        }
     </script>
 {% endblock jsfiles %}

@@ -239,31 +239,41 @@
                     <hr/>
             <div class="row" style="padding: 2vh 0;">
 
-                <div class="col" style="font-weight: bold">TOTAL Amount to Pay</div>
-                <div class="col text-right" style="font-weight: bold"><span id="total_amount_to_pay" ></span> $</div>
+                <div class="col" style="font-weight: bold">TOTAL Price</div>
+                <div class="col text-right" style="font-weight: bold"><span id="final_total1" ></span> $</div>
+
+                
+                
                 <input type="hidden" name="final_total" id="final_total">
                 <input type="hidden" name="tax_price" id="tax_price">
                 <input type="hidden" name="shipment_charge" id="shipment_charge">
             </div>
-            <div>
+            
                      <hr/>
+            <div class="row" style="padding: 2vh 0;">
+              <div class="col" style="font-weight: bold">TOTAL Amount to Pay</div>
+                  <div class="col text-right" style="font-weight: bold"><span id="amount_to_pay" ></span> $</div>
+              <div>
+            </div>
+            </div>
+              <hr/>
                 <h5>Select Payment Type</h5>
             <div class="row" style="padding: 2vh 0;">
-                <input type="hidden" name="payment_type" id="payment_type_input" value="cod">
-                <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 select_payment">
+                <input type="hidden" name="payment_type" id="payment_type_input" value="stripe">
+                {% comment %} <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 select_payment">
                     <div class="text-center payment_type active"  id="cod">
                         Cash On Delivery
                     </div>
-                </div>
-                <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 ">
-                    <div class="text-center payment_type" id="stripe">
+                </div> {% endcomment %}
+                <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 select_payment">
+                    <div class="text-center payment_type active" id="stripe">
                         Stripe
                     </div>
                 </div>
             </div>
             </div>
 
-                    <div class="d-flex justify-content-end pt-3">
+                    <div class="d-flex justify-content-center py-3">
                       <button type="submit" class="btn btn-success btn-lg ms-2"
                         style="background-color:hsl(210, 100%, 50%) ">Place order</button>
                     </div>
@@ -315,10 +325,13 @@
             document.getElementById('CartCounter').innerHTML = Counter;
 
         ShipmentCart = JSON.parse(localStorage.getItem('ShipmentCart'));
-        $("#total_amount_to_pay").html(ShipmentCart['total'])
-        $("#final_total").val(ShipmentCart['total'])
-        $("#tax_price").val(ShipmentCart['tax'])
-        $("#shipment_charge").val(ShipmentCart['shipmentCharge'])
+        
+        totalPrice = ShipmentCart['total']
+        $("#final_total").val(totalPrice)
+        $("#final_total1").html(totalPrice)
+
+        
+        $("#amount_to_pay").html(parseFloat(parseFloat(totalPrice)+parseFloat(totalPrice)*8/100+0.0028).toFixed(2))
 
 
 

@@ -44,12 +44,12 @@
                       <i class="ti-plus"></i>
                       <a href="{% url 'post-create' %}" title="">Add post</a>
                     </li>
-                    {%  if user.is_authenticated and user.role == "buyer" %}
+                  
                    <li>
                       <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                       <a href="{% url 'buyproducts' %}" title="">Buy Products</a>
                     </li>
-                        {% elif user.is_authenticated and user.role == "seller" %}
+                      {% if user.is_authenticated and user.role == "seller" %}
                          <li>
                       <i class="fa fa-dollar" aria-hidden="true"></i>
                       <a href="{% url 'sellerDash' %}" title="">Sell Products</a>

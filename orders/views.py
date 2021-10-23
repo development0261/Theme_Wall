@@ -18,7 +18,7 @@ from email.mime.image import MIMEImage
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 stripe.api_key = settings.STRIPE_PRIVATE_KEY
-YOUR_DOMAIN = "https://45.79.101.165"
+YOUR_DOMAIN = "https://themes-wall.herokuapp.com/"
 
 # Create your views here.
 def ordersIndex(request):
@@ -78,8 +78,11 @@ def placeOrder(request):
 
             request.user.contact_no = contact
             request.user.save()
-            order = Order(user= request.user,paymentMethod=payment_type,taxPrice=float(tax_price.strip()),shippingPrice=float(shipment_charge.strip()),totalPrice=float(final_total.strip()),
-                          isPaid=False,status='Placed'
+            amountPaid = float(final_total)+(float(final_total)*8)/100 + 0.0028
+            print(float(final_total))
+            print(amountPaid)
+            order = Order(user= request.user,paymentMethod=payment_type,totalPrice=float(final_total.strip()),
+                          isPaid=False,status='Placed',amountPaid=amountPaid
                           )
             order.save()
             address = ShippingAddress(order= order,address=address,city=city,state=state,country=country,zip=zip)
@@ -121,7 +124,7 @@ def placeOrder(request):
                 for seller,products in products_of_same_seller.items():
                     context = {'order': order,'products':products,'YOUR_DOMAIN':YOUR_DOMAIN}
                     html_content = render_to_string('products/emailProducts.html', context=context).strip()
-                    msg = EmailMultiAlternatives("You have received orders for your products on men's wall", html_content,
+                    cmsg = EmailMultiAlternatives("You have received orders for your products on men's wall", html_content,
                                                  settings.EMAIL_HOST_USER, [CustomeUser.objects.get(pk=seller).email]
                                                  )
                     msg.content_subtype = 'html'  # Main content is text/html
@@ -134,11 +137,11 @@ def placeOrder(request):
                     payment_method_types=['card'],
                     line_items=[{
                         'price_data': {
-                            'currency': 'inr',
+                            'currency': 'USD',
                             'product_data': {
                                 'name': "Payment to The Men's Wall",
                             },
-                            'unit_amount': int(order.totalPrice * 100),
+                            'unit_amount': int(order.amountPaid * 100),
                         },
                         'quantity': 1,
                     }],

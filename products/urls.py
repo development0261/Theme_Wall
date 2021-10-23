@@ -11,7 +11,7 @@ urlpatterns = [
     path("buyerprofile/",buyerprofile,name="buyerprofile"),
     path("getProduct/<int:id>/",getProduct,name="getProduct"),
     path("updateProduct/<int:id>/",updateProduct,name="updateProduct"),
-    path("buyproducts/",buyproducts,name="buyproducts"),
+  
     path("checkwebcam/",checkwebcam,name="checkwebcam"),
     path("singleProduct/<int:id>/",singleProduct,name="singleProduct"),
     path("addExtraImage/<int:id>/",addExtraImage,name="addExtraImage"),
@@ -19,5 +19,8 @@ urlpatterns = [
     path("removeExtraImage/<int:id>/",removeExtraImage,name="removeExtraImage"),
     path("getColorBySize/<str:size>/<int:id>/",getColorBySize,name="getColorBySize"),
     path("getImageBySizeandColor/<int:id>/<str:size>/<str:color>/",getImageBySizeandColor,name="getImageBySizeandColor"),
-    path("getImageById/<int:id>/",getImageById,name="getImageById")
+    path("getImageById/<int:id>/",getImageById,name="getImageById"),
+    path("submitReviewSeller/<int:id>/",submitReviewSeller,name="submitReviewSeller"),
+    path("submitReviewProduct/<int:id>/",submitReviewProduct,name="submitReviewProduct")
+
 ]

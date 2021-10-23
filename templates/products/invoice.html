@@ -278,31 +278,22 @@
 
                     </tbody>
                     <tfoot>
-                     {% with totaltax=order.taxPrice|add:order.shippingPrice %}
+                     
                         <tr>
                             <td colspan="2"></td>
                             <td colspan="2">SUBTOTAL</td>
 
-                            <td>${{ order.totalPrice | subtract:totaltax }}
+                            <td>${{ order.totalPrice}}
                             </td>
 
                         </tr>
-                        <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2">TAX</td>
-                            <td>${{ order.taxPrice }}</td>
-                        </tr>
-                         <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2" style="text-transform: uppercase">Shipment Charge</td>
-                            <td>${{ order.shippingPrice }}</td>
-                        </tr>
+                      
                         <tr>
                             <td colspan="2"></td>
                             <td colspan="2">GRAND TOTAL</td>
-                            <td>${{ order.totalPrice}}</td>
+                            <td>${{ order.amountPaid}}</td>
                         </tr>
-                     {% endwith %}
+                     
                     </tfoot>
                 </table>
                 <div class="thanks">Thank you!</div>

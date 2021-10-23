@@ -3,6 +3,7 @@
 {% load humanize %}
 {% block style %}
     {% load custom_tags %}
+    
  <style>
 .search__input {
     border-color: #f0f2f5;
@@ -293,271 +294,53 @@ h5 {
 
 
 
-.container .card{
-  position: relative;
-  width: 320px;
-  height: 450px;
-  background: #232323;
-  border-radius: 20px;
-  overflow: hidden;
+
+.carousel-item {
+    height: 500px;
 }
 
-.container .card:before{
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #3E83C5;
-  clip-path: circle(150px at 80% 20%);
-  transition: 0.5s ease-in-out;
+.carousel-item img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
-
-.container .card:hover:before{
-  clip-path: circle(300px at 80% -20%);
-}
-
-.container .card:after{
-  content: "";
-  position: absolute;
-  top: 30%;
-  left: -20%;
-  font-size: 4em;
-  font-weight: 800;
-  font-style: italic;
-  color: rgba(255,255,25,0.05)
-}
-
-.container .card .imgBx{
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10000;
-  width: 100%;
-  height: 220px;
-  transition: 0.5s;
-}
-
-.container .card:hover .imgBx{
-  top: 0%;
-  transform: translateY(0%);
-
-}
-
-.container .card .imgBx img{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) ;
-  width: 270px;
-}
-
-.container .card .contentBx{
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 100px;
-  text-align: center;
-  transition: 1s;
-  z-index: 10;
-}
-
-.container .card:hover .contentBx{
-  height: 210px;
-}
-
-.container .card .contentBx h2{
-  position: relative;
-  font-weight: 600;
-  letter-spacing: 1px;
-  color: #fff;
-  margin: 0;
-}
-
-.container .card .contentBx .size, .container .card .contentBx .color {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px 20px;
-  transition: 0.5s;opacity: 0;
-  visibility: hidden;
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
-.container .card:hover .contentBx .size{
-  opacity: 1;
-  visibility: visible;
-  transition-delay: 0.5s;
-}
-
-.container .card:hover .contentBx .color{
-  opacity: 1;
-  visibility: visible;
-  transition-delay: 0.6s;
-}
-
-.container .card .contentBx .size h3, .container .card .contentBx .color h3{
-  color: #fff;
-  font-weight: 300;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-right: 10px;
-}
-
-.container .card .contentBx .size span{
-  width: 26px;
-  height: 26px;
-  text-align: center;
-  line-height: 26px;
-  font-size: 14px;
-  display: inline-block;
-  color: #111;
-  background: #fff;
-  margin: 0 5px;
-  transition: 0.5s;
-  color: #111;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.container .card .contentBx .size span:hover{
-  background: #89C34A;
-}
-
-.container .card .contentBx .color span{
-  width: 20px;
-  height: 20px;
-  background: #89C34A;
-  border-radius: 50%;
-  margin: 0 5px;
-  cursor: pointer;
-}
-
-.container .card .contentBx .color span:nth-child(2){
-  background: #9bdc28;
-}
-
-.container .card .contentBx .color span:nth-child(3){
-  background: #03a9f4;
-}
-
-.container .card .contentBx .color span:nth-child(4){
-  background: #e91e63;
-}
-
-.container .card .contentBx a{
-  display: inline-block;
-  padding: 10px 20px;
-  background: #fff;
-  border-radius: 4px;
-  margin-top: 10px;
-  text-decoration: none;
-  font-weight: 600;
-  color: #111;
-  opacity: 0;
-  transform: translateY(50px);
-  transition: 0.5s;
-  margin-top: 0;
-}
-
-.container .card:hover .contentBx a{
-  opacity: 1;
-  transform: translateY(0px);
-  transition-delay: 0.75s;
-
-}
-
-.newcard a {
-	 text-decoration: none;
-}
-/* Card Styles */
- .newcard .card-sl {
-	 border-radius: 8px;
-	 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
- .newcard .card-image img {
-	 max-height: 166px;
-	 max-width: 100%;
-	 border-radius: 8px 8px 0px 0;
-     object-fit: contain;
-
-}
- .newcard .card-action {
-	 position: relative;
-	 float: right;
-	 margin-top: -25px;
-	 margin-right: 20px;
-	 z-index: 2;
-	 color: #89C34A;
-	 background: #fff;
-	 border-radius: 100%;
-	 padding: 10px 14px;
-	 font-size: 15px;
-	 box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.19);
-}
- .newcard .card-action:hover {
-	 color: #fff;
-	 background: #89C34A;
-	 -webkit-animation: pulse 1.5s infinite;
-}
- .newcard .card-heading {
-	 font-size: 18px;
-	 font-weight: bold;
-	 background: #fff;
-	 padding: 10px 15px;
-}
- .newcard .card-text {
-	 padding: 10px 15px;
-	 background: #fff;
-	 font-size: 14px;
-	 color: #636262;
-}
- .newcard .card-button {
-	 display: flex;
-	 justify-content: center;
-	 padding: 10px 0;
-	 width: 100%;
-	 background-color: #3E83C5;
-	 color: #fff;
-	 border-radius: 0 0 8px 8px;
-}
- .newcard .card-button:hover {
-	 text-decoration: none;
-	 background-color: #3E83C5;
-	 color: #fff;
-}
- @-webkit-keyframes pulse {
-	 0% {
-		 -moz-transform: scale(0.9);
-		 -ms-transform: scale(0.9);
-		 -webkit-transform: scale(0.9);
-		 transform: scale(0.9);
-	}
-	 70% {
-		 -moz-transform: scale(1);
-		 -ms-transform: scale(1);
-		 -webkit-transform: scale(1);
-		 transform: scale(1);
-		 box-shadow: 0 0 0 50px rgba(90, 153, 212, 0);
-	}
-	 100% {
-		 -moz-transform: scale(0.9);
-		 -ms-transform: scale(0.9);
-		 -webkit-transform: scale(0.9);
-		 transform: scale(0.9);
-		 box-shadow: 0 0 0 0 rgba(90, 153, 212, 0);
-	}
-}
-
     </style>
-
+    <link href="{% static 'css/cards.css' %}" type="text/css" rel="stylesheet"/>
 {% endblock %}
 
 {% block content %}
 {% load removeSpace %}
+
+            <div class="web_slider">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                    </ol>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img class="d-block w-100" src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=870&q=80" alt="First slide">
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1048&q=80" alt="Second slide">
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=822&q=80" alt="Third slide">
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+            
+            
     <div class="container mt-5">
        <div class="row">
         <div class="col-md-3">
@@ -653,169 +436,101 @@ h5 {
                 </div>
             </div>
             </form>
-
-            <div class="container mt-5 mb-5">
-    <div class="d-flex justify-content-center row">
-{#        <div class="col-md-10">#}
-{##}
-{#            {% if all_items|length > 0 %}#}
-{#                 {% for item in all_items %}#}
-{##}
-{##}
-{#            <div class="row p-2 bg-white border rounded mt-2">#}
-{#                <div class="col-md-3 mt-1"><a href="{% url 'singleProduct' item.id %}"><img class="img-fluid img-responsive rounded product-image" id="ProductImage_{{ item.pk }}"  src="{{ item.image.url }}"></a></div>#}
-{#                <div class="col-md-6 mt-1">#}
-{#                    <h5 id="ProductName_{{ item.pk }}">{{ item.name }}</h5>#}
-{#                    <div class="d-flex flex-row">#}
-{#                        <div class="ratings mr-2">#}
-{#                        {% with ''|center:item.rating as range %}#}
-{#									 {% for _ in range %}#}
-{#									 <i class="fa fa-star"></i>#}
-{#								     {% endfor %}#}
-{#									 {% endwith %}#}
-{##}
-{#                            </div>#}
-{#                    </div>#}
-{#                <p id="ProductCount_{{ item.pk }}" style="display: none">{{ item.quantity }} </p>#}
-{#                  {% if item.get_color|length > 0 %}#}
-{#                    <div class="mt-1 mb-1 spec-1"><span style="color: black;font-weight: bold">Colors : </span>#}
-{##}
-{#                      {% for color in item.get_color %}#}
-{#                      <span class="dot" style="background-color: {{ color }}"></span>#}
-{#                      {% endfor %}#}
-{#                       </div>#}
-{##}
-{##}
-{##}
-{#                 {% endif %}#}
-{#                 {% if item.get_size|length > 0 %}#}
-{#                      {% if not item.check_if_no_size %}#}
-{#                    <div class="mt-1 mb-1 spec-1"><span style="color: black;font-weight: bold">Size : </span>#}
-{##}
-{#                      {% for size in item.get_size %}#}
-{#                    <span style="color: #0e0e0e;padding: 0px 2px">{{ size|title }}</span>#}
-{#                      {% endfor %}#}
-{##}
-{##}
-{#                        </div>#}
-{#                          {% endif %}#}
-{#                 {% endif %}#}
-{#<span style="color: black;font-weight: bold">Seller : </span><span style="color: #0e0e0e;padding: 0px 2px">{{ item.seller.fullname }}</span>#}
-{#                    <p class="text-justify text-truncate para mb-0">{{ item.description | truncatewords:20 }}</p>#}
-{##}
-{#                </div>#}
-{#                <div class="align-items-center align-content-center col-md-3 border-left mt-1">#}
-{#                    <div class="d-flex flex-row align-items-center">#}
-{#                        <h4 class="mr-1" id="ProductPrice_{{ item.pk }}">${{ item.price }}</h4>#}
-{#                    </div>#}
-{##}
-{#                    <div class="d-flex flex-column mt-4">#}
-{##}
-{#                        <a class="btn btn-dark btn-sm" type="button" href="{% url 'singleProduct' item.pk %}" ><i class="fa fa-shopping-cart"></i>&nbsp;Add to Cart</a>#}
-{##}
-{#                      <!--  <button class="btn btn-outline-dark btn-sm mt-2" type="button"><i class="fa fa-eye"></i>&nbsp;View Details</button> -->#}
-{#                        <button class="btn btn-outline-dark btn-sm mt-2 addToWishList" id="addToWishList_{{item.pk}}" type="button"><i class="fa fa-heart"></i>&nbsp;Add to wishlist</button>#}
-{#                    </div>#}
-{#                    </div>#}
-{#            </div>#}
-{#            {% endfor %}#}
-{#            {% else %}#}
-{#                <h4 style="text-transform: uppercase;text-align: center;color: #337ab7">No Products Found which Match Your Filter</h4>#}
-{#            {% endif %}#}
-{#        </div>#}
-     <div class="container newcard">
-        <div class="row">
-        {% if all_items|length > 0 %}
+            <div class="product_card mt-3">
+                <div class="container">
+                    <div class="row">
+                        {% if all_items|length > 0 %}
              {% for item in all_items %}
-            <div class="col-md-4 mt-3">
-                <div class="card-sl">
-                    <div class="card-image">
-                        <a href="{% url 'singleProduct' item.pk%}{% if request.GET.cat_id %}?cat_id={{ request.GET.cat_id }}{% endif %}"><img
-                            src="{{ item.image.url }}" style="width: 100%; height:100%" />
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="image-container">
+                                    <div class="first">
+                                        
+                                        <div class="d-flex justify-content-between align-items-center"> 
+                                            <span style= "cursor:pointer" class="wishlist addToWishList" id="addToWishList_{{item.pk}}"><i
+                                                class="fas fa-heart" style="color: red;"></i></span>
+                                        </div>
+                                    </div> <img src="{{ item.image.url }}" class="img-fluid rounded thumbnail-image">
+                                </div>
+                                <div class="product-detail-container p-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="dress-name"><a style="text-decoration: none;" href="{% url 'singleProduct' item.pk%}{% if request.GET.cat_id %}?cat_id={{ request.GET.cat_id }}{% endif %}">{{item.name}}</a></h5>
+                                        <div class="d-flex flex-column mb-2"> 
+                                            
+                                            {% if item.offer_price > 0 %}
+                                                <span class="new-price" style="color: #89C34A;">$ {{ item.offer_price | intcomma }}</span><small
+                                                class="old-price text-right"><strike>$ {{ item.price | intcomma }}</strike></small>
+                                                {% else %}
+                                                 <span class="new-price" style="color: #89C34A;">${{ item.price | intcomma }}</span>
+                                                {% endif %}
+                                              </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center pt-1">
+                                        <div class="color-select d-flex "> 
+                                            {% for things in item.get_qtys %}
+                                            {% if things.quantity > 0  %}
+                                            <input type="button" name="grey" class="btn ml-2" style="background-color: {{ things.color.color }};
+                                            border: 1px solid #000;">
+                                            {% endif %}
+                                            {% endfor %}
 
-                        </a>
-                    </div>
+                                        </div>
+                                        <div class="d-flex "> 
+                                            {% for things in item.get_qtys %}
+                                            {% if things.quantity > 0  %}
+                                            {% if not things.size.size == None %}
+                                            <span class="item-size mr-2 btn" type="button">{{things.size.size|make_list|first|upper}}</span> 
+                                            {% endif %}
+                                            {% endif %}
 
-                    <a class="card-action addToWishList" id="addToWishList_{{item.pk}}" ><i class="fa fa-heart"></i></a>
-                    <div class="card-heading">
-                        {{item.name}}
-                         <div style="color: #337ab7">
-                            {% with ''|center:item.rating as range %}
-									 {% for _ in range %}
-									 <i class="fa fa-star"></i>
-								     {% endfor %}
-									 {% endwith %}
-
-
+                                        {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center pt-1">
+                                        <div> <i class="fas fa-star rating-star" style="color: #89C34A;"></i> <span class="rating-number">{{item.rating}}</span> </div>
+                                        <a style="cursor:pointer" href="{% url 'singleProduct' item.pk %}{% if request.GET.cat_id %}?cat_id={{ request.GET.cat_id }}{% endif %}"><span class="buy" style="color: #3E83C5; font-weight:bold">Add to Cart <i class="fas fa-shopping-basket"></i></span></a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        {% endfor%}
+
+                        {%endif%}
                     </div>
-                    <div class="card-text">
-                        {% if item.get_qtys|length > 0 %}
-
-
-                      {% for things in item.get_qtys %}
-                        {% if things.quantity > 0  %}
-                        <span class="colorBoxSmall" style="background-color:{{ things.color.color }} "></span>
-                          {% endif %}
-                      {% endfor %}
-
-
-
-
-                 {% endif %}
-
-                    </div>
-
-                    <div class="card-text" style="font-weight: bold">
-                        {% if item.offer_price > 0 %}
-                        $ {{ item.offer_price | intcomma }} &nbsp;<strike>$ {{ item.price | intcomma }}</strike>
-                        {% else %}
-                        $ {{ item.price | intcomma }}
-                        {% endif %}
-
-
-
-                    </div>
-                    <a href="{% url 'singleProduct' item.pk %}{% if request.GET.cat_id %}?cat_id={{ request.GET.cat_id }}{% endif %}" class="card-button">Purchase &nbsp;<i class="fas fa-shopping-cart"></i></a>
                 </div>
             </div>
-            {% endfor %}
-         {% else %}
-                <h4 style="text-transform: uppercase;text-align: center;color: #337ab7">No Products Found which Match Your Filter</h4>
-            {% endif %}
+            
+
+           
         </div>
-    </div>
-</div>
-            <div class="pagination__inner mb-2 d-flex justify-content-center">
-                <nav aria-label="Page navigation example">
-                     {% if all_items.has_other_pages %}
-                    <ul class="pagination">
-                    {% if all_items.has_previous %}
-                      <li class="page-item"><a class="page-link" href="?page={{all_items.previous_page_number}}">Previous</a></li>
-                    {% else %}
-                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                    {% endif %}
-                     {% for i in all_items.paginator.page_range %}
-                           {% if all_items.number == i%}
-                                   <li class="page-item"><a class="page-link" href="#">{{i}}</a></li>
-                                {% else %}
-                                <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+        <div class="pagination__inner mb-2 d-flex justify-content-center">
+            <nav aria-label="Page navigation example">
+                 {% if all_items.has_other_pages %}
+                <ul class="pagination">
+                {% if all_items.has_previous %}
+                  <li class="page-item"><a class="page-link" href="?page={{all_items.previous_page_number}}">Previous</a></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                {% endif %}
+                 {% for i in all_items.paginator.page_range %}
+                       {% if all_items.number == i%}
+                               <li class="page-item"><a class="page-link" href="#">{{i}}</a></li>
+                            {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
 
-                                {% endif %}
+                            {% endif %}
 
-                    {% endfor %}
+                {% endfor %}
 
-                       {% if all_items.has_next %}
-                       <li class="page-item"><a class="page-link" href="?page={{all_items.next_page_number}}">Next</a></li>
-                    {% else %}
-                     <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                    {% endif %}
+                   {% if all_items.has_next %}
+                   <li class="page-item"><a class="page-link" href="?page={{all_items.next_page_number}}">Next</a></li>
+                {% else %}
+                 <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                {% endif %}
 
-                    </ul>
-                    {% endif %}
-                  </nav>
-            </div>
-            </div>
+                </ul>
+                {% endif %}
+              </nav>
         </div>
     </div>
 

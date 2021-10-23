@@ -75,3 +75,15 @@ class categoryAdmin(admin.ModelAdmin):
 
 admin.site.register(category,categoryAdmin)
 
+class SellerReviewAdmin(admin.ModelAdmin):
+    list_display = ['pk','stars','title','comment','product','seller','user']
+    list_display_link = ['pk','title']
+
+admin.site.register(SellerReview,SellerReviewAdmin)
+
+
+class ProductReviewAdmin(admin.ModelAdmin):
+    list_display = ['pk','stars','title','comment','product','user']
+    list_display_link = ['pk','title']
+
+admin.site.register(ProductReview,ProductReviewAdmin)

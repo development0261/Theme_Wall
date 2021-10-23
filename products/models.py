@@ -107,3 +107,26 @@ class item_qty(models.Model):
     def __str__(self):
         return  "{} {} with size : {} and color {} ".format(self.quantity,self.product,self.size,self.color)
 
+class SellerReview(models.Model):
+    product = models.ForeignKey(item,on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomeUser,on_delete=models.CASCADE,related_name="product_buyer")
+    seller = models.ForeignKey(CustomeUser,on_delete=models.CASCADE,related_name="product_seller")
+
+    stars = models.IntegerField(verbose_name="thumbs")
+    title = models.CharField(max_length=200,null=True,blank=True)
+    comment = models.TextField(null=True,blank=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.comment
+
+class ProductReview(models.Model):
+    product = models.ForeignKey(item,on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomeUser,on_delete=models.CASCADE,related_name="product_review_buyer")
+    stars = models.IntegerField(verbose_name="thumbs")
+    title = models.CharField(max_length=200,null=True,blank=True)
+    comment = models.TextField(null=True,blank=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.comment

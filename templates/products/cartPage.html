@@ -169,7 +169,7 @@ a:hover {
 
 <div class="card">
     <div class="row">
-        <div class="col-md-7 cart">
+        <div class="col-md-8 cart">
             <div class="title">
                 <div class="row">
                     <div class="col p-3">
@@ -184,13 +184,13 @@ a:hover {
             </div>
 
         </div>
-        <div class="col-md-5 summary">
+        <div class="col-md-4 summary">
             <div>
-                <h5><b>Delivery Address</b></h5>
+                <h5><b>Costing Details</b></h5>
             </div>
 
 
-             <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+             {% comment %} <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
 
                 <div class="col">Shipment Charge</div>
                 <div class="col text-right"><span id="shipment">50</span> $</div>
@@ -199,11 +199,17 @@ a:hover {
 
                 <div class="col">Tax</div>
                 <div class="col text-right"><span id="tax">50</span> $</div>
-            </div>
+            </div> {% endcomment %}
             <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
 
                 <div class="col">TOTAL PRICE</div>
                 <div class="col text-right"><span id="final_total"></span> $</div>
+            </div>
+
+            <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+
+                <div class="col">AMOUNT TO PAY</div>
+                <div class="col text-right"><span id="amount_to_pay"></span> $</div>
             </div>
 
             <button class="btn btn-dark mt-2" id="checkout">Proceed TO CHECKOUT</button>
@@ -309,9 +315,14 @@ a:hover {
             document.getElementById('CartCounter').innerHTML = Counter;
             document.getElementById('totalCartItem').innerHTML = Counter;
             if(final_total>0)
-            { $("#final_total").html(final_total+100)}
+            { 
+                $("#final_total").html(final_total)
+                $("#amount_to_pay").html((final_total+parseFloat(final_total)*8/100+0.0028).toFixed(2))
+            }
             else{
                  $("#final_total").html(0)
+                $("#amount_to_pay").html(0)
+                $("#checkout").css('display','none')
             }
 
 

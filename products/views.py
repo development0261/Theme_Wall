@@ -8,11 +8,11 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from users.models import Address
-from .models import category,item,item_size,item_color,item_qty,Images
+from .models import SellerReview, category,item,item_size,item_color,item_qty,Images,ProductReview
 from django.contrib import messages
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
-
+from orders.models import Order,OrderItem
 
 def allProducts(request):
 
@@ -358,7 +358,14 @@ def singleProduct(request,id):
         if 'cat_id' in request.GET:
             id = request.GET['cat_id']
             category = category.objects.get(pk=id).name
-        return render(request, 'products/singleProduct.html', {"product": single_item,'category':category})
+        from django.db.models import Avg
+        star_rating = SellerReview.objects.filter(seller = single_item.seller).aggregate(Avg('stars'))['stars__avg']
+        all_rattings = SellerReview.objects.filter(seller = single_item.seller)
+
+        product_star_rating = ProductReview.objects.filter(product=single_item).aggregate(Avg('stars'))['stars__avg']
+        product_all_rattings = ProductReview.objects.filter(product=single_item)
+
+        return render(request, 'products/singleProduct.html', {"product": single_item,'category':category,'star_rating':star_rating,'all_rattings':all_rattings,'product_star_rating':product_star_rating,'product_all_rattings':product_all_rattings})
 
 
 def buyerprofile(request):
@@ -511,3 +518,55 @@ def getImageBySizeandColor(request,id,size,color):
 def getImageById(request,id):
     image = Images.objects.get(pk=id)
     return JsonResponse({'image':image.image.url})
+
+def submitReviewSeller(request,id):
+    if request.user.is_authenticated:
+        Product = item.objects.get(pk =id)
+        if OrderItem.objects.filter(order__user = request.user,product=Product).exists():
+            if request.method == "POST":
+                stars = request.POST['stars']
+               
+                comment = request.POST.get('comment','')
+                title = request.POST.get('title','')
+
+
+                review = SellerReview(stars=stars,comment=comment,title=title,product=Product,user=request.user,seller=Product.seller)
+                review.save()
+                messages.success(request,"Review Submitted Successfully")
+                return redirect("/products/singleProduct/{}/".format(id))
+            else:
+                messages.error(request,"Not Valid Method")
+                return redirect("/products/singleProduct/{}/".format(id))
+        else:
+            messages.info(request,"You Haven't Purchase This Product")
+            return redirect("/products/singleProduct/{}/".format(id))
+    else:
+        messages.error(request,"Make Login First")
+        return redirect("login")
+
+
+def submitReviewProduct(request,id):
+    print("Products")
+    if request.user.is_authenticated:
+        Product = item.objects.get(pk =id)
+        if OrderItem.objects.filter(order__user = request.user,product=Product).exists():
+            if request.method == "POST":
+                stars = request.POST['stars']
+               
+                comment = request.POST.get('productcomment','')
+                title = request.POST.get('producttitle','')
+
+
+                review = ProductReview(stars=stars,comment=comment,title=title,product=Product,user=request.user)
+                review.save()
+                messages.success(request,"Review Submitted Successfully")
+                return redirect("/products/singleProduct/{}/".format(id))
+            else:
+                messages.error(request,"Not Valid Method")
+                return redirect("/products/singleProduct/{}/".format(id))
+        else:
+            messages.info(request,"You Haven't Purchase This Product")
+            return redirect("/products/singleProduct/{}/".format(id))
+    else:
+        messages.error(request,"Make Login First")
+        return redirect("login")

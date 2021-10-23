@@ -6,6 +6,9 @@ from django.db.models.signals import post_save
 from django.conf import settings
 from autoslug import AutoSlugField
 
+
+
+
 class CustomeUser(AbstractUser):
 	role_list = [
 		('buyer', 'buyer'),
@@ -14,10 +17,13 @@ class CustomeUser(AbstractUser):
 	role = models.CharField(max_length=10, choices=role_list,null=True,blank=True,default='buyer')
 	contact_no = models.CharField(null=True,blank=True,max_length=20,default="")
 	fullname = models.CharField(max_length=100,default="",null=True,blank=True)
-
+	
 
 	def __str__(self):
 		return self.username
+
+	
+    	
 
 class Address(models.Model):
 	city = models.CharField(max_length=100,default="")

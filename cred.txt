@@ -1,0 +1,16 @@
+: username : root
+pswd     : Themenswallroot
+
+45.79.101.165
+
+
+ From Men's wall client. He has purchased server and below are details.
+
+https://cloud.linode.com/
+Username: development0261_logix
+Password: 13c48fd73514
+
+
+
+cloudflare user : development0264@gmail.com
+pswd : develpoment0261@

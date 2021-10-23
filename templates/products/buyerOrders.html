@@ -176,12 +176,14 @@
                     <tr>
                         <th>Order Id</th>
 
-                        <th>Payment</th>
+                      
                         <th>Is Paid</th>
                         <th>Status</th>
 
 
                         <th>Total Amount</th>
+                        <th>Amount Paid</th>
+
                         <th>View Products</th>
                         <th>View Invoice</th>
 
@@ -196,11 +198,13 @@
                 {% for order in totalOrders %}
                     <tr>
                            <td id="orderId_{{ order.pk }}">{{ order.uuid }}</td>
-                        <td>{{ order.paymentMethod | upper }}</td>
+                        
                         <td>{% if order.isPaid %}<span style="color: green;font-weight: bold">Paid</span>{% else %}<span style="color: red;font-weight: bold">Pending</span> {% endif %}</td>
                         <td>{{ order.status }}</td>
 
                         <td id="total_price_{{ order.pk }}">$ {{ order.totalPrice }}</td>
+                        <td>$ {{ order.amountPaid }}</td>
+
                         <td><button class="btn btn-success displayProducts" id="displayProducts_{{ order.pk }}" data-placement="bottom" title="Display Order Products"><i class="fas fa-eye"></i></button></td>
                         <td><a class="btn btn-dark " href="{% url 'invoice' order.pk %}?access=read" data-placement="bottom" title="Get Invoice"><i class="fas fa-file-invoice"></i></a></td>
 
