@@ -188,7 +188,7 @@
         <a class="nav-link " href="{% url 'logout' %}">{% if '/orders/myOrders/' == request.path %}<i class="fas fa-sign-out-alt"></i>{% else %}<i class="fas fa-sign-out-alt" aria-hidden="true"></i>{% endif %}&nbsp;Logout</a>
       </li>
     </ul>
-   {% if user.role == "buyer" %}
+ 
     <ul class="navbar-nav ml-auto" style="margin-right: 10px">
 
          <li class="nav-item">
@@ -208,7 +208,7 @@
          </li>
     </ul>
 
-  {% endif %}
+  
 
   </div>
      <div class="user-img">
