@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
 from users.models import Address
-from .models import SellerReview, category,item,item_size,item_color,item_qty,Images,ProductReview
+from .models import Posters, SellerReview, category,item,item_size,item_color,item_qty,Images,ProductReview
 from django.contrib import messages
 # Create your views here.
 from django.views.decorators.csrf import csrf_exempt
@@ -344,12 +344,11 @@ def buyproducts(request):
 
     all_categories = item.objects.all().values_list('item_category__pk','item_category__name').distinct()
 
-
-    colors_to_send = []
+    posters = Posters.objects.all()
     # for color in colors:
     #     colors_to_send.append(webcolors.rgb_to_name(webcolors.hex_to_rgb(color)))
 
-    return render(request,'products/index.html',{'all_items':paged_items,'all_categories':all_categories,'colors':colors,'searched':searched})
+    return render(request,'products/index.html',{'all_items':paged_items,'all_categories':all_categories,'colors':colors,'searched':searched,'posters':posters})
 
 def singleProduct(request,id):
 

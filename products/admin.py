@@ -87,3 +87,6 @@ class ProductReviewAdmin(admin.ModelAdmin):
     list_display_link = ['pk','title']
 
 admin.site.register(ProductReview,ProductReviewAdmin)
+
+
+admin.site.register(Posters)

@@ -8,6 +8,9 @@ class category(models.Model):
     def __str__(self):
         return self.name
 
+    def get_product_count(self):
+        return item.objects.filter(category=self).count()
+
 class item(models.Model):
     rating_list = [
         ('1','1'),
@@ -130,3 +133,9 @@ class ProductReview(models.Model):
 
     def __str__(self):
         return self.comment
+
+
+class Posters(models.Model):
+    image = models.ImageField(upload_to="poster")
+    title = models.CharField(null=True,blank=True,max_length=20)
+

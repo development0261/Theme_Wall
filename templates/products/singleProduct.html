@@ -495,13 +495,13 @@
                 <div class="card">
                     <div class="d-flex flex-row align-items-center">
                         <div class="p-ratings">
-
+                            {% if product_star_rating %}
                             {% with ''|center:product_star_rating as range %}
                                 {% for _ in range %}
                                     <i class="fa fa-star" style="color:#3E83C5 "></i>
                                 {% endfor %}
                             {% endwith %}
-
+                            {% endif %}
                         </div>
                     </div>
 
