@@ -150,7 +150,7 @@ MESSAGE_TAGS = {
 STATIC_URL = '/static/'
 STATICFILES_DIRS =[os.path.join(BASE_DIR, 'static')]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'live-static','static-root')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'live-static','static-root')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'live-static', 'media-root')
