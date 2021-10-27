@@ -1,0 +1,18 @@
+ul.category_menu_list {
+    padding: 0;
+    list-style: none;
+    column-count: 5;
+    min-width: 500px;
+}
+
+.dropdown-menu {
+    padding: 20px !important;
+}
+
+li.nav-item {
+    margin: 0 5px;
+}
+
+ul.category_menu_list li a {
+    text-decoration: none;
+}

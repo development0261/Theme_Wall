@@ -16,7 +16,8 @@ from orders.models import Order,OrderItem
 
 def productsHome(request):
     posters = Posters.objects.all()
-    return render(request,"products/index.html",{'posters':posters})
+    recent_products=item.objects.all().order_by('-created_at')
+    return render(request,"products/index.html",{'posters':posters,'recent_products':recent_products})
 
 
 def sellerDash(request):

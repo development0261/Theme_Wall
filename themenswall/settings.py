@@ -76,6 +76,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'feed.views.CountNotifications',
                 'feed.views.GetProfile',
+                'products.context_processors.menu_links',
 
             ],
         },
