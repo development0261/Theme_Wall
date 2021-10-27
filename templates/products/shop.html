@@ -1,0 +1,563 @@
+{% extends "products/ecommBase.html" %}
+{% load static %}
+{% load humanize %}
+{% block style %}
+    {% load custom_tags %}
+    
+ <style>
+.search__input {
+    border-color: #f0f2f5;
+    color: #5b6c8f;
+    height: 46px;
+    font-size: 18px;
+}
+
+.input-group-append button {
+    height: 100% !important;
+}
+
+.chosen-container {
+    display: none;
+}
+
+.search__input input.form-control {
+    height: 100% !important;
+}
+
+.search__input input.form-control {
+    border-radius: 5px;
+    background-color: #f0f2f5;
+}
+
+.search__input input.form-control:focus{
+    box-shadow: none;
+    border: 2px solid #000;
+}
+
+.input-group-append button {
+    background-color: #000;
+    border-radius: 0px 30px 30px  0px !important;
+}
+
+.sort__by {
+    margin-left: 10px;
+}
+
+.sort__by select{
+    border-radius: 5px;
+    border: 1px solid #000;
+    height: 100%;
+    margin-left: 10px;
+    display: block !important;
+}
+
+@media (min-width: 768px){
+    .categories__wrp h4{
+        font-size: 18px;
+    line-height: 26px;
+    color: #000;
+    font-weight: bold;
+    margin-bottom: 0;
+    }
+}
+ul{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.widget__category .menu--mobile li{
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 26px;
+    position: relative;
+    padding: 5px 0;
+    text-align: center;
+
+}
+
+.btn-dark{
+    color: #fff;
+    background-color: #3E83C5 !important;
+    border-color: #3E83C5 !important;
+ }
+.btn-outline-dark {
+    color: #89C34A;
+     border-color: #89C34A !important;
+}
+.btn-outline-dark:hover {
+     color: #fff;
+    background-color: #89C34A !important;
+    border-color: #89C34A !important;
+}
+.widget__category .menu--mobile li:hover{
+    background-color: #89C34A;
+    border-radius: 50px;
+}
+.widget__category .menu--mobile li:hover a{
+   color: #eeeeee;
+
+}
+
+
+.widget__category .menu--mobile li a{
+    position: relative;
+    display: block;
+    line-height: 20px;
+    font-weight: 600;
+    font-size: 17px;
+    color: #fff;
+    text-transform: capitalize;
+    text-decoration: none;
+
+}
+.active_cat a{
+     color: #3E83C5 !important;
+     font-weight: bold;
+}
+.categories__wrp {
+    background-color: #3E83C5;
+    padding: 10px;
+}
+
+.page-link {
+    background-color: #3E83C5;
+    color: #fff;
+    border: 0;
+    margin: 0 4px;
+}
+.page-link:hover {
+    border: 1px solid #3E83C5;
+    color: #000 !important;
+    border: 0;
+}
+
+
+.ratings i {
+    font-size: 16px;
+    color: red
+}
+
+
+
+h5 {
+    font-weight: 400
+}
+
+.para {
+    font-size: 16px
+}
+.minus{
+    border-top-left-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+}
+.plus{
+    border-top-left-radius: 0px !important;
+    border-bottom-left-radius: 0px !important;
+    border-top-right-radius:10px !important;
+    border-bottom-right-radius: 10px !important;
+}
+.cart-drawer,.wishlist-drawer {
+	background: #fff3cd;
+  	height: 100%;
+  	position: fixed;
+	text-align: center;
+	top: 0;
+	width: 300px;
+	padding: 20px;
+    z-index: 2;
+}
+
+.cart-drawer-right,.wishlist-drawer-right { right: -300px; }
+
+.cart-drawer-right.cart-drawer-open,.wishlist-drawer.cart-drawer-open { right: 0; }
+
+.cart-drawer-pushtoleft,.wishlist-drawer-pushtoleft { right: 300px; }
+
+.cart-drawer, .cart-drawer-push,.wishlist-drawer,.wishlist-drawer-push {
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+}
+
+.cart-btn {
+	cursor: pointer;
+	display: inline-block;
+	font-size: 30px;
+}
+
+.close-btn,.close-btn1{
+	cursor: pointer;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+    color: #3E83C5;
+}
+.colorBox{
+    width: 75px;
+    height: 25px;
+    content: "";
+    border:1px solid black;
+    border-radius: 0px;
+    padding: 2px 50px;
+}
+
+.colorBoxSmall{
+    width: 75px;
+    height: 25px;
+    content: "";
+    border:1px solid black;
+    border-radius: 0px;
+    padding: 2px 20px;
+    margin: 0px 5px;
+}
+
+.selectedColor{
+    border: 1px solid #3E83C5 ;
+    border-radius: 5px;
+    padding: 6px;
+}
+
+.mt-100 {
+    margin-top: 100px
+}
+
+.product-wrapper,
+.product-img {
+    overflow: hidden;
+    position: relative
+}
+
+.mb-45 {
+    margin-bottom: 45px
+}
+
+.product-action {
+    bottom: 0px;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    transition: all 0.6s ease 0s
+}
+
+.product-wrapper {
+    border-radius: 10px
+}
+
+.product-img>span {
+    background-color: #fff;
+    box-shadow: 0 0 8px 1.7px rgba(0, 0, 0, 0.06);
+    color: #333;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    left: 20px;
+    letter-spacing: 1px;
+    padding: 3px 12px;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    top: 20px
+}
+
+.product-action-style {
+    background-color: #fff;
+    box-shadow: 0 0 8px 1.7px rgba(0, 0, 0, 0.06);
+    display: inline-block;
+    padding: 16px 2px 12px
+}
+
+.product-action-style>a {
+    color: #979797;
+    line-height: 1;
+    padding: 0 21px;
+    position: relative
+}
+
+.product-action-style>a.action-plus {
+    font-size: 18px
+}
+
+.product-wrapper:hover .product-action {
+    bottom: 20px;
+    opacity: 1
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+
+
+.carousel-item {
+    height: 500px;
+}
+
+.carousel-item img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+    </style>
+    <link href="{% static 'css/cards.css' %}" type="text/css" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+{% load removeSpace %}
+
+          
+            
+            
+    <div class="container mt-5">
+       <div class="row">
+        <div class="col-md-3">
+         
+            
+            <article class="card-group-item my-2" style="border:1px solid #eeeeee;">
+                <header class="card-header"><h6 class="title">Categories</h6></header>
+                <div class="filter-content">
+                    <div class="list-group list-group-flush">
+                        <ul class="menu--mobile">
+                            <li><a href="/products/buyproducts/" style="color: #000; text-decoration:none" class="list-group-item">All</a></li>
+                           
+        
+                                {% for cat in all_categories %}
+                                    
+                                    <li id="cat_{{ cat.0 }}"
+        
+                                    class="{% if request.GET.cat_id|removeSpaceFromValue == cat.0 %}
+                                            active_cat
+                                            {% endif %}
+                                        "
+                                    >
+        
+                                        {% if request.GET.filter %}
+                                            <a href="{{ request.path }}?cat_id={{ cat.0 }}&filter={{  request.GET.filter }}" style="color: #000; text-decoration:none" class="list-group-item">{{ cat.1 }} <span class="float-right badge badge-light round">{{cat.get_product_count}}</span> </a>
+                                        {% else %}
+                                            <a href="{{ request.path }}?cat_id={{ cat.0 }}" style="color: #000; text-decoration:none" class="list-group-item">{{ cat.1 }} <span class="float-right badge badge-light round">{{cat.get_product_count}}</span> </a>
+                                        {% endif %}
+        
+                                    </li>
+                                   
+                                {% endfor  %}
+        
+        
+                            </ul>
+                      
+                    </div>  <!-- list-group .// -->
+                </div>
+            </article> <!-- card-group-item.// -->
+
+
+
+             <div class="mt-2 categories__wrp" style="background-color: #eeeeee;border-radius: 5px">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="p-1 border-bottom">Filter By</h6>
+                    <p class="p-1" style="font-weight: bold">Color </p>
+                    </div>
+                    <ul class="list-group" style="height: 300px;overflow-y: scroll">
+                        {% for color in colors %}
+                            {% if request.GET.cat_id %}
+                                <li class="list-group-item list-group-item-action mb-2 rounded"><a href="{{ request.path }}?cat_id={{ request.GET.cat_id }}&color={{ color|removeHash }}" style="display: flex;justify-content: center;text-decoration: none" ><span class="{% if request.GET.color == color|removeHash %} selectedColor {% endif %}"> <span class="colorBox" style="background-color: {{ color }};color: {{ color }}"></span></span> </a></li>
+                            {% else %}
+                                <li class="list-group-item list-group-item-action mb-2 rounded"><a href="{{ request.path }}?color={{ color|removeHash }}" style="display: flex;justify-content: center"> <span  class="{% if request.GET.color == color|removeHash %} selectedColor {% endif %}"><span class="colorBox" style="background-color: {{ color }};color: {{ color }}"></span></span> </a></li>
+                            {% endif %}
+
+                        {% endfor %}
+                    </ul>
+             </div>
+
+
+
+        </div>
+        <div class="col-md-9 ">
+            <form action="{% url 'buyproducts' %}" method="post">{% csrf_token %}
+                <div class="input-group search__input">
+                <input type="search" class="form-control" name="searchBox" value="{% if searched %} {{ searched }}{% endif %}" id="searchBox" placeholder="Search's item" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <button type="search" class="btn btn-dark" style="border-top-right-radius: 5px !important;
+                    border-top-left-radius: 0px !important;border-bottom-right-radius: 5px !important;border-bottom-left-radius: 0px !important
+">Search</button>
+                </div>
+                <div class="sort__by">
+                    <select class="custom-select" onchange="location = this.value;">
+
+
+                            {% if request.GET.cat_id %}
+                                   <option value="{{ request.path }}?filter=latest&cat_id={{ request.GET.cat_id  }}" {% if request.GET.filter == 'latest' %} selected {% endif %}>Latest Products</option>
+                                {% else %}
+                              <option value="{{ request.path }}?filter=latest" {% if request.GET.filter == 'latest' %} selected {% endif %}>Latest Products</option>
+                            {% endif %}
+
+
+                                {% if request.GET.cat_id %}
+                                   <option value="{{ request.path }}?filter=highest&cat_id={{ request.GET.cat_id  }}" {% if request.GET.filter == 'highest' %} selected {% endif %}>Price Low to High</option>
+                                {% else %}
+                             <option value="{{ request.path }}?filter=highest" {% if request.GET.filter == 'highest' %} selected {% endif %}>Price Low to High</option>
+                                {% endif %}
+
+                               {% if request.GET.cat_id %}
+                                   <option value="{{ request.path }}?filter=lowest&cat_id={{ request.GET.cat_id  }}" {% if request.GET.filter == 'lowest' %} selected {% endif %}>Price High to Low</option>
+                                {% else %}
+                              <option value="{{ request.path }}?filter=lowest" {% if request.GET.filter == 'lowest' %} selected {% endif %}>Price High to Low</option>
+                                {% endif %}
+
+
+                    </select>
+                </div>
+            </div>
+            </form>
+            <div class="product_card mt-3">
+                <div class="container">
+                    <div class="row">
+                        {% if all_items|length > 0 %}
+             {% for item in all_items %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="image-container">
+                                    <div class="first">
+                                        
+                                        <div class="d-flex justify-content-between align-items-center"> 
+                                            <span style= "cursor:pointer" class="wishlist addToWishList" id="addToWishList_{{item.pk}}"><i
+                                                class="fas fa-heart" style="color: red;"></i></span>
+                                        </div>
+                                    </div> <img src="{{ item.image.url }}" class="img-fluid rounded thumbnail-image">
+                                </div>
+                                <div class="product-detail-container p-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="dress-name"><a style="text-decoration: none;" href="{% url 'singleProduct' item.pk%}{% if request.GET.cat_id %}?cat_id={{ request.GET.cat_id }}{% endif %}">{{item.name}}</a></h5>
+                                        <div class="d-flex flex-column mb-2"> 
+                                            
+                                            {% if item.offer_price > 0 %}
+                                                <span class="new-price" style="color: #89C34A;">$ {{ item.offer_price | intcomma }}</span><small
+                                                class="old-price text-right"><strike>$ {{ item.price | intcomma }}</strike></small>
+                                                {% else %}
+                                                 <span class="new-price" style="color: #89C34A;">${{ item.price | intcomma }}</span>
+                                                {% endif %}
+                                              </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center pt-1">
+                                        <div class="color-select d-flex "> 
+                                            {% for things in item.get_qtys %}
+                                            {% if things.quantity > 0  %}
+                                            <input type="button" name="grey" class="btn ml-2" style="background-color: {{ things.color.color }};
+                                            border: 1px solid #000;">
+                                            {% endif %}
+                                            {% endfor %}
+
+                                        </div>
+                                        <div class="d-flex "> 
+                                            {% for size in item.get_size %}
+                                          
+                                            {% if not size == None %}
+                                            <span class="item-size mr-2 btn" type="button">{{size|make_list|first|upper}}</span> 
+                                            {% endif %}
+                                           
+
+                                        {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center pt-1">
+                                        <div> <i class="fas fa-star rating-star" style="color: #89C34A;"></i> <span class="rating-number">{{item.rating}}</span> </div>
+                                        <a style="cursor:pointer" href="{% url 'singleProduct' item.pk %}{% if request.GET.cat_id %}?cat_id={{ request.GET.cat_id }}{% endif %}"><span class="buy" style="color: #3E83C5; font-weight:bold">Add to Cart <i class="fas fa-shopping-basket"></i></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor%}
+
+                        {%endif%}
+                    </div>
+                </div>
+            </div>
+            
+
+           
+        </div>
+        <div class="pagination__inner mb-2 d-flex justify-content-center">
+            <nav aria-label="Page navigation example">
+                 {% if all_items.has_other_pages %}
+                <ul class="pagination">
+                {% if all_items.has_previous %}
+                  <li class="page-item"><a class="page-link" href="?page={{all_items.previous_page_number}}">Previous</a></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                {% endif %}
+                 {% for i in all_items.paginator.page_range %}
+                       {% if all_items.number == i%}
+                               <li class="page-item"><a class="page-link" href="#">{{i}}</a></li>
+                            {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+
+                            {% endif %}
+
+                {% endfor %}
+
+                   {% if all_items.has_next %}
+                   <li class="page-item"><a class="page-link" href="?page={{all_items.next_page_number}}">Next</a></li>
+                {% else %}
+                 <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                {% endif %}
+
+                </ul>
+                {% endif %}
+              </nav>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+
+{% block jsfiles %}
+
+
+    <script>
+        var MyitName = {};
+        if (localStorage.getItem('Mycart') == null) {
+            var Mycart = {};
+			console.log("Created")
+        } else {
+
+            Mycart = JSON.parse(localStorage.getItem('Mycart'));
+			console.log("Updated")
+            updateCart(Mycart);
+        }
+
+        $(document).on('click','.addProduct',function (){
+            var prodId = $(this).attr('id').slice(11,)
+            if(Mycart[prodId]!= undefined){
+                qty = Mycart[prodId][1] + 1;
+            }
+            else{
+                    qty = 1;
+                    productName = $('#ProductName_'+prodId).html();
+                    productPrice = $('#ProductPrice_'+prodId).html().slice(1,);
+                    productCount = $('#ProductCount_'+prodId).html();
+                    img_url = $("#ProductImage_"+prodId).attr('src');
+                    img_url = img_url.replace('url(','').replace(')','').replace(/\"/gi, "");
+                    console.log(img_url)
+                    Mycart[prodId] = [parseInt(prodId),qty, productName, parseInt(productPrice),productCount,img_url];
+            }
+            updateCart(Mycart)
+        })
+        function updateCart(Mycart) {
+            //console.log("Update Cart")
+            //console.log(JSON.stringify(Mycart))
+
+
+
+        localStorage.setItem('Mycart', JSON.stringify(Mycart))
+            var Counter = 0;
+			for (count in Mycart) {
+				Counter += parseInt(Mycart[count][1]);
+			}
+			document.getElementById('CartCounter').innerHTML = Counter;
+ }
+
+
+    </script>
+{% endblock  %}

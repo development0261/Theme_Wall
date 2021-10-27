@@ -14,10 +14,9 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from orders.models import Order,OrderItem
 
-def allProducts(request):
-
-
-    return render(request,"products.html")
+def productsHome(request):
+    posters = Posters.objects.all()
+    return render(request,"products/index.html",{'posters':posters})
 
 
 def sellerDash(request):
@@ -348,7 +347,7 @@ def buyproducts(request):
     # for color in colors:
     #     colors_to_send.append(webcolors.rgb_to_name(webcolors.hex_to_rgb(color)))
 
-    return render(request,'products/index.html',{'all_items':paged_items,'all_categories':all_categories,'colors':colors,'searched':searched,'posters':posters})
+    return render(request,'products/shop.html',{'all_items':paged_items,'all_categories':all_categories,'colors':colors,'searched':searched,'posters':posters})
 
 def singleProduct(request,id):
 

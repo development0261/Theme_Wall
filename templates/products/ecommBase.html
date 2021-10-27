@@ -140,8 +140,8 @@
 <body>
 <nav class="navbar navbar-expand-md bg-light navbar-light">
   <!-- Brand -->
-  <a class="navbar-brand" href="{% url 'home' %}" style="width:27%">
-          <img src="{% static 'images/logo_png.png' %}" alt="" width="55%">
+  <a class="navbar-brand" href="{% url 'home' %}" style="width:20%">
+          <img src="{% static 'images/logo_png.png' %}" alt="" width="65%">
        </a>
 
   <!-- Toggler/collapsibe Button -->
@@ -151,42 +151,54 @@
 
   <!-- Navbar links -->
   <div class="collapse navbar-collapse" id="collapsibleNavbar">
-    <ul class="navbar-nav">
+    <ul class="navbar-nav" style="    margin: 0px auto;">
+     <li class="nav-item">
+        <a class="nav-link {% if '/products/' == request.path %}active {% endif %}" href="{% url 'productsHome' %}" ><i class="fas fa-home" aria-hidden="true"></i>&nbsp;Home</a>
+      </li>
       {% if user.role == "seller" %}
-      <li class="nav-item">
-        <a class="nav-link active" href="{% url 'sellerDash' %}" ><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;My Products</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'sellerOrders' %}"><i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;My Orders</a>
-      </li>
-    <li class="nav-item ">
-        <a class="nav-link" href="{% url 'profile' %}"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Profile</a>
-      </li>
- 
-
-        {% else  %}
-
-
-      <li class="nav-item">
-        <a class="nav-link {% if '/products/buyproducts/' == request.path %}active {% endif %}" href="{% url 'buyproducts' %}" ><i class="fas fa-home" aria-hidden="true"></i>&nbsp;Home</a>
+       <li class="nav-item">
+        <a class="nav-link {% if '/products/buyproducts/' == request.path %}active {% endif %}" href="{% url 'buyproducts' %}" ><i class="fas fa-shopping-bag" aria-hidden="true"></i>&nbsp;Shop</a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link {% if '/orders/myOrders/' == request.path %}active {% endif %}" href="{% url 'myOrders' %}"><i class="fas fa-box" aria-hidden="true"></i>&nbsp;My Orders</a>
       </li>
+      <li class="nav-item dropdown">
+      
+      <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown" href="{% url 'profile' %}"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Profile</a>
+      <div class="dropdown-menu">
+       
+        <a class="dropdown-item" href="{% url 'sellerOrders' %}"><i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;My Orders</a>
+        <a class="dropdown-item" href="{% url 'sellerDash' %}" ><i class="fa fa-list-alt" aria-hidden="true"></i>&nbsp;My Products</a>
+        <a class="dropdown-item" href="{% url 'logout' %}" >{% if '/orders/myOrders/' == request.path %}<i class="fas fa-sign-out-alt"></i>{% else %}<i class="fas fa-sign-out-alt" aria-hidden="true"></i>{% endif %}&nbsp;Logout</a>
+      
+      
+      </div>
+    </li>
 
+        {% else  %}
 
-           <li class="nav-item">
-        <a class="nav-link {% if '/products/buyerprofile/' == request.path %}active {% endif %}" href="{% url 'buyerprofile' %}"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Profile</a>
+   
+      <li class="nav-item">
+        <a class="nav-link {% if '/products/buyproducts/' == request.path %}active {% endif %}" href="{% url 'buyproducts' %}" ><i class="fas fa-shopping-bag" aria-hidden="true"></i>&nbsp;Shop</a>
       </li>
 
+       <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown" href="{% url 'profile' %}"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Profile</a>
+           <div class="dropdown-menu">
+       
+            <a class="dropdown-item" href="{% url 'myOrders' %}"><i class="fa fa-box" aria-hidden="true"></i>&nbsp;My Orders</a>
+            
+            <a class="dropdown-item" href="{% url 'logout' %}" >{% if '/orders/myOrders/' == request.path %}<i class="fas fa-sign-out-alt"></i>{% else %}<i class="fas fa-sign-out-alt" aria-hidden="true"></i>{% endif %}&nbsp;Logout</a>
+          
+          
+          </div>
+        </li>
         {% endif  %}
      <li class="nav-item">
         <a class="nav-link  {% if '/contactus/' == request.path %}active{% endif %}" href="{% url 'contactus' %}"><i class="fas fa-envelope-open-text" aria-hidden="true"></i>&nbsp;Contact Us</a>
       </li>
-        <li class="nav-item">
-        <a class="nav-link " href="{% url 'logout' %}">{% if '/orders/myOrders/' == request.path %}<i class="fas fa-sign-out-alt"></i>{% else %}<i class="fas fa-sign-out-alt" aria-hidden="true"></i>{% endif %}&nbsp;Logout</a>
-      </li>
+       
     </ul>
  
     <ul class="navbar-nav ml-auto" style="margin-right: 10px">
