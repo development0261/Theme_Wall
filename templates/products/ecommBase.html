@@ -164,7 +164,7 @@
        
           <ul class="category_menu_list">
             {% for category in categories %}
-            <li class="category_menu"><a href="#">{{category.name}}</a></li>
+            <li class="category_menu"><a href="{% url 'buyproducts' %}?cat_id={{ category.pk }}">{{category.name}}</a></li>
             {% endfor %}
           </ul>
         

@@ -2,7 +2,7 @@ ul.category_menu_list {
     padding: 0;
     list-style: none;
     column-count: 5;
-    min-width: 500px;
+    min-width: 900px;
 }
 
 .dropdown-menu {

@@ -315,40 +315,7 @@ h5 {
         <div class="col-md-3">
          
             
-            <article class="card-group-item my-2" style="border:1px solid #eeeeee;">
-                <header class="card-header"><h6 class="title">Categories</h6></header>
-                <div class="filter-content">
-                    <div class="list-group list-group-flush">
-                        <ul class="menu--mobile">
-                            <li><a href="/products/buyproducts/" style="color: #000; text-decoration:none" class="list-group-item">All</a></li>
-                           
-        
-                                {% for cat in all_categories %}
-                                    
-                                    <li id="cat_{{ cat.0 }}"
-        
-                                    class="{% if request.GET.cat_id|removeSpaceFromValue == cat.0 %}
-                                            active_cat
-                                            {% endif %}
-                                        "
-                                    >
-        
-                                        {% if request.GET.filter %}
-                                            <a href="{{ request.path }}?cat_id={{ cat.0 }}&filter={{  request.GET.filter }}" style="color: #000; text-decoration:none" class="list-group-item">{{ cat.1 }} <span class="float-right badge badge-light round">{{cat.get_product_count}}</span> </a>
-                                        {% else %}
-                                            <a href="{{ request.path }}?cat_id={{ cat.0 }}" style="color: #000; text-decoration:none" class="list-group-item">{{ cat.1 }} <span class="float-right badge badge-light round">{{cat.get_product_count}}</span> </a>
-                                        {% endif %}
-        
-                                    </li>
-                                   
-                                {% endfor  %}
-        
-        
-                            </ul>
-                      
-                    </div>  <!-- list-group .// -->
-                </div>
-            </article> <!-- card-group-item.// -->
+           
 
 
 

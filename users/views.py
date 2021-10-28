@@ -10,7 +10,7 @@ from .models import Profile,CustomeUser,SellerRequest,Address,Messages
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 import random
 from django.core.mail import send_mail
-# import face_recognition
+import face_recognition
 User = get_user_model()
 
 
