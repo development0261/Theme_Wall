@@ -184,3 +184,7 @@ def GetProfile(request):
 		you = p.user
 	return {'profile':you}	
 	
+
+def groupChat(request):
+	users = CustomeUser.objects.all()
+	return render(request,"feed/groupChat.html",{'users':users})

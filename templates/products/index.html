@@ -82,6 +82,36 @@
     </div>
 </div>
 
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="product_title">
+                <h1>Recent product</h1>
+            </div>
+
+            <div class="slick_slider">
+                {% for product in topRated %}
+                <div class="product_item"> 
+                    <div class="product_image">
+                        <a href="{% url 'singleProduct' product.pk %}"><img src="{{product.image.url}}" class="img-fluid" alt=""> </a>
+                    </div>    
+                    <div class="product_title_price">
+                        <div class="product_item_title">
+                            <span>{{product.name}}</span>
+                        </div>
+                        <div class="product_price">
+                            <span>$ {{product.price}}</span>
+                        </div>
+                    </div>
+                </div>
+           
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 

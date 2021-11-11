@@ -45,10 +45,10 @@ INSTALLED_APPS = [
     'stdimage',
     'products',
     'orders',
-    'sslserver'
-
+    'sslserver',
+    'channels',
 ]
-
+ASGI_APPLICATION = "themenswall.routing.application"
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -84,7 +84,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'themenswall.wsgi.application'
-
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases

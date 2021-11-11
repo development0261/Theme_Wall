@@ -211,7 +211,7 @@ def invoice(request,id):
 
 def myOrders(request):
     if request.user.is_authenticated:
-        if request.user.role == 'buyer':
+        if request.user.role == 'buyer' or request.user.is_superuser:
             totalDeliveredOrders = Order.objects.filter(user=request.user,status='Delivered').count()
             totalPendigOrders = Order.objects.filter(Q(user=request.user) and ~Q(status='Delivered')).count()
             totalPaidOrders = Order.objects.filter(user=request.user,isPaid=True).count()

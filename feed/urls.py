@@ -15,5 +15,6 @@ urlpatterns=[
 
 	path('notifications/', ShowNOtifications, name='show-notifications'),
 	path('<noti_id>/delete', DeleteNotification, name='delete-notification'),
+	path('groupChat/',views.groupChat,name="groupChat")
 
 ]

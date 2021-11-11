@@ -641,7 +641,7 @@ header.sticky {
 .topbar {
     background: #fff;
     display: block;
-    height: 62px;
+    height: 78px;
     padding: 0 48px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
     z-index: 99;

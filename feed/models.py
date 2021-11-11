@@ -84,3 +84,11 @@ post_delete.connect(Like.user_unlike_post, sender=Like)
 #comment
 post_save.connect(Comments.user_comment_post, sender=Comments)
 post_delete.connect(Comments.user_del_comment_post, sender=Comments)
+
+
+class Messages(models.Model):
+	sender = models.ForeignKey(CustomeUser,on_delete=models.CASCADE)
+	comment = models.TextField()
+	timestamp = models.DateTimeField(auto_now_add=True)
+
+	

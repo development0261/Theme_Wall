@@ -6,7 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
-
+from django.db.models import Avg
 from users.models import Address
 from .models import Posters, SellerReview, category,item,item_size,item_color,item_qty,Images,ProductReview
 from django.contrib import messages
@@ -17,7 +17,16 @@ from orders.models import Order,OrderItem
 def productsHome(request):
     posters = Posters.objects.all()
     recent_products=item.objects.all().order_by('-created_at')
-    return render(request,"products/index.html",{'posters':posters,'recent_products':recent_products})
+    result = list(ProductReview.objects
+        .values('product')
+        .annotate(dcount=Avg('stars'))
+        .order_by('-dcount'))
+    
+    topRated = []
+    print(result)
+    for re in result:
+        topRated.append(item.objects.get(pk=re['product']))
+    return render(request,"products/index.html",{'posters':posters,'recent_products':recent_products,'topRated':topRated})
 
 
 def sellerDash(request):

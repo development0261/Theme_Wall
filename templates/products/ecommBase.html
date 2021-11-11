@@ -203,9 +203,9 @@
        <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown" href="{% url 'profile' %}"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Profile</a>
            <div class="dropdown-menu">
-       
+           
             <a class="dropdown-item" href="{% url 'myOrders' %}"><i class="fa fa-box" aria-hidden="true"></i>&nbsp;My Orders</a>
-            
+           
             <a class="dropdown-item" href="{% url 'logout' %}" >{% if '/orders/myOrders/' == request.path %}<i class="fas fa-sign-out-alt"></i>{% else %}<i class="fas fa-sign-out-alt" aria-hidden="true"></i>{% endif %}&nbsp;Logout</a>
           
           
