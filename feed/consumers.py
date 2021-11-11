@@ -49,7 +49,7 @@ class ChatConsumer(WebsocketConsumer):
             self.channel_name
         )
         print("Disconneted")
-        print("Diactivated")
+        print("Disconneted")
 
         
 
@@ -151,7 +151,6 @@ class ChatConsumer(WebsocketConsumer):
                 
             }))
         elif command == 'dectivate_user':
-            print("called")
             self.send(text_data=json.dumps({
                 'command':command,
                 'pk':event['pk'],
