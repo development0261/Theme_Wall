@@ -76,7 +76,7 @@ class ChatConsumer(WebsocketConsumer):
                     'message': message,
                     'name':name,
                     'image_url':udata.image.url,
-                    'timestamp':chat.timestamp,
+                    'timestamp':chat.timestamp.strftime("%m/%d/%Y, %I:%M %p"),
                     'command':text_data_json['command']
                 }
             )
