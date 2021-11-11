@@ -76,7 +76,7 @@ class ChatConsumer(WebsocketConsumer):
                     'message': message,
                     'name':name,
                     'image_url':udata.image.url,
-                    'timestamp':chat.timestamp.strftime("%m/%d/%Y, %I:%M %p"),
+                    'timestamp':chat.timestamp,
                     'command':text_data_json['command']
                 }
             )
@@ -142,7 +142,7 @@ class ChatConsumer(WebsocketConsumer):
                 'name':name,
                 'image_url':event['image_url'],
                 'command':command,
-                'timestamp':timestamp
+                'timestamp':timestamp.strftime("%m/%d/%Y, %I:%M %p")
             }))
         elif command == 'activate_user':
             self.send(text_data=json.dumps({
