@@ -448,6 +448,7 @@
                 var count=Object.keys(msgs.messages).length;
                 console.log(msgs.messages[0]['name']);
                 console.log(msgs.messages)
+                $(".msg_history").empty()
                 for(var i=count-1;i >=0;i--)
                 {
                     var image_url= msgs.messages[i].image_url;
