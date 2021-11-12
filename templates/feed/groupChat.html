@@ -403,7 +403,7 @@
                 var d = new Date(); // for now
                 var image_url = data.image_url;
                 var timestamp = data.timestamp
-                alert(data.message)
+                
                 
                 if(userName==data.name){
                 $(".msg_history").append(`
@@ -540,7 +540,7 @@
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
-            alert("sending")
+           
             chatSocket.send(JSON.stringify({
                 'message': message,
                 'from':userName,
