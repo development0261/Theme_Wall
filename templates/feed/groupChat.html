@@ -501,12 +501,12 @@
 
        chatSocket.onopen = function(e) {
 
-        // chatSocket.send(JSON.stringify({
-        //     'pk': userPk,
-        //     'room': roomName,
-        //     'command':'activate_user',
+        chatSocket.send(JSON.stringify({
+            'pk': userPk,
+             'room': roomName,
+            'command':'activate_user',
 
-        //     }));
+            }));
             chatSocket.send(JSON.stringify({
             'name': userName,
             'room': roomName,
