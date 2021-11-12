@@ -1,6 +1,6 @@
 import json
 from asgiref.sync import async_to_sync
-from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import WebsocketConsumer,AsyncWebsocketConsumer
 from .models import Messages
 from users.models import Profile,CustomeUser
 from django.contrib.auth import get_user_model
@@ -9,108 +9,126 @@ from django.core import serializers
 from django.db.models import F
 User=get_user_model()
 from channels.db import database_sync_to_async
-class ChatConsumer(WebsocketConsumer):
-    response = {}
-    def connect(self):
+
+class ChatConsumer(AsyncWebsocketConsumer):
+
+
+    async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
 
         # Join room group
-        async_to_sync(self.channel_layer.group_add)(
+        await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
         )
+
+        await self.accept()
         user = self.scope['user']
-        self.accept()
-        user1 = CustomeUser.objects.get(pk=user.pk)
-        user1.social_status= 1
-        user1.save()
-
-    def disconnect(self, close_code):
-
-        # Leave room group
+        await database_sync_to_async(self.update_user_incr)(user)
         
+
+    async def disconnect(self, close_code):
+        # Leave room group
         user = self.scope['user']
-        user1 = CustomeUser.objects.get(pk=user.pk)
-        user1.social_status= 0
-        user1.save()
-        async_to_sync(self.channel_layer.group_send)(
+        await database_sync_to_async(self.update_user_decr)(user)
+        await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     'type': 'chat_message',
                     
                     'command': 'dectivate_user',
-                    'pk':user1.pk,
+                    'pk':user.pk,
                     
                 }
             )
-        async_to_sync(self.channel_layer.group_discard)(
+        await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
-        print("Disconneted")
-        print("Disconneted")
 
+    def save_message(self):
+        sender = User.objects.filter(username=self.name)[0]
+        chat = Messages(sender=sender, comment=self.message)
+        chat.save()
+        return chat
+
+      
+    def update_user_incr(self, user):
+        user1 = CustomeUser.objects.get(pk=user.pk)
+        user1.social_status= 1
+        user1.save()
+
+    
+    def update_user_decr(self, user):
+        user1 = CustomeUser.objects.get(pk=user.pk)
+        user1.social_status= 0
+        user1.save()
+
+    def get_image_url(self):
+        sender = User.objects.filter(username=self.name)[0]
+        return Profile.objects.get(user=sender).image.url
+
+    def fetch_messages(self):
         
+        messages = []
+        msgs =Messages.objects.order_by('-timestamp').all()
+        self.response=None
+        
+        for m in msgs:
+            messages.append({'name': m.sender.username, 'content': m.comment,'image_url':m.sender.profile.image.url,'timestamp':m.timestamp.strftime("%m/%d/%Y, %I:%M %p")})
+            self.response = json.dumps({"messages": messages}, default=str)
 
-    # Receive message from WebSocket
-    def receive(self, text_data):
+        async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'messages':self.response,
+                    'command': self.command,
+                    's_name':self.s_name,
+                    
+                }
+            )
+
+    async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-
         if text_data_json['command'] == 'new_message':
             message = text_data_json['message']
             name = text_data_json['from']
+            self.message = message
+            self.name = name
+            chat = await database_sync_to_async(self.save_message)()
+            image_url = await database_sync_to_async(self.get_image_url)()
 
-            sender = User.objects.filter(username=name)[0]
-
-            chat = Messages(sender=sender, comment=message)
-            chat.save()
-            udata = Profile.objects.get(user=sender)
-
+            print(chat)
+            
 
             # Send message to room group
-            async_to_sync(self.channel_layer.group_send)(
+            await self.channel_layer.group_send (
                 self.room_group_name,
                 {
                     'type': 'chat_message',
                     'message': message,
                     'name':name,
-                    'image_url':udata.image.url,
-                    'timestamp':chat.timestamp,
-                    'command':text_data_json['command']
+                    'image_url':image_url,
+                    'timestamp':chat.timestamp.strftime("%m/%d/%Y, %I:%M %p"),
+                    'command':'new_message'
                 }
             )
-
+        
         elif text_data_json['command']=="fetch_old":
-            messages = []
-            msgs = Messages.objects.order_by('-timestamp').filter()
-
-            for m in msgs:
-                user = m.sender
-                udata = Profile.objects.get(user=user)
-                messages.append({'name': m.sender.username, 'content': m.comment,'image_url':udata.image.url,'timestamp':m.timestamp.strftime("%m/%d/%Y, %I:%M %p")})
-                
-                self.response = json.dumps({"messages": messages}, default=str)
-           
-            async_to_sync(self.channel_layer.group_send)(
-                self.room_group_name,
-                {
-                    'type': 'chat_message',
-                    'messages':self.response,
-                    'command': text_data_json['command'],
-                    's_name':text_data_json['name'],
-                    
-                }
-            )
+            self.command = text_data_json['command']
+            self.s_name = text_data_json['name']
+            await database_sync_to_async(self.fetch_messages)()
 
         elif text_data_json['command'] == 'activate_user':
             print("Activate User")
-            async_to_sync(self.channel_layer.group_send)(
+            await  self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     'type': 'chat_message',
                     
-                    'command': text_data_json['command'],
+                    'command': 'activate_user',
                     'pk':text_data_json['pk'],
                     
                 }
@@ -118,57 +136,51 @@ class ChatConsumer(WebsocketConsumer):
         
         elif text_data_json['command'] == 'dectivate_user':
             print("dectivate User")
-            async_to_sync(self.channel_layer.group_send)(
+            await self.channel_layer.group_send(
                 self.room_group_name,
                 {
                     'type': 'chat_message',
                     
-                    'command': text_data_json['command'],
+                    'command': 'dectivate_user',
                     'pk':text_data_json['pk'],
                     
                 }
             )
-    # Receive message from room group
-    def chat_message(self, event):
+
+    async def chat_message(self, event):
 
         command=event['command']
-        if(command == 'new_message'):
+        if command == 'new_message':
+            
             message = event['message']
             name = event['name']
             timestamp = event['timestamp']
+            
             # Send message to WebSocket
-            self.send(text_data=json.dumps({
+            await self.send(text_data=json.dumps({
                 'message': message,
                 'name':name,
                 'image_url':event['image_url'],
                 'command':command,
-                'timestamp':timestamp.strftime("%m/%d/%Y, %I:%M %p")
+                'timestamp':timestamp
             }))
         elif command == 'activate_user':
-            self.send(text_data=json.dumps({
+            await self.send(text_data=json.dumps({
                 'command':command,
                 'pk':event['pk'],
                 
             }))
         elif command == 'dectivate_user':
-            self.send(text_data=json.dumps({
+            await self.send(text_data=json.dumps({
                 'command':command,
                 'pk':event['pk'],
                 
             }))
         else:
-            self.send(text_data=json.dumps({
+            await self.send(text_data=json.dumps({
                 'messages':self.response,
                 'command': command,
                 's_name':event['s_name'],
                 
             }))
 
-    @database_sync_to_async
-    def update_user_incr(self, user):
-        CustomeUser.objects.filter(pk=user.pk).update(social_status=F('social_status') + 1)
-        print(CustomeUser.objects.filter(pk=user.pk).social_status)
-
-    @database_sync_to_async
-    def update_user_decr(self, user):
-        CustomeUser.objects.filter(pk=user.pk).update(social_status=F('social_status') - 1)

@@ -377,7 +377,7 @@
 
 {% block jsfiles %}
 {% load static  %}
-    <script src="{% static 'js/reconnecting-websocket.js'%}"></script>
+    
     <script>
         var roomName="groupChat"
         var userName="{{user.username}}"
@@ -385,12 +385,13 @@
        // const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
         const chatSocket = new WebSocket(
-            'wss://'
+            'ws://'
             + window.location.host
             + '/ws/feed/'
             + roomName
             + '/'
         );
+
        console.log(userName)
        chatSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
@@ -402,7 +403,7 @@
                 var d = new Date(); // for now
                 var image_url = data.image_url;
                 var timestamp = data.timestamp
-                
+                alert(data.message)
                 
                 if(userName==data.name){
                 $(".msg_history").append(`
@@ -440,7 +441,7 @@
                 },"slow");
             }
 
-            else if(data.command=='fetch_old' && data.s_name == userName)
+            else if(data.command=='fetch_old')
             {
                
                 var msgs=JSON.parse(data['messages'])
@@ -500,6 +501,12 @@
 
        chatSocket.onopen = function(e) {
 
+        // chatSocket.send(JSON.stringify({
+        //     'pk': userPk,
+        //     'room': roomName,
+        //     'command':'activate_user',
+
+        //     }));
             chatSocket.send(JSON.stringify({
             'name': userName,
             'room': roomName,
@@ -507,16 +514,11 @@
 
             }));
 
-            chatSocket.send(JSON.stringify({
-            'pk': userPk,
-            'room': roomName,
-            'command':'activate_user',
-
-            }));
+           
             
         };
     chatSocket.onclose = function(e) {
-        alert("closeing")
+        
             console.error('Chat socket closed unexpectedly');
            
             chatSocket.send(JSON.stringify({
@@ -538,7 +540,7 @@
         document.querySelector('#chat-message-submit').onclick = function(e) {
             const messageInputDom = document.querySelector('#chat-message-input');
             const message = messageInputDom.value;
-           
+            alert("sending")
             chatSocket.send(JSON.stringify({
                 'message': message,
                 'from':userName,
@@ -547,11 +549,6 @@
             messageInputDom.value = '';
         };
 
- window.addEventListener("unload", function () {
-    // if(socket.readyState == WebSocket.OPEN)
-    //     socket.close();
 
-    alert("sdksdlksdlk")
-});
     </script>
 {% endblock jsfiles %}
