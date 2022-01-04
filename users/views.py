@@ -1,3 +1,4 @@
+from django.http.response import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Profile
 from feed.models import Post
@@ -248,13 +249,11 @@ def terms_condition(request):
 
 def sendActivation(request):
     if request.method == "POST" and request.user.is_authenticated:
-        proof = request.FILES['proof']
+        
         contact = request.POST['contact']
         fullname = request.POST['fullname']
-        if not 'ImageName' in request.POST or not 'proof' in request.FILES:
-            messages.error(request,'Please fill all details of form')
-            return redirect('home')
-        act_msg = SellerRequest(email=request.user.email,user=request.user,proof=proof)
+        code = request.POST['code']
+        act_msg = SellerRequest(email=request.user.email,user=request.user)
         act_msg.save()
 
         # from django.conf import settings
@@ -278,25 +277,25 @@ def sendActivation(request):
         #     roi_color = image[y:y + h, x:x + w]
         #     cv2.imwrite(settings.MEDIA_ROOT + '/proofs/'+str(request.user.username)+'_faces.jpg', roi_color)
 
-        ImageName =  request.POST['ImageName'].split(',')[1]
-        import base64
-        with open(settings.MEDIA_ROOT + '/proofs/'+str(request.user.username)+'_captureFace.jpg', "wb") as fh:
-            fh.write(base64.b64decode(ImageName))
+        # ImageName =  request.POST['ImageName'].split(',')[1]
+        # import base64
+        # with open(settings.MEDIA_ROOT + '/proofs/'+str(request.user.username)+'_captureFace.jpg', "wb") as fh:
+        #     fh.write(base64.b64decode(ImageName))
 
-        captured_face = settings.MEDIA_ROOT + '/proofs/'+str(request.user.username)+'_captureFace.jpg'
-        verify_with = act_msg.proof.path
-        results = []
+        # captured_face = settings.MEDIA_ROOT + '/proofs/'+str(request.user.username)+'_captureFace.jpg'
+        # verify_with = act_msg.proof.path
+        # results = []
 
         try:
-            cap = face_recognition.load_image_file(captured_face)
-            ids = face_recognition.load_image_file(verify_with)
-            cap_encoding = face_recognition.face_encodings(cap)[0]
-            id_encoding = face_recognition.face_encodings(ids)[0]
+            # cap = face_recognition.load_image_file(captured_face)
+            # ids = face_recognition.load_image_file(verify_with)
+            # cap_encoding = face_recognition.face_encodings(cap)[0]
+            # id_encoding = face_recognition.face_encodings(ids)[0]
 
-            results = face_recognition.face_distance([cap_encoding], id_encoding)
-            results1 = face_recognition.compare_faces([cap_encoding], id_encoding)
-            print(results)
-            print(results1)
+            # results = face_recognition.face_distance([cap_encoding], id_encoding)
+            # results1 = face_recognition.compare_faces([cap_encoding], id_encoding)
+            # print(results)
+            # print(results1)
             request.user.fullname = fullname
             request.user.contact_no = contact
             request.user.save()
@@ -311,19 +310,43 @@ def sendActivation(request):
             sellerAddress.save()
 
         except:
-            results[0] = 1
-
-        if results[0] < 0.60:
+            pass
+        
+        from .utils import account_activation_token
+        if request.user is not None and account_activation_token.check_token(request.user, code):
             messages.success(request,'Your Account Accepted as Seller Account')
             request.user.role = 'seller'
             request.user.save()
         else:
-            messages.error(request, 'Your ID Proof Image and Capture Image Does not Match. Please try Again')
+            messages.error(request, 'Invalid Token Added')
 
         return redirect("sellerDash")
 
-def sellerVarification(request):
-    return render(request,'products/sellerVarification.html')
+def sellerVarification(request,email):
+    from django.contrib.auth.hashers import check_password, make_password
+    from django.contrib.sites.shortcuts import get_current_site
+    from django.utils.encoding import force_bytes,force_text
+    from django.core.mail import send_mail
+    from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
+    from django.urls import reverse
+    from django.conf import settings
+    from .utils import account_activation_token
+    user = CustomeUser.objects.get(email=email)
+    current_site = settings.HOST_URL
+    # email_body={
+    #                     'user':user,
+    #                     'domain':current_site,
+    #                     'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+    #                     'token':account_activation_token.make_token(user)
+    #         }
+    
+    email_subject = 'Request for Seller Account'
+
+    email_content = "Please use token {} to switch your account as seller".format(account_activation_token.make_token(user))
+    print(email_content)
+    send_mail(email_subject,
+                email_content,"mikcraft1995@gmail.com",[email])
+    return JsonResponse({'status':'success'})
 
 def activateAccount(request,email):
     user = CustomeUser.objects.get(email=email)

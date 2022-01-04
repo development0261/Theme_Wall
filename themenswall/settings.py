@@ -183,7 +183,7 @@ LOGIN_URL = 'login'
 # EMAIL_HOST_USER = 'mikcraft1995@gmail.com'
 # EMAIL_HOST_PASSWORD = 'irdcudexygqgvjzw'
 AUTH_USER_MODEL = 'users.CustomeUser'
-
+HOST_URL = "http://127.0.0.1:8000/"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 EMAIL_HOST = 'smtp.gmail.com'

@@ -2,6 +2,8 @@ from django.contrib import admin
 from .models import Profile,CustomeUser,SellerRequest,Address,Messages
 
 admin.site.register(Profile)
+from django.contrib.auth.admin import UserAdmin
+
 admin.site.register(CustomeUser)
 admin.site.register(SellerRequest)
 

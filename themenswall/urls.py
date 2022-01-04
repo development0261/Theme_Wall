@@ -32,7 +32,7 @@ urlpatterns = [
     path('privacy_policy/',user_views.privacy_policy,name="privacy_policy"),
     path('terms_condition/',user_views.terms_condition,name="terms_condition"),
     path('sendActivation/', sendActivation, name='sendActivation'),
-    path('sellerVarification/', sellerVarification, name='sellerVarification'),
+    path('sellerVarification/<str:email>/', sellerVarification, name='sellerVarification'),
     path('activateAccount/<str:email>/', activateAccount, name='activateAccount'),
     path('contactus/',user_views.contactus,name="contactus"),
 ]
