@@ -345,7 +345,7 @@ def sellerVarification(request,email):
     email_content = "Please use token {} to switch your account as seller".format(account_activation_token.make_token(user))
     print(email_content)
     send_mail(email_subject,
-                email_content,"mikcraft1995@gmail.com",[email])
+                email_content,"development0261@gmail.com",[email])
     return JsonResponse({'status':'success'})
 
 def activateAccount(request,email):
