@@ -101,24 +101,24 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 # if DEBUG:
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
-# else:
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'themenswall',
-        'USER': 'admin',
-        'PASSWORD': 'Admin@123',
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-    }
+}
+
+# else:
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'themenswall',
+#         'USER': 'admin',
+#         'PASSWORD': 'Admin@123',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+#     }
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
@@ -162,9 +162,9 @@ MESSAGE_TAGS = {
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 # STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 STATIC_URL = '/static/'
-# STATICFILES_DIRS =[os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS =[os.path.join(BASE_DIR, 'static')]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'live-static', 'media-root')

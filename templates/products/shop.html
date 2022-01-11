@@ -3,7 +3,10 @@
 {% load humanize %}
 {% block style %}
     {% load custom_tags %}
-    
+    <!-- Add the slick-theme.css if you want default styling -->
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<!-- Add the slick-theme.css if you want default styling -->
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
  <style>
 .search__input {
     border-color: #f0f2f5;
@@ -310,13 +313,13 @@ h5 {
           
             
             
-    <div class="container mt-5">
+    <div class="container-fluid mt-5">
        <div class="row">
         <div class="col-md-3">
          
             
            
-
+            
 
 
              <div class="mt-2 categories__wrp" style="background-color: #eeeeee;border-radius: 5px">
@@ -336,17 +339,25 @@ h5 {
                     </ul>
              </div>
 
-
-
+             <div class="mt-2">
+                <a href="https://www.kqzyfj.com/click-100503032-10560874" target="_blank">
+                    <img src="https://www.lduhtrp.net/image-100503032-10560874" width="255" height="60" alt="" border="0"/></a>
+             </div>
+             <div class="mt-3">
+                <a href="https://www.tkqlhce.com/click-100503032-11648845" target="_blank">
+                    <img src="https://www.lduhtrp.net/image-100503032-11648845" width="255" height="251" alt="" border="0"/></a>
+             </div>
         </div>
-        <div class="col-md-9 ">
+        <div class="col-md-8 ">
+           
+            
             <form action="{% url 'buyproducts' %}" method="post">{% csrf_token %}
                 <div class="input-group search__input">
                 <input type="search" class="form-control" name="searchBox" value="{% if searched %} {{ searched }}{% endif %}" id="searchBox" placeholder="Search's item" aria-label="Recipient's username" aria-describedby="basic-addon2">
                   <div class="input-group-append">
                     <button type="search" class="btn btn-dark" style="border-top-right-radius: 5px !important;
                     border-top-left-radius: 0px !important;border-bottom-right-radius: 5px !important;border-bottom-left-radius: 0px !important
-">Search</button>
+                    ">Search</button>
                 </div>
                 <div class="sort__by">
                     <select class="custom-select" onchange="location = this.value;">
@@ -376,6 +387,24 @@ h5 {
                 </div>
             </div>
             </form>
+            <div class="my-3" style="">
+                <div class="slick_slider">
+                    <div>
+                        <a href="https://www.anrdoezrs.net/click-100503032-14074846" target="_blank">
+                            <img src="https://www.tqlkg.com/image-100503032-14074846" width="350" height="280" alt="health supplements, fitness, pre workout, workout supplements. sports nutrition, health and wellness" border="0"/></a>
+                    </div>
+                    <div>
+                        <a href="https://www.jdoqocy.com/click-100503032-13133928" target="_blank">
+                            <img src="https://www.tqlkg.com/image-100503032-13133928" width="350" height="280" alt="Sigthseeing Pass Logo " border="0"/></a>
+                    </div>
+                    <div>
+                        <a href="https://www.anrdoezrs.net/click-100503032-12615225" target="_top">
+                            <img src="https://www.ftjcfx.com/image-100503032-12615225" width="350" height="280" alt="" border="0"/>
+                        </a>
+                    </div>
+                   
+                  </div>
+            </div>
             <div class="product_card mt-3">
                 <div class="container">
                     <div class="row">
@@ -443,6 +472,11 @@ h5 {
 
            
         </div>
+        <div class="col-md-1 ">
+            <a href="https://www.dpbolvw.net/click-100503032-12221980" target="_blank">
+                <img src="https://www.awltovhc.com/image-100503032-12221980" width="90" height="600" alt="" border="0"/></a>
+            </div>
+
         <div class="pagination__inner mb-2 d-flex justify-content-center">
             <nav aria-label="Page navigation example">
                  {% if all_items.has_other_pages %}
@@ -481,7 +515,15 @@ h5 {
 
 {% block jsfiles %}
 
-
+    <script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script>
+        $('.slick_slider').slick({
+            infinite: true,
+            slidesToShow: 2,
+            slidesToScroll: 1,
+            dots: true,
+          });
+    </script>
     <script>
         var MyitName = {};
         if (localStorage.getItem('Mycart') == null) {
